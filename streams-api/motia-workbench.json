@@ -1,0 +1,30 @@
+{
+  "default": {
+    "steps/03-check-state-change.step.ts": {
+      "x": 19.5,
+      "y": 636
+    },
+    "steps/02-test-state.step.ts": {
+      "x": 0,
+      "y": 426
+    },
+    "steps/01-api.step.ts": {
+      "x": 17,
+      "y": 188
+    },
+    "steps/00-noop.step.ts": {
+      "x": 55.5,
+      "y": 0
+    }
+  },
+  "open-ai": {
+    "steps/open-ai/01-prompt-api.step.ts": {
+      "x": 2,
+      "y": 0
+    },
+    "steps/open-ai/02-prompt.step.ts": {
+      "x": 0,
+      "y": 238
+    }
+  }
+}

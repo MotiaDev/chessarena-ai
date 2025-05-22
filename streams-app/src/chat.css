@@ -1,0 +1,41 @@
+
+.chat-message ul {
+  list-style-type: disc;
+}
+
+.chat-message ol {
+  list-style-type: decimal;
+}
+
+.chat-message li {
+  margin-left: 1rem;
+}
+
+.chat-message li::marker {
+  color: var(--color-primary);
+}
+
+.chat-message code {
+  background-color: var(--color-background);
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.chat-message h2,
+.chat-message h3 {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.chat-message h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.chat-message h4 {
+  font-size: 1rem;
+}
+
+.chat-message p {
+  font-size: 1rem;
+}

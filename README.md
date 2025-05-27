@@ -12,7 +12,7 @@ pnpm install
 
 ## Preparation
 
-There are two environment variables you need to configure. Open up the `.env` file and add the following:
+There are two environment variables you need to configure. Open up the `.env` file under `stream-api` folder and add the following:
 
 ```bash
 OPENAI_API_KEY=your-openai-api-key

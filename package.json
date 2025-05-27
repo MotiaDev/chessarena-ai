@@ -1,0 +1,18 @@
+{
+  "name": "motia-streams-example",
+  "description": "",
+  "scripts": {
+    "api": "pnpm --filter streams-api dev",
+    "app": "pnpm --filter streams-app dev"
+  },
+  "keywords": [
+    "motia"
+  ],
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react": "^19.1.2",
+    "typescript": "~5.8.3",
+    "prettier": "^3.5.3"
+  }
+}

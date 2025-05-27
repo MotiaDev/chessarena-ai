@@ -1,24 +1,25 @@
-import { useStreamItem } from '@motiadev/stream-client-react'
+import { useStreamGroup } from '@motiadev/stream-client-react'
 import { useCallback, useState, type KeyboardEvent } from 'react'
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../components/ui/chat/chat-bubble'
 import { ChatInput } from '../components/ui/chat/chat-input'
 import { ChatAssistantMessage } from './ChatAssistantMessage'
 import { ChatUserMessage } from './ChatUserMessage'
 import { useQueryParam } from './hooks/useQueryParam'
-
-type Thread = { messages: { id: string; from: 'user' | 'assistant' }[] }
+import type { Message } from './types'
 
 export const Chat = () => {
   const [threadId, setThreadId] = useQueryParam('threadId')
   const [loadingMessage, setLoadingMessage] = useState('')
-  const { data: thread } = useStreamItem<Thread>(threadId ? { streamName: 'thread', id: threadId } : undefined)
+  const { data: messages } = useStreamGroup<Message>(
+    threadId ? { streamName: 'message', groupId: threadId } : undefined,
+  )
 
   const sendMessage = useCallback(
     async (message: string) => {
       setLoadingMessage(message)
 
       // send message to motia backend
-      const result = await fetch('https://b0e0-168-0-235-200.ngrok-free.app/open-ai', {
+      const result = await fetch('http://localhost:3000/open-ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, threadId }),
@@ -47,7 +48,7 @@ export const Chat = () => {
     [sendMessage],
   )
 
-  const hasThread = thread?.messages && thread?.messages.length > 0
+  const hasThread = messages.length > 0
 
   return (
     <div className="flex flex-col h-screen max-w-[800px] min-h-screen mx-auto gap-4 p-4">
@@ -85,11 +86,11 @@ export const Chat = () => {
           </div>
         )}
 
-        {thread?.messages.map((message) =>
+        {messages.map((message) =>
           message.from === 'assistant' ? (
-            <ChatAssistantMessage id={message.id} key={message.id} />
+            <ChatAssistantMessage key={message.id} message={message.message} />
           ) : (
-            <ChatUserMessage id={message.id} key={message.id} />
+            <ChatUserMessage key={message.id} message={message.message} />
           ),
         )}
 

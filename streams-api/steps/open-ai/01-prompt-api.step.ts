@@ -21,27 +21,17 @@ export const config: ApiRouteConfig = {
   responseSchema: { 200: responseSchema },
 }
 
-export const handler: Handlers['OpenAiApi'] = async (req, { traceId, logger, emit, streams }) => {
+export const handler: Handlers['OpenAiApi'] = async (req, { logger, emit, streams }) => {
   logger.info('[Call OpenAI] Received callOpenAi event', { message: req.body.message })
 
   const { message, threadId = crypto.randomUUID() } = req.body
   const userMessageId = crypto.randomUUID()
-  const newMessages: { id: string; from: string }[] = [
-    { id: userMessageId, from: 'user' },
-    { id: traceId, from: 'assistant' },
-  ]
-  const thread = await streams.thread.get(threadId)
+  const assistantMessageId = crypto.randomUUID()
 
-  await streams.message.create(userMessageId, { message, status: 'created' })
+  await streams.message.set(threadId, userMessageId, { message, from: 'user', status: 'created' })
+  await streams.message.set(threadId, assistantMessageId, { message: '', from: 'assistant', status: 'created' })
 
-  if (thread?.messages) {
-    await streams.thread.update(threadId, { messages: [...thread.messages, ...newMessages] })
-  } else {
-    await streams.thread.create(threadId, { messages: newMessages })
-  }
-
-  await streams.message.create(traceId, { message: '', status: 'created' })
-  await emit({ topic: 'openai-prompt', data: { message, threadId } })
+  await emit({ topic: 'openai-prompt', data: { message, threadId, assistantMessageId } })
 
   return {
     status: 200,

@@ -8,12 +8,11 @@ import { EventHandler, ApiRouteHandler, ApiResponse, IStateStream } from 'motia'
 
 declare module 'motia' {
   interface FlowContextStateStreams {
-    'thread': IStateStream<{ messages: { id: string; from: string }[] }>
-    'message': IStateStream<{ message: string; status: string }>
+    'message': IStateStream<{ message: string; from: string; status: string }>
   }
 
   type Handlers = {
-    'CallOpenAi': EventHandler<{ message: string; threadId: string }, never>
-    'OpenAiApi': ApiRouteHandler<{ message: string; threadId?: string }, ApiResponse<200, { threadId: string }>, { topic: 'openai-prompt'; data: { message: string; threadId: string } }>
+    'CallOpenAi': EventHandler<{ message: string; assistantMessageId: string; threadId: string }, never>
+    'OpenAiApi': ApiRouteHandler<{ message: string; threadId?: string }, ApiResponse<200, { threadId: string }>, { topic: 'openai-prompt'; data: { message: string; assistantMessageId: string; threadId: string } }>
   }
 }

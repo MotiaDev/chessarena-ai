@@ -5,8 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import MessageLoading from './message-loading'
 import { Button, type ButtonProps } from '../button'
 
-// ChatBubble
-const chatBubbleVariant = cva('flex gap-2 max-w-[60%] items-end relative group', {
+const chatBubbleVariant = cva('flex gap-2 max-w-[90%] items-end relative group', {
   variants: {
     variant: {
       received: 'self-start',
@@ -41,7 +40,6 @@ const ChatBubble = React.forwardRef<HTMLDivElement, ChatBubbleProps>(
 )
 ChatBubble.displayName = 'ChatBubble'
 
-// ChatBubbleAvatar
 interface ChatBubbleAvatarProps {
   src?: string
   fallback?: string
@@ -55,7 +53,6 @@ const ChatBubbleAvatar: React.FC<ChatBubbleAvatarProps> = ({ src, fallback, clas
   </Avatar>
 )
 
-// ChatBubbleMessage
 const chatBubbleMessageVariants = cva('p-4', {
   variants: {
     variant: {
@@ -101,7 +98,6 @@ const ChatBubbleMessage = React.forwardRef<HTMLDivElement, ChatBubbleMessageProp
 )
 ChatBubbleMessage.displayName = 'ChatBubbleMessage'
 
-// ChatBubbleTimestamp
 interface ChatBubbleTimestampProps extends React.HTMLAttributes<HTMLDivElement> {
   timestamp: string
 }
@@ -112,7 +108,6 @@ const ChatBubbleTimestamp: React.FC<ChatBubbleTimestampProps> = ({ timestamp, cl
   </div>
 )
 
-// ChatBubbleAction
 type ChatBubbleActionProps = ButtonProps & {
   icon: React.ReactNode
 }

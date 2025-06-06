@@ -8,11 +8,16 @@ import { EventHandler, ApiRouteHandler, ApiResponse, IStateStream } from 'motia'
 
 declare module 'motia' {
   interface FlowContextStateStreams {
-    'message': IStateStream<{ message: string; from: string; status: string }>
+    'chessGame': IStateStream<{ id: string; fen: string; turn: string; status: string; lastMove?: string[]; players: { white: { name: string; ai?: string }; black: { name: string; ai?: string } }; check: boolean }>
+    'chessGameMove': IStateStream<{ color: string; fenBefore: string; fenAfter: string; lastMove: string[]; check: boolean }>
+    'chessGameMessage': IStateStream<{ message: string; sender: string; timestamp: number; move?: { from: string; to: string; promotion?: string }; isIllegalMove?: boolean }>
   }
 
   type Handlers = {
-    'CallOpenAi': EventHandler<{ message: string; assistantMessageId: string; threadId: string }, never>
-    'OpenAiApi': ApiRouteHandler<{ message: string; threadId?: string }, ApiResponse<200, { threadId: string }>, { topic: 'openai-prompt'; data: { message: string; assistantMessageId: string; threadId: string } }>
+    'OpenAiPlayer': EventHandler<{ player: string; fenBefore: string; fen: string; lastMove?: string[]; check: boolean; gameId: string }, { topic: 'chess-game-moved'; data: { gameId: string; fenBefore: string } }>
+    'ChessGameMoved': EventHandler<{ gameId: string; fenBefore: string }, { topic: 'openai-move'; data: { player: string; fenBefore: string; fen: string; lastMove?: string[]; check: boolean; gameId: string } }>
+    'MovePiece': ApiRouteHandler<{ password: string; player: string; from: string; to: string }, ApiResponse<200, { id: string; fen: string; turn: string; status: string; lastMove?: string[]; players: { white: { name: string; ai?: string }; black: { name: string; ai?: string } }; check: boolean }> | ApiResponse<400, { message: string }> | ApiResponse<404, { message: string }>, { topic: 'chess-game-moved'; data: { gameId: string; fenBefore: string } }>
+    'GetGame': ApiRouteHandler<{}, ApiResponse<200, { id: string; fen: string; turn: string; status: string; lastMove?: string[]; players: { white: { name: string; ai?: string }; black: { name: string; ai?: string } }; check: boolean; role: string; passwords?: { root: string; white: string; black: string } }> | ApiResponse<404, { message: string }>, never>
+    'CreateGame': ApiRouteHandler<{ players: { white: { name: string; ai?: string }; black: { name: string; ai?: string } } }, ApiResponse<200, { id: string; fen: string; turn: string; status: string; lastMove?: string[]; players: { white: { name: string; ai?: string }; black: { name: string; ai?: string } }; check: boolean }> | ApiResponse<400, { message: string; errors: { message: string }[] }>, { topic: 'chess-game-created'; data: { gameId: string; fenBefore: string } }>
   }
 }

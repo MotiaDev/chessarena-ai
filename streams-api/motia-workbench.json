@@ -1,30 +1,36 @@
 {
-  "default": {
-    "steps/03-check-state-change.step.ts": {
-      "x": 19.5,
-      "y": 636
+  "chess": {
+    "steps/chess/02-get-game.step.ts": {
+      "x": -94.10316865113816,
+      "y": 155.34311451680546
     },
-    "steps/02-test-state.step.ts": {
-      "x": 0,
-      "y": 426
+    "steps/chess/01-create-game.step.ts": {
+      "x": -159.07546106831077,
+      "y": -59.7896477883402
     },
-    "steps/01-api.step.ts": {
-      "x": 17,
-      "y": 188
+    "steps/chess/04-openai-player.step.ts": {
+      "x": 453.13959758295204,
+      "y": 189.41212171200522
     },
-    "steps/00-noop.step.ts": {
-      "x": 55.5,
-      "y": 0
-    }
-  },
-  "open-ai": {
-    "steps/open-ai/01-prompt-api.step.ts": {
-      "x": 2,
-      "y": 0
+    "steps/chess/03-move-api.step.ts": {
+      "x": 124.11236103435917,
+      "y": -59.42135156720095
     },
-    "steps/open-ai/02-prompt.step.ts": {
-      "x": 0,
-      "y": 238
+    "steps/chess/04-ask-openai.step.ts": {
+      "x": 435.2173810221692,
+      "y": -23.993237335170747
+    },
+    "steps/chess/04-chess-game-moved.step.ts": {
+      "x": 140.956905675964,
+      "y": 177.5316881944449
+    },
+    "steps/chess/02-get-game-passwords.step.ts": {
+      "x": -395.5759624877949,
+      "y": 156.73602071782474
+    },
+    "steps/chess/05-openai-player.step.ts": {
+      "x": 438.39342456059524,
+      "y": 178.8881619000677
     }
   }
 }

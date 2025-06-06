@@ -1,6 +1,6 @@
-# Motia Streams Example
+# Motia Chess Example
 
-This is a simple example of how to use the Motia Streams API to create a chatbot.
+This is a simple example of how to use the Motia Streams API to create a chess game with AI players.
 
 ## Installation
 

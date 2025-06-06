@@ -13,11 +13,16 @@
     "motia"
   ],
   "dependencies": {
-    "motia": "^0.2.1-beta.57",
+    "chess.js": "^1.3.1",
+    "motia": "0.2.1-beta.74-420394",
+    "mustache": "^4.2.0",
+    "no-profanity": "^1.5.1",
     "openai": "^4.102.0",
-    "zod": "^3.25.20"
+    "zod": "^3.25.20",
+    "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
+    "@types/mustache": "^4.2.6",
     "ts-node": "^10.9.2"
   }
 }

@@ -62,7 +62,8 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
     const messageId = crypto.randomUUID()
     const message = await streams.chessGameMessage.set(messageGameId, messageId, {
       message: 'Thinking...',
-      sender: input.player,
+      sender: 'OpenAI',
+      role: input.player,
       timestamp: Date.now(),
     })
 

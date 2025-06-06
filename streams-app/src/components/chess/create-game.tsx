@@ -1,10 +1,10 @@
-import { useState } from 'react'
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
+import { useCreateGame } from '@/lib/use-create-game'
+import { useState } from 'react'
 import { Button } from '../ui/button'
-import { useCreateGame } from '../../lib/use-create-game'
+import { Checkbox } from '../ui/checkbox'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
-import { Checkbox } from '../ui/checkbox'
 
 type Props = {
   onGameCreated: (gameId: string, password: string) => void

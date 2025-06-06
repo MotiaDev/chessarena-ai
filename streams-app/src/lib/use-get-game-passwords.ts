@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { apiUrl } from './env'
-import type { Password } from '../components/chess/types'
+import type { Password } from './types'
 
 export const useGetGamePasswords = (gameId: string, password?: string) => {
   const [passwords, setPasswords] = useState<Password | undefined>()

@@ -5,7 +5,8 @@ export const config: StateStreamConfig = {
   name: 'chessGameMessage',
   schema: z.object({
     message: z.string({ description: 'The message to be sent' }),
-    sender: z.enum(['white', 'black'], { description: 'The color that sent the message' }),
+    sender: z.string({ description: 'The name of the sender' }),
+    role: z.enum(['white', 'black', 'spectator', 'root'], { description: 'The role of the sender' }),
     timestamp: z.number({ description: 'The timestamp of the message' }),
     move: z
       .object({

@@ -1,7 +1,8 @@
 export type Message = {
   id: string
   message: string
-  sender: 'white' | 'black'
+  sender: string
+  role: GameRole
   timestamp: number
   move?: {
     from: string
@@ -28,5 +29,6 @@ export type GameRole = 'white' | 'black' | 'spectator' | 'root'
 
 export type GameWithRole = Game & {
   role: GameRole
+  username: string
   passwords?: Password
 }

@@ -7,7 +7,7 @@ type Args = {
   passwords: Password | undefined
 }
 
-type Role = 'root' | 'white' | 'black' | 'spectator'
+export type Role = 'root' | 'white' | 'black' | 'spectator'
 
 export const getGameRole = async ({ game, password, passwords }: Args): Promise<Role> => {
   let role: Role = 'spectator'

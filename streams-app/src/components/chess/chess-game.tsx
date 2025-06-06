@@ -1,10 +1,12 @@
-import { Share, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useGetGame } from '../../lib/use-get-game'
+import { useGetGame } from '@/lib/use-get-game'
+import { Send, Share, X } from 'lucide-react'
+import { useState } from 'react'
 import { Button } from '../ui/button'
 import { ChessBoard } from './chess-board'
 import { ChessMessages } from './chess-messages'
 import { ChessShare } from './chess-share'
+import { ChatInput } from '../ui/chat/chat-input'
+import { useSendMessage } from '../../lib/use-send-message'
 
 type Props = {
   gameId: string
@@ -15,6 +17,23 @@ type Props = {
 export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
   const game = useGetGame(gameId, password)
   const [shareOpen, setShareOpen] = useState(false)
+  const [message, setMessage] = useState('')
+  const sendMessage = useSendMessage(gameId)
+
+  const handleSendMessage = async () => {
+    if (game && message.trim().length > 0) {
+      await sendMessage({ message, name: game.username, role: game.role })
+      setMessage('')
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      e.stopPropagation()
+      handleSendMessage()
+    }
+  }
 
   if (!game) {
     return null
@@ -39,8 +58,15 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
         </div>
       </header>
       <ChessBoard gameId={gameId} password={password} role={game.role} />
-      <div className="w-screen max-w-[600px] overflow-y-auto flex-1 px-4">
+      <div className="w-screen max-w-[600px] overflow-y-auto flex-1 gap-4 p-4 flex flex-col">
         <ChessMessages gameId={gameId} />
+
+        <div className="flex flex-row gap-2 items-center">
+          <ChatInput value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={handleKeyDown} />
+          <Button variant="secondary" className="h-12 w-12" onClick={handleSendMessage}>
+            <Send />
+          </Button>
+        </div>
       </div>
 
       <ChessShare open={shareOpen} onOpenChange={setShareOpen} game={game} />

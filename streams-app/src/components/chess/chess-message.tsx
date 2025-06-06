@@ -1,39 +1,40 @@
+import type { Message } from '@/lib/types'
+import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
-import type React from 'react'
-import { cn } from '../../lib/utils'
+import React, { useEffect, useRef } from 'react'
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../ui/chat/chat-bubble'
-import type { Message, Player } from './types'
-import { useEffect } from 'react'
 
 type Props = {
   message: Message
-  players?: { white: Player; black: Player }
   isLast?: boolean
-  parentRef: React.RefObject<HTMLDivElement | null>
 }
 
 const avatarImages = {
-  openai: '/openai.png',
-  gemini: '/gemini.jpeg',
-  claude: '/claude.webp',
+  OpenAI: '/openai.png',
+  Gemini: '/gemini.jpeg',
+  Claude: '/claude.webp',
 }
 
-export const ChessMessage: React.FC<Props> = ({ message, players, isLast, parentRef }) => {
+export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
+  const ref = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
-    if (isLast) {
-      parentRef.current?.scrollIntoView({ behavior: 'instant', block: 'end' })
+    if (isLast && ref.current) {
+      ref.current.scrollIntoView({ behavior: 'instant', block: 'end' })
     }
   }, [isLast, message.message])
 
-  const player = players?.[message.sender]
-
   return (
-    <ChatBubble variant={message.sender === 'white' ? 'sent' : 'received'}>
+    <ChatBubble variant={message.role === 'white' ? 'sent' : 'received'} ref={ref}>
       <ChatBubbleAvatar
-        fallback={player ? player.name : '--'}
-        src={player && player.ai ? avatarImages[player.ai] : undefined}
+        fallback={message.sender.slice(0, 1).toUpperCase()}
+        src={avatarImages[message.sender as keyof typeof avatarImages] ?? undefined}
       />
       <ChatBubbleMessage>
+        <div className="flex flex-row text-xs font-bold uppercase mb-1">
+          {message.sender}
+          {message.role === 'spectator' && <span className="text-muted-foreground"> (Spectator)</span>}
+        </div>
         <p>{message.message}</p>
         {message.move && (
           <div

@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useDeviceWidth } from '@/lib/use-device-width'
 import { Chessground as ChessgroundApi } from 'chessground'
 import type { Api } from 'chessground/api'
 import type { Config } from 'chessground/config'
-import { useDeviceWidth } from '../../lib/use-device-width'
+import React, { useEffect, useRef, useState } from 'react'
 
 interface Props {
   config?: Config

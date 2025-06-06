@@ -1,9 +1,10 @@
 import { MotiaStreamProvider } from '@motiadev/stream-client-react'
 import { useCallback } from 'react'
-import { ChessGame } from './components/chess/chess-game'
-import { CreateGame } from './components/chess/create-game'
-import { socketUrl } from './lib/env'
-import { useQueryParam } from './lib/use-query-param'
+import { ChessGame } from '@/components/chess/chess-game'
+import { CreateGame } from '@/components/chess/create-game'
+import { socketUrl } from '@/lib/env'
+import { useQueryParam } from '@/lib/use-query-param'
+import { Toaster } from '@/components/ui/sonner'
 
 function App() {
   const [gameId, setGameId] = useQueryParam('game')
@@ -30,6 +31,7 @@ function App() {
           </div>
         </div>
       )}
+      <Toaster />
     </MotiaStreamProvider>
   )
 }

@@ -16,10 +16,14 @@ There are two environment variables you need to configure. Open up the `.env` fi
 
 ```bash
 OPENAI_API_KEY=your-openai-api-key
-OPENAI_ASSISTANT_ID=your-openai-assistant-id
 ```
 
-To get the assistant ID you need to create an assistant in [OpenAI Dashboard](https://platform.openai.com/assistants). Make sure to be logged in before you click on the link.
+Create `.env` file under `streams-app` folder and add the following:
+
+```bash
+VITE_API_URL=http://localhost:3000
+VITE_SOCKET_URL=ws://localhost:3000
+```
 
 ## Running the API
 

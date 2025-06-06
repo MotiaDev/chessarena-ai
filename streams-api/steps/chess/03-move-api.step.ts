@@ -35,17 +35,11 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
     return { status: 404, body: { message: 'Game not found' } }
   } else if (game.status === 'completed') {
     return { status: 400, body: { message: 'Game is finished' } }
-    // TODO type should be generated with enums correctly
-  } else if (game.players[game.turn as 'white' | 'black'].ai) {
+  } else if (game.players[game.turn].ai) {
     return { status: 400, body: { message: 'Cannot move as AI' } }
   }
 
-  const isValid = await validateMoveAccess({
-    state,
-    gameId,
-    game: game as Game, // TODO type should be generated with enums correctly
-    password: req.body.password,
-  })
+  const isValid = await validateMoveAccess({ state, gameId, game, password: req.body.password })
 
   if (!isValid) {
     return { status: 400, body: { message: 'Invalid password' } }
@@ -55,8 +49,8 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
     await move({
       streams,
       gameId,
-      game: game as Game, // TODO type should be generated with enums correctly
-      player: game.turn as 'white' | 'black', // TODO type should be generated with enums correctly
+      game: game,
+      player: game.turn,
       action: { from: req.body.from, to: req.body.to },
       emit,
     })

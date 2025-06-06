@@ -43,5 +43,5 @@ export const move = async ({ streams, gameId, game, action, emit, player }: Args
     },
   })
 
-  return newGame as Game // TODO type should be generated with enums correctly
+  return newGame
 }

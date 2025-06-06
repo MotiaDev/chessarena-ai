@@ -1,7 +1,7 @@
-import { StateStreamConfig } from 'motia'
+import { StreamConfig } from 'motia'
 import { z } from 'zod'
 
-export const config: StateStreamConfig = {
+export const config: StreamConfig = {
   name: 'chessGameMessage',
   schema: z.object({
     message: z.string({ description: 'The message to be sent' }),
@@ -17,5 +17,5 @@ export const config: StateStreamConfig = {
       .optional(),
     isIllegalMove: z.boolean({ description: 'Whether the move is illegal' }).optional(),
   }),
-  baseConfig: { storageType: 'state' },
+  baseConfig: { storageType: 'default' },
 }

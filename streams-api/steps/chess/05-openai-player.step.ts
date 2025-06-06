@@ -55,12 +55,11 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
     return
   }
 
-  const messageGameId = `${input.gameId}-messages` // TODO after we fix MOT-329
   let lastInvalidMove = undefined
 
   while (true) {
     const messageId = crypto.randomUUID()
-    const message = await streams.chessGameMessage.set(messageGameId, messageId, {
+    const message = await streams.chessGameMessage.set(input.gameId, messageId, {
       message: 'Thinking...',
       sender: 'OpenAI',
       role: input.player,
@@ -95,8 +94,8 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
 
     const action = JSON.parse(completion.choices[0].message.content ?? '{}') as Response
 
-    await streams.chessGameMessage.set(messageGameId, messageId, {
-      ...message!,
+    await streams.chessGameMessage.set(input.gameId, messageId, {
+      ...message,
       message: action.thought,
       move: action.move,
     })
@@ -105,8 +104,8 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
       await move({
         streams,
         gameId: input.gameId,
-        player: input.player as 'white' | 'black', // TODO type should be generated with enums correctly
-        game: game as Game, //  TODO type should be generated with enums correctly
+        player: input.player,
+        game,
         action: action.move,
         emit,
       })
@@ -114,8 +113,8 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
 
       return
     } catch (err) {
-      await streams.chessGameMessage.set(messageGameId, messageId, {
-        ...message!,
+      await streams.chessGameMessage.set(input.gameId, messageId, {
+        ...message,
         message: action.thought,
         isIllegalMove: true,
         move: action.move,

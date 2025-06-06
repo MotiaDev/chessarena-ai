@@ -38,5 +38,5 @@ export const handler: Handlers['SendMessage'] = async (req, { logger, streams })
     timestamp: Date.now(),
   })
 
-  return { status: 200, body: message! }
+  return { status: 200, body: message }
 }

@@ -57,11 +57,11 @@ export const handler: Handlers['CreateGame'] = async (req, { logger, emit, state
 
   await emit({
     topic: 'chess-game-created',
-    data: { gameId, fenBefore: game!.fen },
+    data: { gameId, fenBefore: game.fen },
   })
 
   return {
     status: 200,
-    body: { ...game!, passwords },
+    body: { ...game, passwords },
   }
 }

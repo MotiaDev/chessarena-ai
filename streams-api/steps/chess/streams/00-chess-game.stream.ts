@@ -1,4 +1,4 @@
-import { StateStreamConfig } from 'motia'
+import { StreamConfig } from 'motia'
 import { z } from 'zod'
 
 export const gameSchema = z.object({
@@ -22,8 +22,8 @@ export const gameSchema = z.object({
 
 export type Game = z.infer<typeof gameSchema>
 
-export const config: StateStreamConfig = {
+export const config: StreamConfig = {
   name: 'chessGame',
   schema: gameSchema,
-  baseConfig: { storageType: 'state' },
+  baseConfig: { storageType: 'default' },
 }

@@ -30,13 +30,15 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Create Env file
+        working-directory: streams-api
         run: |
           echo "OPENAI_API_KEY=${{ env.OPENAI_API_KEY }}" > .env
 
       - name: Deploy using Motia Cloud
+        working-directory: streams-api
         run: |
           npx motia cloud deploy \
             --api-key ${{ env.MOTIA_API_KEY }} \

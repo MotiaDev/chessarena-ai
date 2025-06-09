@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'streams-api/**'
 
 env:
   # Application environment variables

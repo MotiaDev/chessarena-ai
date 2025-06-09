@@ -19,11 +19,18 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
   const [shareOpen, setShareOpen] = useState(false)
   const [message, setMessage] = useState('')
   const sendMessage = useSendMessage(gameId)
+  const [isSending, setIsSending] = useState(false)
 
   const handleSendMessage = async () => {
-    if (game && message.trim().length > 0) {
-      await sendMessage({ message, name: game.username, role: game.role })
-      setMessage('')
+    if (game && message.trim().length > 0 && !isSending) {
+      setIsSending(true)
+
+      try {
+        await sendMessage({ message, name: game.username, role: game.role })
+        setMessage('')
+      } finally {
+        setIsSending(false)
+      }
     }
   }
 
@@ -63,7 +70,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
 
         <div className="flex flex-row gap-2 items-center">
           <ChatInput value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={handleKeyDown} />
-          <Button variant="secondary" className="h-12 w-12" onClick={handleSendMessage}>
+          <Button variant="secondary" className="h-12 w-12" onClick={handleSendMessage} disabled={isSending}>
             <Send />
           </Button>
         </div>

@@ -7,7 +7,7 @@ type Props = { gameId: string }
 export const ChessMessages: React.FC<Props> = ({ gameId }) => {
   const { data: messages } = useStreamGroup<Message>({
     streamName: 'chessGameMessage',
-    groupId: `${gameId}-messages`,
+    groupId: gameId,
   })
 
   return (

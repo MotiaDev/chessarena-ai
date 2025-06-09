@@ -1,0 +1,47 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  # Application environment variables
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  # Motia Deploy
+  MOTIA_API_KEY: ${{ secrets.MOTIA_API_KEY }}
+  MOTIA_PROJECT_ID: 572dca96-a142-4f08-b531-c8fff67eb05b
+  MOTIA_ENV_ID: 37c5728c-8ec5-4ace-b107-c446841a3c3f
+  VERSION_NAME: ${{ GITHUB_SHA::7 }}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create Env file
+        run: |
+          echo "OPENAI_API_KEY=${{ env.OPENAI_API_KEY }}" > .env
+
+      - name: Deploy using Motia Cloud
+        run: |
+          npx motia cloud deploy \
+            --api-key ${{ env.MOTIA_API_KEY }} \
+            --project-id ${{ env.MOTIA_PROJECT_ID }} \
+            --environment-id ${{ env.MOTIA_ENV_ID }} \
+            --version-name ${{ env.VERSION_NAME }} \
+            --env-file .env

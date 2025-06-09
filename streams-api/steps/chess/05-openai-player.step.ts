@@ -59,6 +59,8 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
 
   while (true) {
     const messageId = crypto.randomUUID()
+
+    logger.info('[OpenAiPlayer] Creating message', { messageId, gameId: input.gameId })
     const message = await streams.chessGameMessage.set(input.gameId, messageId, {
       message: 'Thinking...',
       sender: 'OpenAI',
@@ -94,6 +96,7 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
 
     const action = JSON.parse(completion.choices[0].message.content ?? '{}') as Response
 
+    logger.info('[OpenAiPlayer] Updating message', { messageId, gameId: input.gameId })
     await streams.chessGameMessage.set(input.gameId, messageId, {
       ...message,
       message: action.thought,

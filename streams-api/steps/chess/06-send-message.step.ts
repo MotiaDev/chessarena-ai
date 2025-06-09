@@ -29,9 +29,8 @@ export const config: ApiRouteConfig = {
 export const handler: Handlers['SendMessage'] = async (req, { logger, streams }) => {
   logger.info('[SendMessage] Received SendMessage event', { gameId: req.pathParams.id })
 
-  const messageGameId = `${req.pathParams.id}-messages`
   const messageId = crypto.randomUUID()
-  const message = await streams.chessGameMessage.set(messageGameId, messageId, {
+  const message = await streams.chessGameMessage.set(req.pathParams.id, messageId, {
     message: req.body.message,
     role: req.body.role,
     sender: req.body.name,

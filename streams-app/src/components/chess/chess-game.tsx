@@ -11,6 +11,7 @@ import { ChatInput } from '../ui/chat/chat-input'
 import { ChessBoard } from './chess-board'
 import { ChessLastGameMove } from './chess-last-game-move'
 import { ChessMessages } from './chess-messages'
+import { ChessShare } from './chess-share'
 
 type Props = {
   gameId: string
@@ -61,7 +62,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           <ArrowLeft onClick={onClose} />
           <MotiaPowered size="sm" />
           <div className="flex flex-row gap-2 items-center justify-end">
-            <Share />
+            <ChessShare game={gameWithRole} />
           </div>
         </header>
 
@@ -84,9 +85,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
 
             <MotiaPowered size="sm" />
 
-            <Button variant="default" className="h-12 w-12">
-              <Share className="size-5" />
-            </Button>
+            <ChessShare game={gameWithRole} />
           </header>
 
           <ChessLastGameMove game={game} />
@@ -108,8 +107,6 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           </div>
         </div>
       </div>
-
-      {/* <ChessShare open={shareOpen} onOpenChange={setShareOpen} game={game} /> */}
     </div>
   )
 }

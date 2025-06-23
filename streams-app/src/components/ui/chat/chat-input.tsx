@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 
 interface ChatInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const ChatInput = React.forwardRef<HTMLInputElement, ChatInputProps>(({ className, ...props }, ref) => (
+const ChatInput: React.FC<ChatInputProps> = ({ className, ...props }) => (
   <input
     autoComplete="off"
     type="text"
@@ -14,7 +14,6 @@ const ChatInput = React.forwardRef<HTMLInputElement, ChatInputProps>(({ classNam
     )}
     {...props}
   />
-))
-ChatInput.displayName = 'ChatInput'
+)
 
 export { ChatInput }

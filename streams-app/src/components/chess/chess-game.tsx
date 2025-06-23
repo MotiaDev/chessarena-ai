@@ -1,6 +1,6 @@
 import { useGetGame } from '@/lib/use-get-game'
 import { useStreamItem } from '@motiadev/stream-client-react'
-import { ArrowLeft, ArrowRight, Loader2, Share } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import type { Game } from '../../lib/types'
 import { useSendMessage } from '../../lib/use-send-message'

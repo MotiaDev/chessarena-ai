@@ -1,18 +1,20 @@
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import type { GameWithRole } from '@/lib/types'
-import { Eye } from 'lucide-react'
+import { Share } from 'lucide-react'
+import { useState } from 'react'
 import { toast } from 'sonner'
-import { Button } from '../ui/button'
+import { CreateGameButton, CreateGameButtonAlt } from './create-game/create-game-button'
 
 type Props = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
   game: GameWithRole
 }
 
-export const ChessShare: React.FC<Props> = ({ open, onOpenChange, game }) => {
+export const ChessShare: React.FC<Props> = ({ game }) => {
+  const [isOpen, setIsOpen] = useState(false)
+
   const onClick = (color?: 'white' | 'black') => {
-    onOpenChange(false)
+    setIsOpen(false)
 
     const password = color ? game.passwords?.[color] : undefined
 
@@ -29,34 +31,30 @@ export const ChessShare: React.FC<Props> = ({ open, onOpenChange, game }) => {
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Share Game</DrawerTitle>
-          {game.role === 'root' ? (
-            <DrawerDescription>How do you want your friends to interact?</DrawerDescription>
-          ) : (
-            <DrawerDescription>Share this game with your friends</DrawerDescription>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="default" className="h-12 w-12">
+          <Share className="size-5" onClick={() => setIsOpen(true)} />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] rounded-2xl bg-gradient-to-b from-gray-900/20 to-black/80 border-none backdrop-blur-lg border-1 border-white/10 border-solid">
+        <DialogHeader>
+          <DialogTitle className="text-md font-semibold text-center">Share match</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col gap-2 w-full">
+          {game.passwords?.white && (
+            <CreateGameButton className="flex-1" onClick={() => onClick('white')}>
+              Invite to play as white
+            </CreateGameButton>
           )}
-        </DrawerHeader>
-        <div className="flex flex-col gap-2 w-full p-4">
-          <div className="flex flex-row gap-2 items-center justify-center w-full">
-            {game.passwords?.white && (
-              <Button variant="default" className="flex-1" onClick={() => onClick('white')}>
-                Play as White (You)
-              </Button>
-            )}
-            {game.passwords?.black && (
-              <Button variant="outline" className="flex-1" onClick={() => onClick('black')}>
-                Play as Black
-              </Button>
-            )}
-          </div>
-          <Button variant="secondary" onClick={() => onClick()}>
-            <Eye /> Watch
-          </Button>
+          {game.passwords?.black && (
+            <CreateGameButton className="flex-1" onClick={() => onClick('black')}>
+              Invite to play as black
+            </CreateGameButton>
+          )}
+          <CreateGameButtonAlt onClick={() => onClick()}>Invite to watch</CreateGameButtonAlt>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </DialogContent>
+    </Dialog>
   )
 }

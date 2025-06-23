@@ -1,8 +1,10 @@
 import type { Message } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { X } from 'lucide-react'
+import type { Key } from 'chessground/types'
+import { OctagonX } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../ui/chat/chat-bubble'
+import { ChessMove } from './chess-move'
 
 type Props = {
   message: Message
@@ -27,26 +29,32 @@ export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
   return (
     <ChatBubble variant={message.role === 'white' ? 'sent' : 'received'} ref={ref}>
       <ChatBubbleAvatar
+        color={message.role === 'white' ? 'white' : 'black'}
         fallback={message.sender.slice(0, 1).toUpperCase()}
         src={avatarImages[message.sender as keyof typeof avatarImages] ?? undefined}
       />
       <ChatBubbleMessage>
-        <div className="flex flex-row text-xs font-bold uppercase mb-1">
+        <div className="flex flex-row text-md font-semibold mb-3">
           {message.sender}
           {message.role === 'spectator' && <span className="text-muted-foreground"> (Spectator)</span>}
         </div>
-        <p>{message.message}</p>
+        <p className="text-md font-medium whitespace-pre-wrap">{message.message}</p>
         {message.move && (
-          <div
-            className={cn(
-              'flex gap-1 py-1 px-2 rounded-md mt-2 items-center',
-              message.isIllegalMove ? 'bg-red-900/30 text-red-500' : 'bg-black/50 text-muted-foreground',
+          <div className={cn('mt-3', message.isIllegalMove && 'bg-error border-2 rounded-xl p-3')}>
+            {message.isIllegalMove && (
+              <div className="text-error font-medium mb-2 flex flex-row gap-1 items-center">
+                <OctagonX className="size-4" /> This move is illegal. Trying another...
+              </div>
             )}
-          >
-            <X className="w-4 h-4" />
-            <p>
-              Move: {message.move.from} → {message.move.to}
-            </p>
+            <div
+              className={cn(
+                'flex flex-row justify-between font-medium w-full p-4 bg-white/5 rounded-sm font-medium items-center',
+                message.isIllegalMove ? 'bg-black/60' : 'bg-black/20',
+              )}
+            >
+              {message.role === 'white' ? 'White move' : 'Black move'}
+              <ChessMove move={[message.move.from as Key, message.move.to as Key]} />
+            </div>
           </div>
         )}
       </ChatBubbleMessage>

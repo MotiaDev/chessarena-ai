@@ -19,11 +19,20 @@ function AvatarImage({ className, ...props }: React.ComponentProps<typeof Avatar
   )
 }
 
-function AvatarFallback({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+function AvatarFallback({
+  className,
+  color,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Fallback> & { color?: 'white' | 'black' }) {
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
-      className={cn('bg-muted flex size-full items-center justify-center rounded-full', className)}
+      className={cn(
+        'font-bold flex size-full items-center justify-center rounded-full',
+        color === 'white' && 'bg-white font-black',
+        color === 'black' && 'bg-black font-white',
+        className,
+      )}
       {...props}
     />
   )

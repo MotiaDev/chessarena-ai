@@ -1,3 +1,5 @@
+import type { Key } from 'chessground/types'
+
 export type Message = {
   id: string
   message: string

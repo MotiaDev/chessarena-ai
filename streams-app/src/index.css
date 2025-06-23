@@ -3,6 +3,28 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.bg-image-landing {
+  background-image: url('/landing-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@layer utilities {
+  .font-title {
+    font-family: 'Special Gothic Condensed One', sans-serif;
+  }
+
+  .text-error {
+    @apply text-[#EA1F69];
+  }
+
+  .bg-error {
+    @apply bg-[#EA1F69]/20;
+    @apply border-[#EA1F69]
+  }
+}
+
 :root {
   line-height: 1.5;
   font-size: 16px;
@@ -16,6 +38,7 @@
   width: 100%;
   font-optical-sizing: auto;
 
+  --default-font-family: 'DM Sans', sans-serif;
   --radius: 0.625rem;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

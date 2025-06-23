@@ -1,4 +1,3 @@
-import { useDeviceWidth } from '@/lib/use-device-width'
 import { Chessground as ChessgroundApi } from 'chessground'
 import type { Api } from 'chessground/api'
 import type { Config } from 'chessground/config'
@@ -10,9 +9,31 @@ interface Props {
 
 export const Chessground: React.FC<Props> = ({ config = {} }) => {
   const [api, setApi] = useState<Api | null>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
   const ref = useRef<HTMLDivElement>(null)
-  const deviceWidth = useDeviceWidth()
-  const chessgroundSize = deviceWidth > 600 ? 600 : deviceWidth
+  const [size, setSize] = useState<number>()
+
+  useEffect(() => {
+    const parent = rootRef.current?.parentElement
+
+    if (parent) {
+      console.log({ parent })
+
+      const handleResize = () => {
+        const width = parent.clientWidth
+        const height = parent.clientHeight
+
+        setSize(width > height ? height : width)
+
+        console.log({ width, height })
+      }
+
+      window.addEventListener('resize', handleResize)
+      handleResize()
+
+      return () => window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   useEffect(() => {
     if (ref && ref.current && !api) {
@@ -32,7 +53,7 @@ export const Chessground: React.FC<Props> = ({ config = {} }) => {
   }, [api, config])
 
   return (
-    <div style={{ width: chessgroundSize, height: chessgroundSize }}>
+    <div ref={rootRef} className="w-full h-full" style={{ width: size, height: size }}>
       <div ref={ref} className="w-full h-full table" />
     </div>
   )

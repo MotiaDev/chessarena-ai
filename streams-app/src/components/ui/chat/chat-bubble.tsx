@@ -5,7 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import MessageLoading from './message-loading'
 import { Button, type ButtonProps } from '../button'
 
-const chatBubbleVariant = cva('flex gap-2 max-w-[90%] items-end relative group', {
+const chatBubbleVariant = cva('flex gap-2 items-start relative group', {
   variants: {
     variant: {
       received: 'self-start',
@@ -44,20 +44,21 @@ interface ChatBubbleAvatarProps {
   src?: string
   fallback?: string
   className?: string
+  color?: 'white' | 'black'
 }
 
-const ChatBubbleAvatar: React.FC<ChatBubbleAvatarProps> = ({ src, fallback, className }) => (
+const ChatBubbleAvatar: React.FC<ChatBubbleAvatarProps> = ({ src, fallback, className, color }) => (
   <Avatar className={className}>
     <AvatarImage src={src} alt="Avatar" />
-    <AvatarFallback>{fallback}</AvatarFallback>
+    <AvatarFallback color={color}>{fallback}</AvatarFallback>
   </Avatar>
 )
 
 const chatBubbleMessageVariants = cva('p-4', {
   variants: {
     variant: {
-      received: 'bg-secondary text-secondary-foreground rounded-r-lg rounded-tl-lg',
-      sent: 'bg-primary text-primary-foreground rounded-l-lg rounded-tr-lg',
+      received: 'backdrop-blur-lg bg-white/5 rounded-r-2xl rounded-bl-sm rounded-bl-2xl',
+      sent: 'backdrop-blur-lg bg-white/5 rounded-r-2xl rounded-l-lg rounded-br-lg',
     },
     layout: {
       default: '',

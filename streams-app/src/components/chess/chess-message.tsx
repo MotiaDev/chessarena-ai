@@ -27,6 +27,7 @@ export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
   return (
     <ChatBubble variant={message.role === 'white' ? 'sent' : 'received'} ref={ref}>
       <ChatBubbleAvatar
+        color={message.role === 'white' ? 'white' : 'black'}
         fallback={message.sender.slice(0, 1).toUpperCase()}
         src={avatarImages[message.sender as keyof typeof avatarImages] ?? undefined}
       />

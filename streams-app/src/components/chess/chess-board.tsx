@@ -1,7 +1,6 @@
 import type { Game, GameRole } from '@/lib/types'
 import { useChessInstance } from '@/lib/use-chess-instance'
 import { useMove } from '@/lib/use-move'
-import { useStreamItem } from '@motiadev/stream-client-react'
 import { Chess, SQUARES } from 'chess.js'
 import type { Config } from 'chessground/config'
 import type { Key } from 'chessground/types'
@@ -23,16 +22,16 @@ export function toDests(chess: Chess): Map<Key, Key[]> {
   return dests
 }
 
-type Props = { gameId: string; password?: string; role: GameRole }
+type Props = {
+  password?: string
+  role: GameRole
+  game: Game
+}
 
-export const ChessBoard: React.FC<Props> = ({ gameId, password, role }) => {
+export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
   const { getInstance } = useChessInstance()
-  const { data: game } = useStreamItem<Game>({
-    streamName: 'chessGame',
-    groupId: 'game',
-    id: gameId,
-  })
-  const move = useMove({ gameId })
+
+  const move = useMove({ gameId: game.id })
   const [moves, setMoves] = useState<Map<Key, Key[]>>(new Map())
 
   useEffect(() => {

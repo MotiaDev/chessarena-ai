@@ -34,7 +34,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
   return (
     <div className="flex flex-col items-center mx-auto w-screen h-screen justify-between">
       <div className="flex md:flex-row max-md:flex-col items-center justify-between w-full h-screen max-h-screen">
-        <header className="md:hidden flex flex-row gap-2 items-center justify-between px-4 pt-4 w-full md:border-b-2 md:border-white/5">
+        <header className="md:hidden flex flex-row gap-2 items-center justify-between p-4 w-full md:border-b-2 md:border-white/5">
           <Button variant="default" className="h-12 w-12" onClick={onClose}>
             <ArrowLeft className="size-5" />
           </Button>
@@ -44,7 +44,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           </div>
         </header>
 
-        <div className="flex-1 w-full h-full flex items-center justify-center p-8">
+        <div className="flex-1 w-full h-full flex items-center justify-center md:p-8">
           <div className="w-full h-full flex items-center justify-center">
             <ChessBoard game={game} password={password} role={gameWithRole.role} />
           </div>

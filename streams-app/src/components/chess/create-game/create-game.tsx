@@ -1,12 +1,10 @@
+import { MotiaPowered } from '@/components/motia-powered'
+import type { Player } from '@/lib/types'
 import { useCreateGame } from '@/lib/use-create-game'
+import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
-import { Checkbox } from '../../ui/checkbox'
-import { Input } from '../../ui/input'
-import { Label } from '../../ui/label'
-import { CreateGameButton } from './create-game-button'
-import { MotiaPowered } from '../../motia-powered'
-import { CreateGamePlayer } from './create-game-player'
-import { Loader2 } from 'lucide-react'
+import { CreateGamePlayerForm } from './create-game-player-form'
+import { CreateGamePlayers } from './create-game-players'
 
 type Props = {
   onGameCreated: (gameId: string, password: string) => void
@@ -14,11 +12,21 @@ type Props = {
 
 export const CreateGame: React.FC<Props> = ({ onGameCreated }) => {
   const createGame = useCreateGame()
-  const [whiteName, setWhiteName] = useState('White')
-  const [blackName, setBlackName] = useState('Black')
-  const [isAiEnabled, setIsAiEnabled] = useState(false)
-  const isFormValid = whiteName && blackName
+  const [whitePlayer, setWhitePlayer] = useState<Player>({ name: 'White' })
+  const [blackPlayer, setBlackPlayer] = useState<Player>({ name: 'Black' })
+  const isFormValid = whitePlayer.name && blackPlayer.name
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const selectedPlayerColor = selectedPlayer === whitePlayer ? 'white' : 'black'
+
+  const handlePlayerSubmit = (player: Player) => {
+    if (player.name === whitePlayer.name) {
+      setWhitePlayer(player)
+    } else {
+      setBlackPlayer(player)
+    }
+    setSelectedPlayer(null)
+  }
 
   const handleSubmit = async () => {
     if (!isFormValid) {
@@ -29,8 +37,8 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated }) => {
 
     try {
       const game = await createGame({
-        white: { name: whiteName },
-        black: { name: blackName, ai: isAiEnabled ? 'openai' : undefined },
+        white: { name: whitePlayer.name, ai: whitePlayer.ai },
+        black: { name: blackPlayer.name, ai: blackPlayer.ai },
       })
 
       onGameCreated(game.id, game.passwords.root)
@@ -41,24 +49,22 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated }) => {
 
   return (
     <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full h-full">
-      <MotiaPowered />
-      <div className="flex flex-col gap-2 items-center justify-center">
-        <img src="/horse.png" alt="ChessArena.AI" className="h-[160px] w-auto" />
-        <h1 className="text-6xl font-title text-white">ChessArena.AI</h1>
+      <div className="relative w-full">
+        {selectedPlayer && (
+          <ArrowLeft className="absolute left-0 top-1 size-6 cursor-pointer" onClick={() => setSelectedPlayer(null)} />
+        )}
+        <MotiaPowered size="sm" />
       </div>
-
-      <div className="flex flex-col gap-2 items-center justify-center w-full">
-        <div className="text-sm text-foreground font-semibold mb-2">Set up</div>
-        <CreateGamePlayer name={whiteName} color="white" ai={isAiEnabled ? 'openai' : undefined} />
-        <CreateGamePlayer name={blackName} color="black" ai={isAiEnabled ? 'openai' : undefined} />
-      </div>
-
-      {isLoading ? (
-        <div className="flex flex-row gap-2 items-center justify-center w-full h-[64px] font-medium text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> Your match is loading...
-        </div>
+      {selectedPlayer ? (
+        <CreateGamePlayerForm player={selectedPlayer} color={selectedPlayerColor} onSubmit={handlePlayerSubmit} />
       ) : (
-        <CreateGameButton onClick={handleSubmit}>Start match</CreateGameButton>
+        <CreateGamePlayers
+          whitePlayer={whitePlayer}
+          blackPlayer={blackPlayer}
+          isLoading={isLoading}
+          onSubmit={handleSubmit}
+          onSelectPlayer={setSelectedPlayer}
+        />
       )}
     </div>
   )

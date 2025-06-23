@@ -14,6 +14,15 @@
   .font-title {
     font-family: 'Special Gothic Condensed One', sans-serif;
   }
+
+  .text-error {
+    @apply text-[#EA1F69];
+  }
+
+  .bg-error {
+    @apply bg-[#EA1F69]/20;
+    @apply border-[#EA1F69]
+  }
 }
 
 :root {

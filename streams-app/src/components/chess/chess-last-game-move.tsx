@@ -12,7 +12,6 @@ export const ChessLastGameMove: React.FC<{ game: Game }> = ({ game }) => {
       <div
         className={cn(
           'flex flex-row justify-between font-medium w-full p-4 bg-white/5 rounded-sm',
-
           !move && 'text-muted-foreground',
         )}
       >

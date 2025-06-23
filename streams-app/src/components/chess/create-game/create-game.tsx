@@ -19,8 +19,8 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated }) => {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const selectedPlayerColor = selectedPlayer === whitePlayer ? 'white' : 'black'
 
-  const handlePlayerSubmit = (player: Player) => {
-    if (player.name === whitePlayer.name) {
+  const handlePlayerSubmit = (player: Player, color: 'white' | 'black') => {
+    if (color === 'white') {
       setWhitePlayer(player)
     } else {
       setBlackPlayer(player)

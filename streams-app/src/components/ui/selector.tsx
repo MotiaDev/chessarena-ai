@@ -4,7 +4,7 @@ import { cn } from '../../lib/utils'
 type Props = PropsWithChildren<{
   isSelected: boolean
   className?: string
-  onClick: () => void
+  onClick?: () => void
 }>
 
 export const Selector: React.FC<Props> = ({ isSelected, className, children, onClick }) => {
@@ -15,6 +15,7 @@ export const Selector: React.FC<Props> = ({ isSelected, className, children, onC
         'flex flex-row gap-2 items-center justify-center rounded-md border-2 p-6 font-semibold text-md cursor-pointer',
         !isSelected && 'border-white/20',
         isSelected && 'border-white',
+        !onClick && 'cursor-default border-white/5',
         className,
       )}
     >

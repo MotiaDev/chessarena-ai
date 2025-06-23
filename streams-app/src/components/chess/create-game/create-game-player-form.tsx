@@ -9,7 +9,7 @@ import { CreateGameButton } from './create-game-button'
 type Props = {
   player: Player
   color: 'white' | 'black'
-  onSubmit: (player: Player) => void
+  onSubmit: (player: Player, color: 'white' | 'black') => void
 }
 
 export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit }) => {
@@ -41,12 +41,12 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit 
           <AiIcon ai="openai" />
           ChatGPT
         </Selector>
-        <Selector isSelected={ai === 'gemini'} className="w-full flex flex-col" onClick={() => setAi('gemini')}>
+        <Selector isSelected={ai === 'gemini'} className="w-full flex flex-col">
           <AiIcon ai="gemini" />
           Gemini
         </Selector>
       </div>
-      <CreateGameButton disabled={!name} onClick={() => onSubmit({ ...player, name, ai })}>
+      <CreateGameButton disabled={!name} onClick={() => onSubmit({ ...player, name, ai }, color)}>
         Save
       </CreateGameButton>
     </div>

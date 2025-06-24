@@ -6,7 +6,7 @@ type Args = {
   streams: FlowContextStateStreams
   gameId: string
   game: Game
-  action: { from: string; to: string }
+  action: { from: string; to: string; promote?: 'queen' | 'rook' | 'bishop' | 'knight' }
   player: 'white' | 'black'
   emit: Emitter<{
     topic: 'chess-game-moved'
@@ -22,7 +22,7 @@ export const move = async ({ streams, gameId, game, action, emit, player }: Args
     throw new Error('Invalid player')
   }
 
-  const move = chess.move({ from: action.from, to: action.to })
+  const move = chess.move({ from: action.from, to: action.to, promotion: action.promote?.charAt(0) })
   const status = chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
   const newGame = await streams.chessGame.set('game', gameId, {
     id: gameId,

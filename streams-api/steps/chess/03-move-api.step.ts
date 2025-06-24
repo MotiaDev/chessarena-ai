@@ -14,7 +14,7 @@ export const config: ApiRouteConfig = {
   flows: ['chess'],
   bodySchema: z.object({
     password: z.string({ description: 'The password for the game' }),
-    player: z.enum(['white', 'black'], { description: 'The player that made the move' }),
+    promote: z.enum(['queen', 'rook', 'bishop', 'knight']).optional(),
     from: z.string({ description: 'The square to move from' }),
     to: z.string({ description: 'The square to move to' }),
   }),
@@ -26,7 +26,7 @@ export const config: ApiRouteConfig = {
 }
 
 export const handler: Handlers['MovePiece'] = async (req, { logger, emit, streams, state }) => {
-  logger.info('[GetGame] Received getGame event')
+  logger.info('[MovePiece] Received move event', { body: req.body })
 
   const gameId = req.pathParams.id
   const game = await streams.chessGame.get('game', gameId)
@@ -51,7 +51,7 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
       gameId,
       game: game,
       player: game.turn,
-      action: { from: req.body.from, to: req.body.to },
+      action: { from: req.body.from, to: req.body.to, promote: req.body.promote },
       emit,
     })
 

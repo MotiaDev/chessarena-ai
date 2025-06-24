@@ -29,8 +29,8 @@ function AvatarFallback({
       data-slot="avatar-fallback"
       className={cn(
         'font-bold flex size-full items-center justify-center rounded-full',
-        color === 'white' && 'bg-white font-black',
-        color === 'black' && 'bg-black font-white',
+        color === 'white' && 'bg-white text-black',
+        color === 'black' && 'bg-black text-white',
         className,
       )}
       {...props}

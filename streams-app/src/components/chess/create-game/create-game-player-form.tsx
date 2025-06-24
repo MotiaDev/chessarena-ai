@@ -45,6 +45,10 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit 
           <AiIcon ai="gemini" />
           Gemini
         </Selector>
+        <Selector isSelected={ai === 'claude'} className="w-full flex flex-col" onClick={() => setAi('claude')}>
+          <AiIcon ai="claude" />
+          Claude
+        </Selector>
       </div>
       <CreateGameButton disabled={!name} onClick={() => onSubmit({ ...player, name, ai }, color)}>
         Save

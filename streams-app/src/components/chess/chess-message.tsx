@@ -12,9 +12,16 @@ type Props = {
 }
 
 const avatarImages = {
-  openai: '/openai.png',
-  gemini: '/gemini.png',
-  claude: '/claude.webp',
+  black: {
+    openai: '/avatars/openai-black.png',
+    gemini: '/avatars/gemini-black.png',
+    claude: '/avatars/claude.webp',
+  },
+  white: {
+    openai: '/avatars/openai-white.png',
+    gemini: '/avatars/gemini-white.png',
+    claude: '/avatars/claude.webp',
+  },
 }
 
 export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
@@ -31,7 +38,11 @@ export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
       <ChatBubbleAvatar
         color={message.role === 'white' ? 'white' : 'black'}
         fallback={message.sender.slice(0, 1).toUpperCase()}
-        src={avatarImages[message.sender as keyof typeof avatarImages] ?? undefined}
+        src={
+          avatarImages[message.role as keyof typeof avatarImages][
+            message.sender as keyof (typeof avatarImages)[keyof typeof avatarImages]
+          ] ?? undefined
+        }
       />
       <ChatBubbleMessage>
         <div className="flex flex-row text-md font-semibold mb-3 capitalize">

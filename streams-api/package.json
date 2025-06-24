@@ -1,6 +1,6 @@
 {
   "name": "streams-api",
-  "description": "",
+  "description": "Motia Powered Chess API",
   "scripts": {
     "postinstall": "motia install",
     "dev": "motia dev",

@@ -22,7 +22,8 @@ export type Game = {
   id: string
   fen: string
   turn: 'white' | 'black'
-  status: 'created' | 'pending' | 'completed'
+  winner?: 'white' | 'black'
+  status: 'created' | 'pending' | 'completed' | 'draw'
   lastMove: Key[]
   players: { white: Player; black: Player }
 }

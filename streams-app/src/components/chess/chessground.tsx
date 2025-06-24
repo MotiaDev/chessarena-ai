@@ -17,15 +17,11 @@ export const Chessground: React.FC<Props> = ({ config = {} }) => {
     const parent = rootRef.current?.parentElement
 
     if (parent) {
-      console.log({ parent })
-
       const handleResize = () => {
         const width = parent.clientWidth
         const height = parent.clientHeight
 
         setSize(width > height ? height : width)
-
-        console.log({ width, height })
       }
 
       window.addEventListener('resize', handleResize)

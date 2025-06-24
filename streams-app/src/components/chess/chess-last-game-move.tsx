@@ -6,16 +6,26 @@ import { ChessMove } from './chess-move'
 
 export const ChessLastGameMove: React.FC<{ game: Game }> = ({ game }) => {
   const move = game.lastMove
+  const isCompleted = game.status === 'completed'
+  const isDraw = game.status === 'draw'
 
   return (
     <div className="px-4 w-full border-b-2 border-white/5 pb-4 max-md:pt-4">
       <div
         className={cn(
-          'flex flex-row justify-between font-medium w-full p-4 bg-white/5 rounded-sm',
+          'flex flex-row justify-between font-medium w-full p-4 rounded-sm',
           !move && 'text-muted-foreground',
+          isCompleted || isDraw ? 'bg-green-500/20 text-green-100' : 'bg-white/5',
         )}
       >
-        {move ? (
+        {isDraw ? (
+          <div className="flex flex-row gap-2 items-center font-semibold text-lg">Draw</div>
+        ) : isCompleted ? (
+          <div className="flex flex-row gap-2 items-center font-semibold text-lg">
+            <ChessIcon size={24} color={game.turn === 'white' ? 'black' : 'white'} />
+            {game.winner === 'white' ? 'White wins' : 'Black wins'}
+          </div>
+        ) : move ? (
           <div className="flex flex-row gap-2 items-center">
             <ChessIcon size={24} color={game.turn === 'white' ? 'black' : 'white'} />
             {game.turn === 'white' ? 'Black move' : 'White move'}

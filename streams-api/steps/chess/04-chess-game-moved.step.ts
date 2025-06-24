@@ -6,7 +6,7 @@ export const config: EventConfig = {
   name: 'ChessGameMoved',
   description: 'Chess Game Moved',
   subscribes: ['chess-game-moved', 'chess-game-created'],
-  emits: ['openai-move'],
+  emits: ['ai-move'],
   flows: ['chess'],
   input: z.object({
     gameId: z.string({ description: 'The ID of the game' }),
@@ -31,9 +31,9 @@ export const handler: Handlers['ChessGameMoved'] = async (input, { logger, emit,
 
   const turnPlayer = game.turn === 'white' ? game.players.white : game.players.black
 
-  if (turnPlayer.ai === 'openai') {
+  if (turnPlayer.ai) {
     await emit({
-      topic: 'openai-move',
+      topic: 'ai-move',
       data: {
         fen: game.fen,
         fenBefore: input.fenBefore,

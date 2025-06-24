@@ -1,8 +1,8 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { move } from '../../services/chess/move'
-import { Game, gameSchema } from './streams/00-chess-game.stream'
 import { validateMoveAccess } from '../../services/chess/validate-move-access'
+import { gameSchema } from './streams/00-chess-game.stream'
 
 export const config: ApiRouteConfig = {
   type: 'api',

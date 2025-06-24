@@ -23,11 +23,13 @@ export const move = async ({ streams, gameId, game, action, emit, player }: Args
   }
 
   const move = chess.move({ from: action.from, to: action.to })
+  const status = chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
   const newGame = await streams.chessGame.set('game', gameId, {
     id: gameId,
     fen: move.after,
+    status,
+    winner: status === 'completed' ? (chess.isCheckmate() ? player : undefined) : undefined,
     turn: player === 'white' ? 'black' : 'white',
-    status: chess.isGameOver() ? 'completed' : 'pending',
     lastMove: [move.from, move.to],
     players: game.players,
     check: chess.inCheck(),

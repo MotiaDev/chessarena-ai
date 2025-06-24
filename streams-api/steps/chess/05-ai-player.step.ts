@@ -1,18 +1,17 @@
-import { EventConfig, Handlers } from 'motia'
-import OpenAI from 'openai'
-import { z } from 'zod'
-import path from 'path'
 import fs from 'fs'
+import { EventConfig, Handlers } from 'motia'
 import mustache from 'mustache'
-import zodToJsonSchema from 'zod-to-json-schema'
+import path from 'path'
+import { z } from 'zod'
+import { makePrompt } from '../../services/ai/make-prompt'
+import { getValidMoves } from '../../services/chess/get-valid-moves'
 import { move } from '../../services/chess/move'
-import { Game } from './streams/00-chess-game.stream'
 
 export const config: EventConfig = {
   type: 'event',
-  name: 'OpenAiPlayer',
-  description: 'OpenAI Player',
-  subscribes: ['openai-move'],
+  name: 'AI_Player',
+  description: 'AI Player',
+  subscribes: ['ai-move'],
   emits: ['chess-game-moved'],
   flows: ['chess'],
   input: z.object({
@@ -23,7 +22,7 @@ export const config: EventConfig = {
     check: z.boolean({ description: 'Whether the move is a check' }),
     gameId: z.string({ description: 'The ID of the game' }),
   }),
-  includeFiles: ['05-openai-player.mustache'],
+  includeFiles: ['05-ai-player.mustache'],
 }
 
 const responseSchema = z.object({
@@ -41,29 +40,36 @@ const responseSchema = z.object({
   ),
 })
 
-type Response = z.infer<typeof responseSchema>
+const template = fs.readFileSync(path.join(__dirname, '05-ai-player.mustache'), 'utf8')
 
-const template = fs.readFileSync(path.join(__dirname, '05-openai-player.mustache'), 'utf8')
-
-export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, streams }) => {
-  logger.info('[OpenAiPlayer] Received OpenAiPlayer event', { gameId: input.gameId })
+export const handler: Handlers['AI_Player'] = async (input, { logger, emit, streams }) => {
+  logger.info('Received ai-move event', { gameId: input.gameId })
 
   const game = await streams.chessGame.get('game', input.gameId)
-
   if (!game) {
-    logger.error('[OpenAiPlayer] Game not found', { gameId: input.gameId })
+    logger.error('Game not found', { gameId: input.gameId })
     return
   }
 
+  const player = input.player === 'white' ? game.players.white : game.players.black
+
+  if (!player.ai) {
+    logger.error('Player has no AI configured', { gameId: input.gameId })
+    return
+  }
+
+  const validMoves = getValidMoves(game)
   let lastInvalidMove = undefined
+
+  logger.info('Valid moves', { validMoves })
 
   while (true) {
     const messageId = crypto.randomUUID()
 
-    logger.info('[OpenAiPlayer] Creating message', { messageId, gameId: input.gameId })
+    logger.info('Creating message', { messageId, gameId: input.gameId })
     const message = await streams.chessGameMessage.set(input.gameId, messageId, {
       message: 'Thinking...',
-      sender: 'OpenAI',
+      sender: player.ai,
       role: input.player,
       timestamp: Date.now(),
     })
@@ -77,26 +83,16 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
         inCheck: input.check,
         player: input.player,
         lastInvalidMove,
+        validMoves,
       },
       {},
       { escape: (value: string) => value },
     )
 
-    logger.info('[OpenAiPlayer] Prompt', { prompt })
+    logger.info('Prompt', { prompt })
+    const action = await makePrompt(prompt, responseSchema, player.ai, logger)
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
-      response_format: {
-        type: 'json_schema',
-        json_schema: { name: 'chess_move', schema: zodToJsonSchema(responseSchema) },
-      },
-    })
-
-    const action = JSON.parse(completion.choices[0].message.content ?? '{}') as Response
-
-    logger.info('[OpenAiPlayer] Updating message', { messageId, gameId: input.gameId })
+    logger.info('Updating message', { messageId, gameId: input.gameId })
     await streams.chessGameMessage.set(input.gameId, messageId, {
       ...message,
       message: action.thought,
@@ -104,6 +100,8 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
     })
 
     try {
+      logger.info('AI response', { action })
+
       await move({
         streams,
         gameId: input.gameId,
@@ -112,7 +110,6 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
         action: action.move,
         emit,
       })
-      logger.info('[OpenAiPlayer] OpenAI response', { action })
 
       return
     } catch (err) {
@@ -123,7 +120,7 @@ export const handler: Handlers['OpenAiPlayer'] = async (input, { logger, emit, s
         move: action.move,
       })
 
-      logger.error('[OpenAiPlayer] Invalid move', { move: action.move })
+      logger.error('Invalid move', { move: action.move })
       lastInvalidMove = action.move
     }
   }

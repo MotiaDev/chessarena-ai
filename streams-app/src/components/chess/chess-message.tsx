@@ -12,9 +12,9 @@ type Props = {
 }
 
 const avatarImages = {
-  OpenAI: '/openai.png',
-  Gemini: '/gemini.jpeg',
-  Claude: '/claude.webp',
+  openai: '/openai.png',
+  gemini: '/gemini.png',
+  claude: '/claude.webp',
 }
 
 export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
@@ -34,7 +34,7 @@ export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
         src={avatarImages[message.sender as keyof typeof avatarImages] ?? undefined}
       />
       <ChatBubbleMessage>
-        <div className="flex flex-row text-md font-semibold mb-3">
+        <div className="flex flex-row text-md font-semibold mb-3 capitalize">
           {message.sender}
           {message.role === 'spectator' && <span className="text-muted-foreground"> (Spectator)</span>}
         </div>

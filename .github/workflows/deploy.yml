@@ -8,8 +8,6 @@ on:
       - 'streams-api/**'
 
 env:
-  # Application environment variables
-  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
   # Motia Deploy
   MOTIA_API_KEY: ${{ secrets.MOTIA_API_KEY }}
   MOTIA_PROJECT_ID: 572dca96-a142-4f08-b531-c8fff67eb05b
@@ -37,9 +35,9 @@ jobs:
       - name: Create Env file
         working-directory: streams-api
         run: |
-          echo "OPENAI_API_KEY=${{ env.OPENAI_API_KEY }}" > .env
-          echo "GEMINI_API_KEY=${{ env.GEMINI_API_KEY }}" > .env
-          echo "ANTHROPIC_API_KEY=${{ env.ANTHROPIC_API_KEY }}" > .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env
 
       - name: Deploy using Motia Cloud
         working-directory: streams-api

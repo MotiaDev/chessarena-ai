@@ -1,9 +1,9 @@
-import type { Player } from '../../lib/types'
+import type { Player } from '@/lib/types'
 
 const avatarImages: Record<NonNullable<Player['ai']>, string> = {
   openai: '/openai.png',
   gemini: '/gemini.png',
-  claude: '/claude.webp',
+  claude: '/claude.png',
 }
 
 const OpenAI = () => {

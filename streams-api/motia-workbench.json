@@ -16,7 +16,7 @@
       },
       "steps/chess/03-move-api.step.ts": {
         "x": 804,
-        "y": 45
+        "y": 30
       },
       "steps/chess/02-get-game.step.ts": {
         "x": 237,

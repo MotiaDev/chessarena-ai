@@ -47,6 +47,7 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
 
   try {
     await move({
+      logger,
       streams,
       gameId,
       game: game,

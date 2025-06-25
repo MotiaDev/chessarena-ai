@@ -19,7 +19,7 @@ export const openai: Handler = async <T extends ZodRawShape>(
     },
   })
 
-  logger.info('OpenAI response', { completion })
+  logger.info('OpenAI response received')
 
   const content = JSON.parse(completion.choices[0].message.content ?? '{}')
 

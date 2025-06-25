@@ -145,9 +145,11 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
             <div className="px-4 flex flex-col flex-1 w-full overflow-y-auto">
               <ChessSidechat gameId={gameId} />
             </div>
-            <div className="pb-4 px-4 w-full">
-              <ChessChatInput game={gameWithRole} />
-            </div>
+            {isSpectator && (
+              <div className="pb-4 px-4 w-full">
+                <ChessChatInput game={gameWithRole} />
+              </div>
+            )}
           </Panel>
         ) : (
           <Card

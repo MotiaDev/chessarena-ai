@@ -11,7 +11,7 @@ export const getUserName = ({ game, role }: Args): string => {
   if (role === 'root') {
     return 'Root'
   } else if (role === 'spectator') {
-    return uniqueNamesGenerator({ dictionaries: [adjectives, animals], separator: ' ' }).toLocaleUpperCase()
+    return uniqueNamesGenerator({ dictionaries: [adjectives, animals], separator: ' ' })
   }
 
   return role === 'white' ? game.players.white.name : game.players.black.name

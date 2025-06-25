@@ -24,10 +24,12 @@ export const Chessground: React.FC<Props> = ({ config = {} }) => {
         setSize(width > height ? height : width)
       }
 
-      window.addEventListener('resize', handleResize)
+      const resizeObserver = new ResizeObserver(handleResize)
+
+      resizeObserver.observe(parent)
       handleResize()
 
-      return () => window.removeEventListener('resize', handleResize)
+      return () => resizeObserver.disconnect()
     }
   }, [])
 

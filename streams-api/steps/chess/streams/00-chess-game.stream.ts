@@ -5,7 +5,7 @@ export const gameSchema = z.object({
   id: z.string({ description: 'The ID of the game' }),
   fen: z.string({ description: 'The FEN of the game' }),
   turn: z.enum(['white', 'black'], { description: 'The color of the current turn' }),
-  status: z.enum(['created', 'pending', 'completed', 'draw'], { description: 'The status of the game' }),
+  status: z.enum(['pending', 'completed', 'draw'], { description: 'The status of the game' }),
   lastMove: z.array(z.string({ description: 'The last move made' })).optional(),
   winner: z.enum(['white', 'black']).optional(),
   players: z.object({

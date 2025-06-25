@@ -10,9 +10,10 @@ type Props = {
   player: Player
   color: 'white' | 'black'
   onSubmit: (player: Player, color: 'white' | 'black') => void
+  isAiEnabled: boolean
 }
 
-export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit }) => {
+export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit, isAiEnabled }) => {
   const [ai, setAi] = useState<Player['ai']>(player.ai)
   const [name, setName] = useState(player.name)
 
@@ -31,25 +32,30 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit 
       <Selector isSelected={!ai} className="w-full" onClick={() => setAi(undefined)}>
         Play as {color}
       </Selector>
-      <div className="flex flex-row gap-2 items-center justify-center w-full text-muted-foreground text-md font-semibold">
-        <div className="h-[1px] flex-1 bg-white/10" />
-        Or set as
-        <div className="h-[1px] flex-1 bg-white/10" />
-      </div>
-      <div className="flex flex-row gap-2 items-center justify-center w-full">
-        <Selector isSelected={ai === 'openai'} className="w-full flex flex-col" onClick={() => setAi('openai')}>
-          <AiIcon ai="openai" />
-          ChatGPT
-        </Selector>
-        <Selector isSelected={ai === 'gemini'} className="w-full flex flex-col" onClick={() => setAi('gemini')}>
-          <AiIcon ai="gemini" />
-          Gemini
-        </Selector>
-        <Selector isSelected={ai === 'claude'} className="w-full flex flex-col" onClick={() => setAi('claude')}>
-          <AiIcon ai="claude" />
-          Claude
-        </Selector>
-      </div>
+      {isAiEnabled && (
+        <>
+          <div className="flex flex-row gap-2 items-center justify-center w-full text-muted-foreground text-md font-semibold">
+            <div className="h-[1px] flex-1 bg-white/10" />
+            Or set as
+            <div className="h-[1px] flex-1 bg-white/10" />
+          </div>
+          <div className="flex flex-row gap-2 items-center justify-center w-full">
+            <Selector isSelected={ai === 'openai'} className="w-full flex flex-col" onClick={() => setAi('openai')}>
+              <AiIcon ai="openai" />
+              ChatGPT
+            </Selector>
+            <Selector isSelected={ai === 'gemini'} className="w-full flex flex-col" onClick={() => setAi('gemini')}>
+              <AiIcon ai="gemini" />
+              Gemini
+            </Selector>
+            <Selector isSelected={ai === 'claude'} className="w-full flex flex-col" onClick={() => setAi('claude')}>
+              <AiIcon ai="claude" />
+              Claude
+            </Selector>
+          </div>
+        </>
+      )}
+
       <CreateGameButton disabled={!name} onClick={() => onSubmit({ ...player, name, ai }, color)}>
         Save
       </CreateGameButton>

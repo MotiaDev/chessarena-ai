@@ -2,7 +2,7 @@ import type { Message } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import type { Key } from 'chessground/types'
 import { OctagonX } from 'lucide-react'
-import React, { useEffect, useRef } from 'react'
+import React, { memo, useEffect, useRef } from 'react'
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../ui/chat/chat-bubble'
 import { ChessMove } from './chess-move'
 
@@ -24,7 +24,7 @@ const avatarImages = {
   },
 }
 
-export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
+export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -33,20 +33,23 @@ export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
     }
   }, [isLast, message.message])
 
+  const image =
+    message.role === 'spectator'
+      ? '/avatars/spectator-blue.png'
+      : avatarImages[message.role as keyof typeof avatarImages]?.[
+          message.sender as keyof (typeof avatarImages)[keyof typeof avatarImages]
+        ]
+
   return (
     <ChatBubble variant={message.role === 'white' ? 'sent' : 'received'} ref={ref}>
       <ChatBubbleAvatar
         color={message.role === 'white' ? 'white' : 'black'}
         fallback={message.sender.slice(0, 1).toUpperCase()}
-        src={
-          avatarImages[message.role as keyof typeof avatarImages][
-            message.sender as keyof (typeof avatarImages)[keyof typeof avatarImages]
-          ] ?? undefined
-        }
+        src={image}
       />
       <ChatBubbleMessage>
         <div className="flex flex-row text-md font-semibold mb-3 capitalize">
-          {message.sender}
+          <div className="capitalize">{message.sender}</div>
           {message.role === 'spectator' && <span className="text-muted-foreground"> (Spectator)</span>}
         </div>
         <p className="text-md font-medium whitespace-pre-wrap">{message.message}</p>
@@ -71,4 +74,4 @@ export const ChessMessage: React.FC<Props> = ({ message, isLast }) => {
       </ChatBubbleMessage>
     </ChatBubble>
   )
-}
+})

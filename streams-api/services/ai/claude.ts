@@ -22,6 +22,8 @@ export const claude: Handler = async <T extends ZodRawShape>(
     tool_choice: { name: 'move_action', type: 'tool' },
   })
 
+  logger.info('Claude response received')
+
   const toolUse = response.content.find((c) => c.type === 'tool_use')
 
   return zod.parse(toolUse?.input)

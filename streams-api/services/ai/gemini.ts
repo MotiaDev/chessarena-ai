@@ -20,6 +20,8 @@ export const gemini: Handler = async <T extends ZodRawShape>(
     },
   })
 
+  logger.info('Gemini response received')
+
   const content = JSON.parse(completion.candidates?.[0]?.content?.parts?.[0]?.text ?? '{}')
 
   return zod.parse(content)

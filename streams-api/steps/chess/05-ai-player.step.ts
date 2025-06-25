@@ -103,6 +103,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       logger.info('AI response', { action })
 
       await move({
+        logger,
         streams,
         gameId: input.gameId,
         player: input.player,
@@ -110,6 +111,8 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
         action: action.move,
         emit,
       })
+
+      logger.info('Move successful', { action })
 
       return
     } catch (err) {

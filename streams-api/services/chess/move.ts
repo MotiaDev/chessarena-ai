@@ -1,8 +1,9 @@
 import { Chess } from 'chess.js'
-import { Emitter, FlowContextStateStreams } from 'motia'
+import { Emitter, FlowContextStateStreams, Logger } from 'motia'
 import type { Game } from '../../steps/chess/streams/00-chess-game.stream'
 
 type Args = {
+  logger: Logger
   streams: FlowContextStateStreams
   gameId: string
   game: Game
@@ -14,11 +15,12 @@ type Args = {
   }>
 }
 
-export const move = async ({ streams, gameId, game, action, emit, player }: Args): Promise<Game> => {
+export const move = async ({ logger, streams, gameId, game, action, emit, player }: Args): Promise<Game> => {
   const chess = new Chess(game.fen)
   const color = chess.turn() === 'b' ? 'black' : 'white'
 
   if (player !== color) {
+    logger.error('Invalid player', { player, color })
     throw new Error('Invalid player')
   }
 

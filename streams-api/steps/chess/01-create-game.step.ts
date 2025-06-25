@@ -3,12 +3,12 @@ import { z } from 'zod'
 import { gameSchema } from './streams/00-chess-game.stream'
 import { createGameId } from '../../services/chess/create-game-id'
 import { createPasswords } from '../../services/chess/create-passwords'
+import { createGame } from '../../services/chess/create-game'
 
 const bodySchema = z.object({
   players: z.object({
     white: z.object({
       name: z.string({ description: 'The name of the player' }),
-      ai: z.enum(['openai', 'gemini', 'claude']).optional(),
     }),
     black: z.object({
       name: z.string({ description: 'The name of the player' }),
@@ -42,22 +42,14 @@ export const handler: Handlers['CreateGame'] = async (req, { logger, emit, state
     return { status: 400, body: { message: 'Invalid request body', errors: validationResult.error.errors } }
   }
 
-  const gameId = await createGameId({ streams, logger })
-  const game = await streams.chessGame.set('game', gameId, {
-    id: gameId,
-    fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-    turn: 'white',
-    status: 'created',
-    players: req.body.players,
-    check: false,
-  })
+  const game = await createGame(req.body.players, streams, logger)
+  const passwords = await createPasswords(state, game.id)
 
-  const passwords = await createPasswords(state, gameId)
-  logger.info('[CreateGame] Game created', { gameId })
+  logger.info('[CreateGame] Game created', { gameId: game.id })
 
   await emit({
     topic: 'chess-game-created',
-    data: { gameId, fenBefore: game.fen },
+    data: { gameId: game.id, fenBefore: game.fen },
   })
 
   return {

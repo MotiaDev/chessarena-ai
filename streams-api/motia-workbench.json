@@ -3,28 +3,32 @@
     "id": "chess",
     "config": {
       "steps/chess/06-send-message.step.ts": {
-        "x": 124,
-        "y": -5
+        "x": 134,
+        "y": -128
       },
-      "steps/chess/05-openai-player.step.ts": {
-        "x": 813,
-        "y": 283
+      "steps/chess/05-ai-player.step.ts": {
+        "x": 821,
+        "y": 368
       },
       "steps/chess/04-chess-game-moved.step.ts": {
-        "x": 490,
-        "y": 285
+        "x": 489,
+        "y": 368
       },
       "steps/chess/03-move-api.step.ts": {
-        "x": 790,
-        "y": -10
+        "x": 804,
+        "y": 45
       },
       "steps/chess/02-get-game.step.ts": {
-        "x": 186,
-        "y": 259
+        "x": 237,
+        "y": 355
+      },
+      "steps/chess/01-get-live-ai-game.step.ts": {
+        "x": 155,
+        "y": 89
       },
       "steps/chess/01-create-game.step.ts": {
-        "x": 481,
-        "y": -4
+        "x": 479,
+        "y": 45
       }
     }
   }

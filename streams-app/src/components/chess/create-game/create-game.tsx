@@ -8,9 +8,10 @@ import { CreateGamePlayers } from './create-game-players'
 
 type Props = {
   onGameCreated: (gameId: string, password: string) => void
+  onCancel: () => void
 }
 
-export const CreateGame: React.FC<Props> = ({ onGameCreated }) => {
+export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
   const createGame = useCreateGame()
   const [whitePlayer, setWhitePlayer] = useState<Player>({ name: 'White' })
   const [blackPlayer, setBlackPlayer] = useState<Player>({ name: 'Black' })
@@ -47,16 +48,27 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated }) => {
     }
   }
 
+  const onBack = () => {
+    if (selectedPlayer) {
+      setSelectedPlayer(null)
+    } else {
+      onCancel()
+    }
+  }
+
   return (
     <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full h-full">
       <div className="relative w-full">
-        {selectedPlayer && (
-          <ArrowLeft className="absolute left-0 top-1 size-6 cursor-pointer" onClick={() => setSelectedPlayer(null)} />
-        )}
+        <ArrowLeft className="absolute left-0 top-1 size-6 cursor-pointer" onClick={onBack} />
         <MotiaPowered size="sm" />
       </div>
       {selectedPlayer ? (
-        <CreateGamePlayerForm player={selectedPlayer} color={selectedPlayerColor} onSubmit={handlePlayerSubmit} />
+        <CreateGamePlayerForm
+          player={selectedPlayer}
+          color={selectedPlayerColor}
+          onSubmit={handlePlayerSubmit}
+          isAiEnabled={selectedPlayerColor === 'black'}
+        />
       ) : (
         <CreateGamePlayers
           whitePlayer={whitePlayer}

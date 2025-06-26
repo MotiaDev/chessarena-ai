@@ -1,22 +1,23 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import type { GameWithRole } from '@/lib/types'
+import type { Game, GameWithRole } from '@/lib/types'
 import { Share } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { CreateGameButton, CreateGameButtonAlt } from './create-game/create-game-button'
 
 type Props = {
-  game: GameWithRole
+  game: Game | GameWithRole
 }
 
 export const ChessShare: React.FC<Props> = ({ game }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const passwords = 'passwords' in game ? game.passwords : undefined
 
   const onClick = (color?: 'white' | 'black') => {
     setIsOpen(false)
 
-    const password = color ? game.passwords?.[color] : undefined
+    const password = color ? passwords?.[color] : undefined
 
     if (password) {
       navigator.clipboard.writeText(window.location.host + `?pw=${password}&game=${game.id}`)
@@ -42,12 +43,12 @@ export const ChessShare: React.FC<Props> = ({ game }) => {
           <DialogTitle className="text-md font-semibold text-center">Share match</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-2 w-full">
-          {game.passwords?.white && (
+          {passwords?.white && (
             <CreateGameButton className="flex-1" onClick={() => onClick('white')}>
               Invite to play as white
             </CreateGameButton>
           )}
-          {game.passwords?.black && (
+          {passwords?.black && (
             <CreateGameButton className="flex-1" onClick={() => onClick('black')}>
               Invite to play as black
             </CreateGameButton>

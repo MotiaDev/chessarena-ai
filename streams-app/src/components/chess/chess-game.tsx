@@ -32,7 +32,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
     id: gameId,
   })
 
-  if (!game || !gameWithRole) {
+  if (!game) {
     return (
       <div className="w-screen h-screen flex items-center justify-center">
         <Loader2 className="size-10 animate-spin" />
@@ -40,7 +40,8 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
     )
   }
 
-  const isSpectator = gameWithRole.role === 'spectator'
+  const role = gameWithRole?.role ?? 'spectator'
+  const isSpectator = role === 'spectator'
 
   return (
     <div className="flex flex-col items-center mx-auto w-screen h-screen justify-between">
@@ -51,7 +52,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           </Button>
           <MotiaPowered size="sm" />
           <div className="flex flex-row gap-2 items-center justify-end">
-            <ChessShare game={gameWithRole} />
+            <ChessShare game={gameWithRole ?? game} />
           </div>
         </header>
 
@@ -69,7 +70,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
 
               <MotiaPowered size="sm" />
 
-              <ChessShare game={gameWithRole} />
+              <ChessShare game={gameWithRole ?? game} />
             </header>
 
             <div className="px-4 w-full border-b-2 border-white/5 pb-4 max-md:pt-4">
@@ -79,7 +80,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
             <div className={cn('px-4 flex flex-col flex-1 w-full overflow-y-auto', isSpectator && 'pb-4')}>
               <ChessMessages gameId={gameId} />
             </div>
-            {!isSpectator && (
+            {!isSpectator && gameWithRole && (
               <div className="pb-4 px-4 w-full">
                 <ChessChatInput game={gameWithRole} />
               </div>
@@ -91,7 +92,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           <div
             className={cn('w-full h-full flex items-center justify-center', isSidechatOpen && 'md:w-[calc(100%-20px)]')}
           >
-            <ChessBoard game={game} password={password} role={gameWithRole.role} />
+            <ChessBoard game={game} password={password} role={role} />
           </div>
         </div>
 
@@ -119,7 +120,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
             >
               {isSidechatOpen ? <ChessSidechat gameId={gameId} /> : <ChessMessages gameId={gameId} />}
             </Panel>
-            {(isSidechatOpen || !isSpectator) && (
+            {(isSidechatOpen || !isSpectator) && gameWithRole && (
               <Panel className="p-4 w-full">
                 <ChessChatInput game={gameWithRole} />
               </Panel>
@@ -149,7 +150,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
             <div className="px-4 flex flex-col flex-1 w-full overflow-y-auto">
               <ChessSidechat gameId={gameId} />
             </div>
-            {isSpectator && (
+            {isSpectator && gameWithRole && (
               <div className="pb-4 px-4 w-full">
                 <ChessChatInput game={gameWithRole} />
               </div>

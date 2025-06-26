@@ -20,9 +20,9 @@ export const ChessShare: React.FC<Props> = ({ game }) => {
     const password = color ? passwords?.[color] : undefined
 
     if (password) {
-      navigator.clipboard.writeText(window.location.host + `?pw=${password}&game=${game.id}`)
+      navigator.clipboard.writeText(window.location.href + `?pw=${password}`)
     } else {
-      navigator.clipboard.writeText(window.location.host + `?game=${game.id}`)
+      navigator.clipboard.writeText(window.location.href)
     }
 
     toast('Link copied to clipboard', {

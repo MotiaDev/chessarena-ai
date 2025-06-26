@@ -7,7 +7,7 @@ import { useDeviceWidth } from '@/lib/use-device-width'
 import { useGetGame } from '@/lib/use-get-game'
 import { cn } from '@/lib/utils'
 import { useStreamItem } from '@motiadev/stream-client-react'
-import { ArrowLeft, ChevronRight, MessagesSquare } from 'lucide-react'
+import { ArrowLeft, ChevronRight, Loader2, MessagesSquare } from 'lucide-react'
 import { useState } from 'react'
 import { ChessBoard } from './chess-board'
 import { ChessChatInput } from './chess-chat-input'
@@ -33,7 +33,11 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
   })
 
   if (!game || !gameWithRole) {
-    return null
+    return (
+      <div className="w-screen h-screen flex items-center justify-center">
+        <Loader2 className="size-10 animate-spin" />
+      </div>
+    )
   }
 
   const isSpectator = gameWithRole.role === 'spectator'

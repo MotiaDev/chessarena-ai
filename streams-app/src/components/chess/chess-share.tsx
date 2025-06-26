@@ -52,7 +52,9 @@ export const ChessShare: React.FC<Props> = ({ game }) => {
               Invite to play as black
             </CreateGameButton>
           )}
-          <CreateGameButtonAlt onClick={() => onClick()}>Invite to watch</CreateGameButtonAlt>
+          <CreateGameButtonAlt className="w-full" onClick={() => onClick()}>
+            Invite to watch
+          </CreateGameButtonAlt>
         </div>
       </DialogContent>
     </Dialog>

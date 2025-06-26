@@ -11,7 +11,7 @@ export const openai: Handler = async <T extends ZodRawShape>(
 ): Promise<z.infer<typeof zod>> => {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'o4-mini-2025-04-16',
     messages: [{ role: 'user', content: prompt }],
     response_format: {
       type: 'json_schema',

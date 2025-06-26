@@ -7,7 +7,7 @@
         "y": -128
       },
       "steps/chess/05-ai-player.step.ts": {
-        "x": 821,
+        "x": 826,
         "y": 368
       },
       "steps/chess/04-chess-game-moved.step.ts": {
@@ -15,8 +15,8 @@
         "y": 368
       },
       "steps/chess/03-move-api.step.ts": {
-        "x": 804,
-        "y": 30
+        "x": 921,
+        "y": 59
       },
       "steps/chess/02-get-game.step.ts": {
         "x": 237,
@@ -29,6 +29,10 @@
       "steps/chess/01-create-game.step.ts": {
         "x": 479,
         "y": 45
+      },
+      "steps/chess/07-game-ended.step.ts": {
+        "x": 1025,
+        "y": 523
       }
     }
   }

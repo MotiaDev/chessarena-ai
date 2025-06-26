@@ -4,6 +4,7 @@ import zodToJsonSchema from 'zod-to-json-schema'
 import { Handler } from './types'
 import { Logger } from 'motia'
 import { Tool } from '@anthropic-ai/sdk/resources/messages'
+import { models } from './models'
 
 export const claude: Handler = async <T extends ZodRawShape>(
   prompt: string,
@@ -15,7 +16,7 @@ export const claude: Handler = async <T extends ZodRawShape>(
   })
 
   const response = await client.messages.create({
-    model: 'claude-3-5-sonnet-latest',
+    model: models.claude,
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 1000,
     tools: [{ name: 'move_action', input_schema: zodToJsonSchema(zod) as Tool.InputSchema }],

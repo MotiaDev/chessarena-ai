@@ -9,10 +9,13 @@ type Args = {
   game: Game
   action: { from: string; to: string; promote?: 'queen' | 'rook' | 'bishop' | 'knight' }
   player: 'white' | 'black'
-  emit: Emitter<{
-    topic: 'chess-game-moved'
-    data: { gameId: string; player: string; move: { from: string; to: string }; fenBefore: string }
-  }>
+  emit: Emitter<
+    | {
+        topic: 'chess-game-moved'
+        data: { gameId: string; player: string; move: { from: string; to: string }; fenBefore: string }
+      }
+    | { topic: 'chess-game-ended'; data: { gameId: string; player: string } }
+  >
 }
 
 export const move = async ({ logger, streams, gameId, game, action, emit, player }: Args): Promise<Game> => {
@@ -37,15 +40,25 @@ export const move = async ({ logger, streams, gameId, game, action, emit, player
     check: chess.inCheck(),
   })
 
-  await emit({
-    topic: 'chess-game-moved',
-    data: {
-      gameId,
-      player,
-      fenBefore: game.fen,
-      move: { from: action.from, to: action.to },
-    },
-  })
+  if (status === 'pending') {
+    await emit({
+      topic: 'chess-game-moved',
+      data: {
+        gameId,
+        player,
+        fenBefore: game.fen,
+        move: { from: action.from, to: action.to },
+      },
+    })
+  } else {
+    await emit({
+      topic: 'chess-game-ended',
+      data: {
+        gameId,
+        player,
+      },
+    })
+  }
 
   return newGame
 }

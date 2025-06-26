@@ -10,7 +10,7 @@ export const config: ApiRouteConfig = {
   description: 'Move a piece',
   path: '/chess/game/:id/move',
   method: 'POST',
-  emits: ['chess-game-moved'],
+  emits: ['chess-game-moved', 'chess-game-ended'],
   flows: ['chess'],
   bodySchema: z.object({
     password: z.string({ description: 'The password for the game' }),

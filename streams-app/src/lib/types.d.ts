@@ -35,3 +35,10 @@ export type GameWithRole = Game & {
   username: string
   passwords?: Password
 }
+
+export type Leaderboard = {
+  provider: 'openai' | 'gemini' | 'claude'
+  model: string
+  gamesPlayed: number
+  wins: number
+}

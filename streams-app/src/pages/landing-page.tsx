@@ -1,6 +1,6 @@
+import { Trophy } from 'lucide-react'
 import { useNavigate } from 'react-router'
-import { CreateGameButton } from '../components/chess/create-game/create-game-button'
-import { LiveAiGame } from '../components/chess/create-game/live-ai-game'
+import { CreateGameButton, CreateGameButtonAlt } from '../components/chess/create-game/create-game-button'
 import { MotiaPowered } from '../components/motia-powered'
 import { Page } from '../components/page'
 
@@ -21,12 +21,14 @@ export const LandingPage = () => {
 
         <div className="flex flex-col gap-6 items-center justify-center w-full">
           <CreateGameButton onClick={() => navigate('/new')}>Create Game</CreateGameButton>
-          <div className="flex flex-row gap-2 items-center justify-center w-full text-muted-foreground text-md font-semibold">
-            <div className="h-[1px] flex-1 bg-white/10" />
-            Or watch a live AI game
-            <div className="h-[1px] flex-1 bg-white/10" />
+          <div className="flex flex-row gap-2 items-center justify-center w-full">
+            <CreateGameButtonAlt className="w-full flex-1" onClick={() => navigate('/live-matches')}>
+              View live match
+            </CreateGameButtonAlt>
+            <CreateGameButtonAlt onClick={() => navigate('/leaderboard')}>
+              <Trophy />
+            </CreateGameButtonAlt>
           </div>
-          <LiveAiGame />
         </div>
       </div>
     </Page>

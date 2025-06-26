@@ -20,6 +20,7 @@ export const config: ApiRouteConfig = {
   responseSchema: {
     200: gameSchema,
     400: z.object({ message: z.string(), errors: z.array(z.object({ message: z.string() })).optional() }),
+    404: z.object({ message: z.string() }),
   },
 }
 
@@ -44,7 +45,7 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
 
   if (white === black) {
     logger.error('[GetLiveAiGame] AI agents cannot play against themselves')
-    return { status: 400, body: { message: 'AI agents cannot play against themselves' } }
+    return { status: 404, body: { message: 'AI agents cannot play against themselves' } }
   }
 
   const id = `${white}-vs-${black}`

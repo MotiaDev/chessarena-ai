@@ -1,6 +1,6 @@
+import { CreateGame } from '@/components/chess/create-game/create-game'
+import { Page } from '@/components/page'
 import { useNavigate } from 'react-router'
-import { CreateGame } from '../components/chess/create-game/create-game'
-import { Page } from '../components/page'
 
 export const CreateGamePage = () => {
   const navigate = useNavigate()

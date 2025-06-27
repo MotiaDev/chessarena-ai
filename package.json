@@ -1,9 +1,13 @@
 {
-  "name": "motia-streams-example",
-  "description": "",
+  "name": "chessarena-ai",
+  "description": "ChessArena.AI is a real-time chess game built with Motia Streams",
+  "author": "Motia",
+  "license": "GPL-3.0-or-later",
+  "version": "1.0.0",
   "scripts": {
-    "api": "pnpm --filter streams-api dev",
-    "app": "pnpm --filter streams-app dev"
+    "api": "pnpm --filter chessarena-ai-api dev",
+    "app": "pnpm --filter chessarena-ai-app dev",
+    "dev": "pnpm --filter chessarena-ai-app dev & pnpm --filter chessarena-ai-api dev"
   },
   "keywords": [
     "motia"

@@ -1,3 +1,3 @@
 packages:
-  - 'streams-api'
-  - 'streams-app'
+  - 'api'
+  - 'app'

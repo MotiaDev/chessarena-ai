@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'streams-api/**'
+      - 'api/**'
 
 env:
   # Motia Deploy
@@ -33,14 +33,14 @@ jobs:
         run: pnpm install
 
       - name: Create Env file
-        working-directory: streams-api
+        working-directory: api
         run: |
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
           echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env
 
       - name: Deploy using Motia Cloud
-        working-directory: streams-api
+        working-directory: api
         run: |
           npx motia cloud deploy \
             --api-key ${{ env.MOTIA_API_KEY }} \

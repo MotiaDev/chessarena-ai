@@ -10,13 +10,14 @@ declare module 'motia' {
   interface FlowContextStateStreams {
     'chessSidechatMessage': MotiaStream<{ message: string; sender: string; role: 'white' | 'black' | 'spectator' | 'root'; timestamp: number }>
     'chessLiveAiGames': MotiaStream<{ id: string; gameId: string; players: { white: string; black: string } }>
+    'chessLeaderboard': MotiaStream<{ provider: 'openai' | 'gemini' | 'claude'; model: string; gamesPlayed: number; wins: number }>
     'chessGame': MotiaStream<{ id: string; fen: string; turn: 'white' | 'black'; status: 'pending' | 'completed' | 'draw'; lastMove?: string[]; winner?: 'white' | 'black'; players: { white: { name: string; ai?: 'openai' | 'gemini' | 'claude' }; black: { name: string; ai?: 'openai' | 'gemini' | 'claude' } }; check: boolean }>
     'chessGameMove': MotiaStream<{ color: 'white' | 'black'; fenBefore: string; fenAfter: string; lastMove: string[]; check: boolean }>
     'chessGameMessage': MotiaStream<{ message: string; sender: string; role: 'white' | 'black' | 'spectator' | 'root'; timestamp: number; move?: { from: string; to: string; promotion?: 'q' | 'r' | 'b' | 'n' }; isIllegalMove?: boolean }>
-    'chessLeaderboard': MotiaStream<{ provider: 'openai' | 'gemini' | 'claude'; model: string; gamesPlayed: number; wins: number }>
   }
 
   type Handlers = {
+    'GameEnded': EventHandler<{ gameId: string }, never>
     'SendMessage': ApiRouteHandler<{ message: string; name: string; role: 'white' | 'black' | 'spectator' | 'root' }, ApiResponse<200, { message: string; sender: string; timestamp: number }> | ApiResponse<404, { message: string }>, never>
     'AI_Player': EventHandler<{ player: 'white' | 'black'; fenBefore: string; fen: string; lastMove?: string[]; check: boolean; gameId: string }, { topic: 'chess-game-moved'; data: { gameId: string; fenBefore: string } } | { topic: 'chess-game-ended'; data: { gameId: string } }>
     'ChessGameMoved': EventHandler<{ gameId: string; fenBefore: string }, { topic: 'ai-move'; data: { player: 'white' | 'black'; fenBefore: string; fen: string; lastMove?: string[]; check: boolean; gameId: string } }>
@@ -24,6 +25,5 @@ declare module 'motia' {
     'GetGame': ApiRouteHandler<{}, ApiResponse<200, { id: string; fen: string; turn: 'white' | 'black'; status: 'pending' | 'completed' | 'draw'; lastMove?: string[]; winner?: 'white' | 'black'; players: { white: { name: string; ai?: 'openai' | 'gemini' | 'claude' }; black: { name: string; ai?: 'openai' | 'gemini' | 'claude' } }; check: boolean; role: 'white' | 'black' | 'spectator' | 'root'; username: string; passwords?: { root: string; white: string; black: string } }> | ApiResponse<404, { message: string }>, never>
     'GetLiveAiGame': ApiRouteHandler<{ players: 'openai' | 'gemini' | 'claude'[] }, ApiResponse<200, { id: string; fen: string; turn: 'white' | 'black'; status: 'pending' | 'completed' | 'draw'; lastMove?: string[]; winner?: 'white' | 'black'; players: { white: { name: string; ai?: 'openai' | 'gemini' | 'claude' }; black: { name: string; ai?: 'openai' | 'gemini' | 'claude' } }; check: boolean }> | ApiResponse<400, { message: string; errors?: { message: string }[] }> | ApiResponse<404, { message: string }>, { topic: 'chess-game-created'; data: { gameId: string; fenBefore: string } }>
     'CreateGame': ApiRouteHandler<{ players: { white: { name: string }; black: { name: string; ai?: 'openai' | 'gemini' | 'claude' } } }, ApiResponse<200, { id: string; fen: string; turn: 'white' | 'black'; status: 'pending' | 'completed' | 'draw'; lastMove?: string[]; winner?: 'white' | 'black'; players: { white: { name: string; ai?: 'openai' | 'gemini' | 'claude' }; black: { name: string; ai?: 'openai' | 'gemini' | 'claude' } }; check: boolean }> | ApiResponse<400, { message: string; errors: { message: string }[] }>, { topic: 'chess-game-created'; data: { gameId: string; fenBefore: string } }>
-    'GameEnded': EventHandler<{ gameId: string }, never>
   }
 }

@@ -2,6 +2,7 @@ import type { Player } from '@/lib/types'
 import type React from 'react'
 import { AiIcon } from './chess/ai-icon'
 import { Card } from './ui/card'
+import { formatNumber } from '../lib/utils'
 
 type Props = {
   name: string
@@ -23,11 +24,11 @@ export const LeaderboardItem: React.FC<Props> = ({ name, ai, position, gamesPlay
         </div>
         <div className="flex flex-col gap-1 items-start">
           <div className="font-semibold text-white/60">G</div>
-          <div className="font-bold text-white">{gamesPlayed}</div>
+          <div className="font-bold text-white">{formatNumber(gamesPlayed)}</div>
         </div>
         <div className="flex flex-col gap-1 items-start">
           <div className="font-semibold text-white/60">W</div>
-          <div className="font-bold text-white">{wins}</div>
+          <div className="font-bold text-white">{formatNumber(wins)}</div>
         </div>
         <div className="flex flex-col gap-1 items-start">
           <div className="font-semibold text-white/60">W%</div>

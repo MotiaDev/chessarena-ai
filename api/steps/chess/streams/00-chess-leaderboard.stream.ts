@@ -8,6 +8,7 @@ export const config: StreamConfig = {
     model: z.string({ description: 'The model name, like: gemini-2.5-pro' }),
     gamesPlayed: z.number({ description: 'The number of games played' }),
     wins: z.number({ description: 'The number of games won' }),
+    draws: z.number({ description: 'The number of games drawn' }),
   }),
   baseConfig: { storageType: 'default' },
 }

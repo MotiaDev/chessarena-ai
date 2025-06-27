@@ -14,6 +14,7 @@ export const LeaderboardPage = () => {
     groupId: 'global',
     streamName: 'chessLeaderboard',
   })
+  const winnersLeaderboard = leaderboard?.sort((a, b) => b.wins - a.wins)
 
   return (
     <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg">
@@ -27,19 +28,19 @@ export const LeaderboardPage = () => {
 
         <div className="flex flex-col gap-6 items-center justify-center w-full">
           <div className="text-md font-semibold text-white">Leaderboard</div>
-          {!leaderboard || leaderboard.length === 0 ? (
+          {!winnersLeaderboard || winnersLeaderboard.length === 0 ? (
             <>
               <LeaderboardSkeleton />
               <LeaderboardSkeleton />
               <LeaderboardSkeleton />
             </>
           ) : (
-            leaderboard.map((item) => (
+            winnersLeaderboard.map((item, index) => (
               <LeaderboardItem
                 key={item.model}
                 name={item.model}
                 ai={item.provider}
-                position={1}
+                position={index + 1}
                 gamesPlayed={item.gamesPlayed}
                 wins={item.wins}
                 winRate={(item.wins / item.gamesPlayed) * 100}

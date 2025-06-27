@@ -8,6 +8,7 @@ import { ChessGamePage } from './pages/game-page'
 import { LandingPage } from './pages/landing-page'
 import { LeaderboardPage } from './pages/leaderboard-page'
 import { LiveMatchesPage } from './pages/live-matches-page'
+import { AboutPage } from './pages/about-page'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/game/:gameId" element={<ChessGamePage />} />
           <Route path="/ai-game/:id" element={<AiGamePage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster />

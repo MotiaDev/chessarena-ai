@@ -1,7 +1,7 @@
-import { ChessGame } from '../components/chess/chess-game'
-import { Page } from '../components/page'
+import { ChessGame } from '@/components/chess/chess-game'
+import { Page } from '@/components/page'
+import { useQueryParam } from '@/lib/use-query-param'
 import { useNavigate, useParams } from 'react-router'
-import { useQueryParam } from '../lib/use-query-param'
 
 export const ChessGamePage = () => {
   const navigate = useNavigate()

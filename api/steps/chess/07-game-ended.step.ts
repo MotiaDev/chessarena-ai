@@ -27,7 +27,7 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
   if (!game) {
     logger.error('Game not found', { gameId: input.gameId })
     return
-  } else if (game.status !== 'completed') {
+  } else if (game.status === 'pending') {
     logger.error('Game is not completed', { gameId: input.gameId })
     return
   } else if (!game.winner) {
@@ -48,6 +48,8 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
     const blackGamesPlayed = rankingBlack?.gamesPlayed ?? 0
     const whiteWins = rankingWhite?.wins ?? 0
     const blackWins = rankingBlack?.wins ?? 0
+    const whiteDraws = rankingWhite?.draws ?? 0
+    const blackDraws = rankingBlack?.draws ?? 0
 
     await Promise.all([
       streams.chessLeaderboard.set(groupId, game.players.white.ai, {
@@ -55,12 +57,14 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
         model: models[game.players.white.ai],
         gamesPlayed: whiteGamesPlayed + 1,
         wins: whiteWins + (game.winner === 'white' ? 1 : 0),
+        draws: whiteDraws + (game.status === 'draw' ? 1 : 0),
       }),
       streams.chessLeaderboard.set(groupId, game.players.black.ai, {
         provider: game.players.black.ai,
         model: models[game.players.black.ai],
         gamesPlayed: blackGamesPlayed + 1,
         wins: blackWins + (game.winner === 'black' ? 1 : 0),
+        draws: blackDraws + (game.status === 'draw' ? 1 : 0),
       }),
     ])
   }

@@ -3,6 +3,7 @@ import z, { ZodObject, ZodRawShape } from 'zod'
 import zodToJsonSchema from 'zod-to-json-schema'
 import { Handler } from './types'
 import { Logger } from 'motia'
+import { models } from './models'
 
 export const gemini: Handler = async <T extends ZodRawShape>(
   prompt: string,
@@ -12,7 +13,7 @@ export const gemini: Handler = async <T extends ZodRawShape>(
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
   const completion = await ai.models.generateContent({
-    model: 'gemini-2.0-flash-001',
+    model: models.gemini,
     contents: prompt,
     config: {
       responseMimeType: 'application/json',

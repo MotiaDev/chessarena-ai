@@ -10,7 +10,7 @@ declare module 'motia' {
   interface FlowContextStateStreams {
     'chessSidechatMessage': MotiaStream<{ message: string; sender: string; role: 'white' | 'black' | 'spectator' | 'root'; timestamp: number }>
     'chessLiveAiGames': MotiaStream<{ id: string; gameId: string; players: { white: string; black: string } }>
-    'chessLeaderboard': MotiaStream<{ provider: 'openai' | 'gemini' | 'claude'; model: string; gamesPlayed: number; wins: number }>
+    'chessLeaderboard': MotiaStream<{ provider: 'openai' | 'gemini' | 'claude'; model: string; gamesPlayed: number; wins: number; draws: number }>
     'chessGame': MotiaStream<{ id: string; fen: string; turn: 'white' | 'black'; status: 'pending' | 'completed' | 'draw'; lastMove?: string[]; winner?: 'white' | 'black'; players: { white: { name: string; ai?: 'openai' | 'gemini' | 'claude' }; black: { name: string; ai?: 'openai' | 'gemini' | 'claude' } }; check: boolean }>
     'chessGameMove': MotiaStream<{ color: 'white' | 'black'; fenBefore: string; fenAfter: string; lastMove: string[]; check: boolean }>
     'chessGameMessage': MotiaStream<{ message: string; sender: string; role: 'white' | 'black' | 'spectator' | 'root'; timestamp: number; move?: { from: string; to: string; promotion?: 'q' | 'r' | 'b' | 'n' }; isIllegalMove?: boolean }>

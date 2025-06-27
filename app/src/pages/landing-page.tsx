@@ -35,7 +35,7 @@ export const LandingPage = () => {
           </div>
 
           <p className="font-medium text-sm text-center text-muted-foreground">
-            This project is open-source click{' '}
+            This project is open-source, click{' '}
             <a href="/about" className="text-white underline" onClick={goToAbout}>
               here
             </a>{' '}

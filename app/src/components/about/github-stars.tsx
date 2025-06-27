@@ -14,7 +14,7 @@ export const GithubStars: React.FC<{ repo: string; defaultStars: number }> = ({ 
         {githubIcon} {repo}
       </div>
       <div className="w-[2px] h-full bg-white/15" />
-      <div className="flex flex-row items-center gap-[6px] text-white py-1 line-height-[17px] flex-1 justify-end">
+      <div className="flex flex-row items-center gap-[6px] text-white py-1 line-height-[17px] justify-end min-w-[60px]">
         {starIcon} <p>{stars}</p>
       </div>
     </a>

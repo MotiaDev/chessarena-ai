@@ -56,8 +56,6 @@ export const AboutPage = () => {
             </a>{' '}
             server.
           </Paragraph>
-
-          <div className="w-1/8 h-[2px] bg-white/25 my-4 rounded-full" />
         </div>
 
         <div className="flex flex-col gap-2 items-center justify-center w-full">
@@ -65,20 +63,6 @@ export const AboutPage = () => {
           <GithubStars repo="motia" defaultStars={1900} />
           <GithubStars repo="chessarena-ai" defaultStars={10} />
         </div>
-
-        <div className="w-1/8 h-[2px] bg-white/25 my-4 rounded-full" />
-
-        <Paragraph className="pb-4 text-xs text-center">
-          We're using some opensource libraries under GPL-3.0 license, such as{' '}
-          <a href="https://www.npmjs.com/package/chessground" target="_blank" className="text-white underline">
-            Chessground
-          </a>
-          . We're also using{' '}
-          <a href="https://www.npmjs.com/package/chess.js" target="_blank" className="text-white underline">
-            chess.js
-          </a>{' '}
-          library under BSD-2-Clause.
-        </Paragraph>
       </div>
     </Page>
   )

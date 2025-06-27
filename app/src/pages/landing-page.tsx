@@ -6,6 +6,10 @@ import { useNavigate } from 'react-router'
 
 export const LandingPage = () => {
   const navigate = useNavigate()
+  const goToAbout = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    navigate('/about')
+  }
 
   return (
     <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg">
@@ -32,7 +36,7 @@ export const LandingPage = () => {
 
           <p className="font-medium text-sm text-center text-muted-foreground">
             This project is open-source click{' '}
-            <a href="/about" className="text-white underline">
+            <a href="/about" className="text-white underline" onClick={goToAbout}>
               here
             </a>{' '}
             to read more about the project.

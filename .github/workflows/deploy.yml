@@ -10,8 +10,8 @@ on:
 env:
   # Motia Deploy
   MOTIA_API_KEY: ${{ secrets.MOTIA_API_KEY }}
-  MOTIA_PROJECT_ID: 572dca96-a142-4f08-b531-c8fff67eb05b
-  MOTIA_ENV_ID: 37c5728c-8ec5-4ace-b107-c446841a3c3f
+  MOTIA_PROJECT_ID: 95ec1c16-91e5-4e5f-bcad-87c4c4ba0d42
+  MOTIA_ENV_ID: abc37e6f-1095-4446-bc28-f70a93eceb83
 
 jobs:
   deploy:

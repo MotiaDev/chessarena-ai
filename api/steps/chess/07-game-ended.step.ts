@@ -51,20 +51,28 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
     const whiteDraws = rankingWhite?.draws ?? 0
     const blackDraws = rankingBlack?.draws ?? 0
 
+    const whiteIllegalMoves = rankingWhite?.illegalMoves ?? 0
+    const blackIllegalMoves = rankingBlack?.illegalMoves ?? 0
+
+    const whiteModel = models[game.players.white.ai]
+    const blackModel = models[game.players.black.ai]
+
     await Promise.all([
-      streams.chessLeaderboard.set(groupId, game.players.white.ai, {
+      streams.chessLeaderboard.set(groupId, whiteModel, {
         provider: game.players.white.ai,
-        model: models[game.players.white.ai],
+        model: whiteModel,
         gamesPlayed: whiteGamesPlayed + 1,
         wins: whiteWins + (game.winner === 'white' ? 1 : 0),
         draws: whiteDraws + (game.status === 'draw' ? 1 : 0),
+        illegalMoves: whiteIllegalMoves + (game.players.white.illegalMoveAttempts ?? 0),
       }),
-      streams.chessLeaderboard.set(groupId, game.players.black.ai, {
+      streams.chessLeaderboard.set(groupId, blackModel, {
         provider: game.players.black.ai,
-        model: models[game.players.black.ai],
+        model: blackModel,
         gamesPlayed: blackGamesPlayed + 1,
         wins: blackWins + (game.winner === 'black' ? 1 : 0),
         draws: blackDraws + (game.status === 'draw' ? 1 : 0),
+        illegalMoves: blackIllegalMoves + (game.players.black.illegalMoveAttempts ?? 0),
       }),
     ])
   }

@@ -11,5 +11,8 @@ export function formatNumber(count: number): string {
   } else if (count >= 1000) {
     return (count / 1000).toFixed(1) + 'K'
   }
-  return count.toString()
+
+  const floor = Math.floor(count)
+
+  return floor === count ? floor.toString() : count.toFixed(1)
 }

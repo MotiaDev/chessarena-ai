@@ -9,6 +9,7 @@ export const config: StreamConfig = {
     gamesPlayed: z.number({ description: 'The number of games played' }),
     wins: z.number({ description: 'The number of games won' }),
     draws: z.number({ description: 'The number of games drawn' }),
+    illegalMoves: z.number({ description: 'The number of illegal moves' }),
   }),
   baseConfig: { storageType: 'default' },
 }

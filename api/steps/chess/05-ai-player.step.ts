@@ -7,6 +7,8 @@ import { makePrompt } from '../../services/ai/make-prompt'
 import { getValidMoves } from '../../services/chess/get-valid-moves'
 import { move } from '../../services/chess/move'
 
+const MAX_ATTEMPTS = 3
+
 export const config: EventConfig = {
   type: 'event',
   name: 'AI_Player',
@@ -58,6 +60,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
     return
   }
 
+  let attempts = 0
   const validMoves = getValidMoves(game)
   let lastInvalidMove = undefined
 
@@ -110,6 +113,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
         game,
         action: action.move,
         emit,
+        illegalMoveAttempts: attempts,
       })
 
       logger.info('Move successful', { action })
@@ -125,6 +129,36 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
 
       logger.error('Invalid move', { move: action.move })
       lastInvalidMove = action.move
+
+      /**
+       * Player loses the game if they make too many illegal moves
+       */
+      if (attempts++ >= MAX_ATTEMPTS) {
+        logger.error('Max attempts reached', { gameId: input.gameId, attempts, player: player.ai })
+
+        const playerIllegalMoveAttempts = game.players[input.player].illegalMoveAttempts ?? 0
+
+        await streams.chessGame.set('game', game.id, {
+          ...game,
+          status: 'completed',
+          winner: input.player === 'white' ? 'black' : 'white',
+          endGameReason: 'Too many illegal moves',
+          players: {
+            ...game.players,
+            [input.player]: {
+              ...game.players[input.player],
+              illegalMoveAttempts: playerIllegalMoveAttempts + attempts,
+            },
+          },
+        })
+
+        await emit({
+          topic: 'chess-game-ended',
+          data: { gameId: input.gameId },
+        })
+
+        return
+      }
     }
   }
 }

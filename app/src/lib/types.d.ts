@@ -41,4 +41,6 @@ export type Leaderboard = {
   model: string
   gamesPlayed: number
   wins: number
+  draws: number
+  illegalMoves: number
 }

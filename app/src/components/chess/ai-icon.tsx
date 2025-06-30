@@ -20,11 +20,11 @@ const OpenAI = () => {
 export const AiIcon = ({ ai }: { ai: NonNullable<Player['ai']> }) => {
   if (ai === 'openai') {
     return (
-      <div className="w-[32px] h-[32px] flex items-center justify-center">
+      <div className="w-[24px] h-[24px] flex items-center justify-center">
         <OpenAI />
       </div>
     )
   }
 
-  return <img src={avatarImages[ai]} alt={ai} className="w-[32px] h-[32px]" />
+  return <img src={avatarImages[ai]} alt={ai} className="w-[24px] h-[24px]" />
 }

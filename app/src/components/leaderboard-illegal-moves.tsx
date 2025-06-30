@@ -9,12 +9,10 @@ type Props = {
   ai: NonNullable<Player['ai']>
   position: number
   gamesPlayed: number
-  wins: number
-  draws: number
-  winRate: number
+  illegalMoves: number
 }
 
-export const LeaderboardItem: React.FC<Props> = ({ name, ai, position, gamesPlayed, wins, draws, winRate }) => {
+export const LeaderboardIllegalMoves: React.FC<Props> = ({ name, ai, position, gamesPlayed, illegalMoves }) => {
   return (
     <div className="flex flex-col gap-2 w-full text-sm">
       <Card className="flex flex-row gap-2 items-center justify-between w-full p-4">
@@ -28,16 +26,12 @@ export const LeaderboardItem: React.FC<Props> = ({ name, ai, position, gamesPlay
           <div className="font-bold text-white min-w-[30px]">{formatNumber(gamesPlayed)}</div>
         </div>
         <div className="flex flex-col gap-1 items-start">
-          <div className="font-semibold text-white/60">W</div>
-          <div className="font-bold text-white min-w-[30px]">{formatNumber(wins)}</div>
+          <div className="font-semibold text-white/60">Moves</div>
+          <div className="font-bold text-white min-w-[30px]">{formatNumber(illegalMoves)}</div>
         </div>
         <div className="flex flex-col gap-1 items-start">
-          <div className="font-semibold text-white/60">D</div>
-          <div className="font-bold text-white min-w-[30px]">{formatNumber(draws)}</div>
-        </div>
-        <div className="flex flex-col gap-1 items-start">
-          <div className="font-semibold text-white/60">W%</div>
-          <div className="font-bold text-white min-w-[50px]">{winRate.toFixed(1)}%</div>
+          <div className="font-semibold text-white/60">AVG</div>
+          <div className="font-bold text-white min-w-[30px]">{formatNumber(illegalMoves / gamesPlayed)}</div>
         </div>
       </Card>
     </div>

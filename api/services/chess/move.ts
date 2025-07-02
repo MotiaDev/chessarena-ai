@@ -20,11 +20,7 @@ type Args = {
           player: string; 
           move: { 
             from: string; 
-            to: string; 
-            captured?: { 
-              type: string; 
-              square: string 
-            } 
+            to: string;
           }; 
           fenBefore: string 
         }

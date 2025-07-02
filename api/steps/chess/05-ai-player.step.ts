@@ -4,8 +4,8 @@ import mustache from 'mustache'
 import path from 'path'
 import { z } from 'zod'
 import { makePrompt } from '../../services/ai/make-prompt'
-import { getValidMoves } from '../../services/chess/get-valid-moves'
 import { move } from '../../services/chess/move'
+import { evaluateBestMoves } from '../../services/chess/evaluate-game'
 
 const MAX_ATTEMPTS = 3
 
@@ -61,7 +61,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
   }
 
   let attempts = 0
-  const validMoves = getValidMoves(game)
+  const validMoves = evaluateBestMoves(game)
   let lastInvalidMove = undefined
 
   logger.info('Valid moves', { validMoves })

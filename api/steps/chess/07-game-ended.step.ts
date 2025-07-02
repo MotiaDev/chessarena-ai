@@ -1,6 +1,7 @@
 import { EventConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { models } from '../../services/ai/models'
+import { evaluateGame } from '../../services/chess/evaluate-game'
 
 /*
  * Warning: This can lead to race conditions if two games end at the same time.
@@ -27,10 +28,14 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
   if (!game) {
     logger.error('Game not found', { gameId: input.gameId })
     return
-  } else if (game.status === 'pending') {
+  } 
+  
+  if (game.status === 'pending') {
     logger.error('Game is not completed', { gameId: input.gameId })
     return
-  } else if (!game.winner) {
+  }
+  
+  if (!game.winner) {
     logger.error('Game has no winner', { gameId: input.gameId })
     return
   }

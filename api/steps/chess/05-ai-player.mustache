@@ -38,20 +38,12 @@ Your task is to play as **{{player}}**, and you will be given:
   - Transition to favorable endgames
 - Make sure the next move isn't putting your piece in danger unless necessary
 - Use the move analysis score value in order to choose the best move, the higher the score the better the move
-- Before taking a capture make sure to check if the capture score from the move analysis is above 0
 
 Valid moves:
 {{#validMoves}}
 - From {{move.from}} to -> {{move.to}}
   Analysis: 
     - Score: {{score}}
-    - Capture Score: {{captureScore}}
-    - Is Check: {{isCheck}}
-    - Is Checkmate: {{isCheckmate}}
-    - Is Capture: {{isCapture}}
-    - Is Promotion: {{isPromotion}}
-    - Is Castling: {{isCastling}}
-    - Is En Passant: {{isEnPassant}}
 {{/validMoves}}
 
 Behavior:

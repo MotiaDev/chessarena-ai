@@ -3,6 +3,7 @@ import { Emitter, FlowContextStateStreams, Logger } from 'motia'
 import type { Game } from '../../steps/chess/streams/00-chess-game.stream'
 import { getCaptureScore } from './get-capture-score'
 import { evaluateMove } from './evaluate-move'
+import { randomUUID } from 'crypto'
 
 type Args = {
   logger: Logger
@@ -79,8 +80,19 @@ export const move = async ({
       },
     },
     check: chess.inCheck(),
-    allMoves: [...(game.allMoves ?? []), {move, ...evaluateMove(chess, move)}],  
   })
+
+  await streams.chessGameMove.set(gameId, randomUUID(), {
+    color: player,
+    fenBefore: game.fen,
+    fenAfter: move.after,
+    lastMove: [move.from, move.to],
+    check: chess.inCheck(),
+    move: evaluateMove(chess, move),
+  })
+
+  // const moves = await streams.chessGameMove.getGroup(gameId);
+    
 
   if (status === 'pending') {
     await emit({

@@ -1,16 +1,7 @@
 import { Chess, Move as ChessMove } from 'chess.js'
 import { getCaptureScore } from './get-capture-score'
+import { GameMove } from 'steps/chess/streams/00-chess-game-move.stream'
 
-type MoveEvaluation = {
-  score: number
-  captureScore: number
-  isCheck: boolean
-  isCheckmate: boolean
-  isCapture: boolean
-  isPromotion: boolean
-  isCastling: boolean
-  isEnPassant: boolean
-}
 
 /**
  * Evaluates a chess move and returns a score based on various factors
@@ -18,8 +9,7 @@ type MoveEvaluation = {
  * @param move - The move to evaluate
  * @returns MoveEvaluation object with detailed scoring
  */
-export const evaluateMove = (chessInstance: Chess, move: ChessMove): MoveEvaluation => {
-  const board = chessInstance.board()
+export const evaluateMove = (chessInstance: Chess, move: ChessMove): GameMove => {
   const isCheck = chessInstance.isCheck()
   const isCheckmate = chessInstance.isCheckmate()
   const isCapture = move.captured !== undefined
@@ -69,6 +59,10 @@ export const evaluateMove = (chessInstance: Chess, move: ChessMove): MoveEvaluat
   }
   
   return {
+    piece: move.piece,
+    color: move.color,
+    from: move.from,
+    to: move.to,
     score,
     captureScore,
     isCheck,

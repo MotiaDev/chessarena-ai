@@ -35,22 +35,6 @@ export const gameSchema = z.object({
     }),
   }),
   check: z.boolean({ description: 'Whether the game is in check' }),
-  allMoves: z.array(z.object({
-    move: z.object({
-      from: z.string({ description: 'The square to move from' }),
-      to: z.string({ description: 'The square to move to' }),
-      piece: z.string({ description: 'The piece moved' }),
-      color: z.string({ description: 'The color of the piece moved' }),
-    }),
-    score: z.number({ description: 'The score of the move' }),
-    captureScore: z.number({ description: 'The capture score of the move' }).optional(),
-    isCheck: z.boolean({ description: 'Whether the move is a check' }).optional(),
-    isCheckmate: z.boolean({ description: 'Whether the move is a checkmate' }).optional(),
-    isCapture: z.boolean({ description: 'Whether the move is a capture' }).optional(),
-    isPromotion: z.boolean({ description: 'Whether the move is a promotion' }).optional(),
-    isCastling: z.boolean({ description: 'Whether the move is a castling' }).optional(),
-    isEnPassant: z.boolean({ description: 'Whether the move is an en passant' }).optional(),
-  })).optional(),
 })
 
 export type Game = z.infer<typeof gameSchema>

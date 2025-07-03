@@ -1,7 +1,6 @@
 import { EventConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { models } from '../../services/ai/models'
-import { evaluateGame } from '../../services/chess/evaluate-game'
 
 /*
  * Warning: This can lead to race conditions if two games end at the same time.

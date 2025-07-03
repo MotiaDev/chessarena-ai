@@ -14,7 +14,7 @@ export const config: EventConfig = {
   name: 'AI_Player',
   description: 'AI Player',
   subscribes: ['ai-move'],
-  emits: ['chess-game-moved', 'chess-game-ended'],
+  emits: ['chess-game-moved', 'chess-game-ended', 'ai-move-result'],
   flows: ['chess'],
   input: z.object({
     player: z.enum(['white', 'black'], { description: 'The player that made the move' }),
@@ -112,7 +112,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
         player: input.player,
         game,
         action: action.move,
-        emit,
+        emit: emit as any,
         illegalMoveAttempts: attempts,
       })
 

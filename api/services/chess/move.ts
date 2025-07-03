@@ -27,6 +27,7 @@ type Args = {
         }
       }
     | { topic: 'chess-game-ended'; data: { gameId: string } }
+    | {topic: 'ai-move-result'; data: { gameId: string; fenBefore: string; fenAfter: string; moveId: string } }
   >
 }
 
@@ -82,7 +83,9 @@ export const move = async ({
     check: chess.inCheck(),
   })
 
-  await streams.chessGameMove.set(gameId, randomUUID(), {
+  const moveId = randomUUID();
+
+  await streams.chessGameMove.set(gameId, moveId, {
     color: player,
     fenBefore: game.fen,
     fenAfter: move.after,
@@ -92,7 +95,22 @@ export const move = async ({
   })
 
   // const moves = await streams.chessGameMove.getGroup(gameId);
-    
+
+  if (game.players[player].ai) {
+    console.log("FENS", {
+      fenBefore: game.fen,
+      fenAfter: move.after,
+    })
+    await emit({
+      topic: 'ai-move-result',
+      data: {
+        gameId,
+        fenBefore: game.fen,
+        fenAfter: move.after,
+        moveId,
+      },
+    })
+  }
 
   if (status === 'pending') {
     await emit({

@@ -10,7 +10,7 @@ export const config: ApiRouteConfig = {
   description: 'Move a piece',
   path: '/chess/game/:id/move',
   method: 'POST',
-  emits: ['chess-game-moved', 'chess-game-ended'],
+  emits: ['chess-game-moved', 'chess-game-ended', 'ai-move-result'],
   flows: ['chess'],
   bodySchema: z.object({
     password: z.string({ description: 'The password for the game' }),
@@ -53,7 +53,7 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
       game: game,
       player: game.turn,
       action: { from: req.body.from, to: req.body.to, promote: req.body.promote },
-      emit,
+      emit: emit as any,
     })
 
     logger.info('[MovePiece] Move made', { from: req.body.from, to: req.body.to })

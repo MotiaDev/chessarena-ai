@@ -1,0 +1,2 @@
+chess==1.11.1
+python-dotenv==1.0.1

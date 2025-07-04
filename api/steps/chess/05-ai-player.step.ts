@@ -5,7 +5,7 @@ import path from 'path'
 import { z } from 'zod'
 import { makePrompt } from '../../services/ai/make-prompt'
 import { move } from '../../services/chess/move'
-import { evaluateBestMoves } from '../../services/chess/evaluate-game'
+import { evaluateBestMoves } from '../../services/chess/evaluate-best-moves'
 import { Game } from './streams/00-chess-game.stream'
 
 const MAX_ATTEMPTS = 3

@@ -58,7 +58,7 @@ async def handler(input, ctx):
         raise ValueError("Both fenBefore and fenAfter must be provided")
 
     # Initialize Stockfish engine
-    engine_path = '/opt/homebrew/bin/stockfish' #os.getenv("STOCKFISH_PATH")
+    engine_path = os.getenv("STOCKFISH_PATH")
     if not engine_path:
         ctx.logger.error('STOCKFISH_PATH environment variable not set')
         raise EnvironmentError("STOCKFISH_PATH environment variable not set")

@@ -1,6 +1,9 @@
 import { EventConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { models } from '../../services/ai/models'
+import { generateGameScore } from '../../services/chess/generate-game-score'
+import { Game } from './streams/00-chess-game.stream'
+import { GameMove } from './streams/00-chess-game-move.stream'
 
 /*
  * Warning: This can lead to race conditions if two games end at the same time.
@@ -32,6 +35,28 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
   if (game.status === 'pending') {
     logger.error('Game is not completed', { gameId: input.gameId })
     return
+  }
+
+  const moves = await streams.chessGameMove.getGroup(input.gameId)
+
+  if (Array.isArray(moves)) {
+    const {whiteScore, blackScore, scoreboard} = await generateGameScore(game as Game, moves as GameMove[])
+
+    await streams.chessGame.set('game', input.gameId, {
+      ...game,
+      players: {
+        ...game.players,
+        white: {
+          ...game.players.white,
+          score: whiteScore
+        },
+        black: {
+          ...game.players.black,
+          score: blackScore
+        }
+      },
+      scoreboard
+    })
   }
   
   if (!game.winner) {

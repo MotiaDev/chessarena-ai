@@ -2,6 +2,18 @@
   {
     "id": "chess",
     "config": {
+      "steps/chess/track-ai-move-score.step.ts": {
+        "x": 0,
+        "y": 0
+      },
+      "steps/chess/evaluate-player-move.step.py": {
+        "x": 0,
+        "y": 0
+      },
+      "steps/chess/07-game-ended.step.ts": {
+        "x": 1025,
+        "y": 523
+      },
       "steps/chess/06-send-message.step.ts": {
         "x": 134,
         "y": -128
@@ -30,9 +42,9 @@
         "x": 479,
         "y": 45
       },
-      "steps/chess/07-game-ended.step.ts": {
-        "x": 1025,
-        "y": 523
+      "steps/chess/evaluate-all-games-api.step.ts": {
+        "x": 896,
+        "y": -219
       }
     }
   }

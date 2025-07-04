@@ -2,7 +2,6 @@ import { Chess } from 'chess.js'
 import { Emitter, FlowContextStateStreams, Logger } from 'motia'
 import type { Game } from '../../steps/chess/streams/00-chess-game.stream'
 import { getCaptureScore } from './get-capture-score'
-import { evaluateMove } from './evaluate-move'
 import { randomUUID } from 'crypto'
 
 type Args = {
@@ -27,7 +26,7 @@ type Args = {
         }
       }
     | { topic: 'chess-game-ended'; data: { gameId: string } }
-    | {topic: 'ai-move-result'; data: { gameId: string; fenBefore: string; fenAfter: string; moveId: string } }
+    | {topic: 'evaluate-player-move'; data: { gameId: string; fenBefore: string; fenAfter: string; moveId: string } }
   >
 }
 
@@ -91,26 +90,17 @@ export const move = async ({
     fenAfter: move.after,
     lastMove: [move.from, move.to],
     check: chess.inCheck(),
-    move: evaluateMove(chess, move),
   })
 
-  // const moves = await streams.chessGameMove.getGroup(gameId);
-
-  if (game.players[player].ai) {
-    console.log("FENS", {
+  await emit({
+    topic: 'evaluate-player-move',
+    data: {
+      gameId,
       fenBefore: game.fen,
       fenAfter: move.after,
-    })
-    await emit({
-      topic: 'ai-move-result',
-      data: {
-        gameId,
-        fenBefore: game.fen,
-        fenAfter: move.after,
-        moveId,
-      },
-    })
-  }
+      moveId,
+    },
+  })
 
   if (status === 'pending') {
     await emit({

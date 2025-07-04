@@ -26,6 +26,7 @@ export type Game = {
   status: 'created' | 'pending' | 'completed' | 'draw'
   lastMove: Key[]
   players: { white: Player; black: Player }
+  scoreboard?: Scoreboard
 }
 
 export type GameRole = 'white' | 'black' | 'spectator' | 'root'
@@ -44,3 +45,30 @@ export type Leaderboard = {
   draws: number
   illegalMoves: number
 }
+
+export type Scoreboard = {
+  white: {
+    name: string
+    score: number
+    averageEval: number
+    avgSwing: number
+    finalEval: number
+    trend: string
+  }
+  black: {
+    name: string
+    score: number
+    averageEval: number
+    avgSwing: number
+    finalEval: number
+    trend: string
+  }
+  gameStatus: string
+  totalMoves: number
+  decisiveMoment?: {
+    moveNumber: number
+    evalChange: number
+    fen: string
+  }
+}
+

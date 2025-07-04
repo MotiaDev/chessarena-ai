@@ -14,7 +14,7 @@ export const config: EventConfig = {
   name: 'AI_Player',
   description: 'AI Player',
   subscribes: ['ai-move'],
-  emits: ['chess-game-moved', 'chess-game-ended', 'ai-move-result'],
+  emits: ['chess-game-moved', 'chess-game-ended', 'evaluate-player-move'],
   flows: ['chess'],
   input: z.object({
     player: z.enum(['white', 'black'], { description: 'The player that made the move' }),

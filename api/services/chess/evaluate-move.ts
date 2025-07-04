@@ -1,15 +1,7 @@
 import { Chess, Move as ChessMove } from 'chess.js'
 import { getCaptureScore } from './get-capture-score'
-import { GameMove } from 'steps/chess/streams/00-chess-game-move.stream'
 
-
-/**
- * Evaluates a chess move and returns a score based on various factors
- * @param chessInstance - The chess.js instance
- * @param move - The move to evaluate
- * @returns MoveEvaluation object with detailed scoring
- */
-export const evaluateMove = (chessInstance: Chess, move: ChessMove): GameMove => {
+export const evaluateMove = (chessInstance: Chess, move: ChessMove) => {
   const isCheck = chessInstance.isCheck()
   const isCheckmate = chessInstance.isCheckmate()
   const isCapture = move.captured !== undefined
@@ -59,8 +51,7 @@ export const evaluateMove = (chessInstance: Chess, move: ChessMove): GameMove =>
   }
   
   return {
-    piece: move.piece,
-    color: move.color,
+    color: move.color === 'w' ? 'white' : 'black',
     from: move.from,
     to: move.to,
     score,
@@ -74,9 +65,6 @@ export const evaluateMove = (chessInstance: Chess, move: ChessMove): GameMove =>
   }
 }
 
-/**
- * Helper function to get all squares attacked by opponent's pawns
- */
 function getPawnAttacks(chess: Chess, color: 'w' | 'b'): Set<string> {
   const attacks = new Set<string>()
   const board = chess.board()

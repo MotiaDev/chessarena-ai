@@ -122,5 +122,5 @@ export const move = async ({
     })
   }
 
-  return newGame
+  return newGame as Game
 }

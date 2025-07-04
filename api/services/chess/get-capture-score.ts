@@ -17,10 +17,6 @@ export const getCaptureScore = (piece: PieceSymbol) => {
        // Queen
        case 'q':
            return 9
-       // King
-       case 'k':
-        // King should be priceless since it is the most important piece and capturing a king is considered the end of the game
-           return 10000000
        default:
            return 0
     }

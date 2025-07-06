@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { Game, gameSchema } from './streams/00-chess-game.stream'
 import { generateGameScore } from '../../services/chess/generate-game-score'
 import { GameMove } from './streams/00-chess-game-move.stream'
+import { updateLeaderboard } from '../../services/chess/update-leaderboard'
+import { analyzePlayerStrength } from '../../services/chess/analyze-player-strength'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -32,29 +34,48 @@ export const handler: Handlers['EvaluateAllGames'] = async (req, { logger, strea
     for (const game of games) {
       if (['completed', 'draw'].includes(game.status)) {
         const moves = await streams.chessGameMove.getGroup(game.id)
-        
-          if (Array.isArray(moves)) {
-            const {whiteScore, blackScore, scoreboard} = await generateGameScore(game as Game, moves as GameMove[])
-        
-            await streams.chessGame.set('game', game.id, {
-              ...game,
-              players: {
-                ...game.players,
-                white: {
-                  ...game.players.white,
-                  score: whiteScore
-                },
-                black: {
-                  ...game.players.black,
-                  score: blackScore
-                }
+      
+        if (Array.isArray(moves)) {
+          const {whiteScore, blackScore, scoreboard} = await generateGameScore(game as Game, moves as GameMove[])
+      
+          await streams.chessGame.set('game', game.id, {
+            ...game,
+            players: {
+              ...game.players,
+              white: {
+                ...game.players.white,
+                score: whiteScore
               },
-              scoreboard
-            })
-          }
+              black: {
+                ...game.players.black,
+                score: blackScore
+              }
+            },
+            scoreboard
+          })
+
+          logger.info('[EvaluateAllGames] game evaluated', { gameId: game.id })
+
+          await updateLeaderboard(game as Game, streams, scoreboard, { skipAnalysis: true })
+
+          logger.info('[EvaluateAllGames] leaderboard updated', { gameId: game.id })
+        }
       }
     }
 
+    const leaderboards = await streams.chessLeaderboard.getGroup('global');
+
+    console.log('leaderboards', leaderboards)
+
+    for (const leaderboard of leaderboards) {
+      logger.info('[EvaluateAllGames] leaderboard analysis')
+
+      await streams.chessLeaderboard.set('global', leaderboard.model, {
+        ...leaderboard,
+        analysis: analyzePlayerStrength(leaderboard.averageEvals)
+      })
+    }
+    
     return { status: 200, body: { status: 'success' } }
   } catch (error) {
     return { status: 500, body: { message: 'Error evaluating games' } }

@@ -27,7 +27,7 @@ export const generateGameScore = async (game: Game, moves: GameMove[]): Promise<
   let equalPositionCount = 0;
 
   // Process each move to collect evaluations
-  moves.forEach((move, index) => {
+  moves.forEach((move) => {
     const { evaluation } = move;
     if (!evaluation) return;
 
@@ -144,7 +144,7 @@ export const generateScoreboard = (
       decisiveMoment = {
         moveNumber: Math.ceil((moveIndex + 1) / 2), // Convert to full move number
         evalChange: maxSwing,
-        fen: moves[moveIndex]?.fen || ''
+        fen: moves[moveIndex]?.fenAfter || ''
       };
     }
   }
@@ -170,7 +170,7 @@ export const generateScoreboard = (
       ? game.winner 
         ? `Checkmate - ${game.winner} wins` 
         : 'Game completed'
-      : 'In progress',
+      : game.status === 'draw' ? 'Draw' : 'In progress',
     totalMoves: moves.length,
     ...(decisiveMoment && { decisiveMoment })
   };

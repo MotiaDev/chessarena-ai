@@ -4,7 +4,7 @@ import { GameMove, MoveEvaluationSchema } from './streams/00-chess-game-move.str
 
 export const config: EventConfig = {
   type: 'event',
-  name: 'TrackAiMoveScore',
+  name: 'TrackMoveEvalScore',
   description: 'track the result from an ai step evaluation result',
   subscribes: ["player-move-score"],
   emits: [],
@@ -16,8 +16,8 @@ export const config: EventConfig = {
   flows: ["chess"]
 }
 
-export const handler: Handlers['TrackAiMoveScore'] = async (input, { logger, streams }) => {
-  logger.info('[TrackAiMoveScore] received message', input)
+export const handler: Handlers['TrackMoveEvalScore'] = async (input, { logger, streams }) => {
+  logger.info('[TrackMoveEvalScore] received message', input)
 
   const {gameId, moveId, color, ...evaluation} = input
 
@@ -35,5 +35,5 @@ export const handler: Handlers['TrackAiMoveScore'] = async (input, { logger, str
     evaluation,
   })
 
-  logger.info('[TrackAiMoveScore] move updated with stockfish evaluation', { gameId, moveId, evaluation })
+  logger.info('[TrackMoveEvalScore] move updated with stockfish evaluation', { gameId, moveId, evaluation })
 }

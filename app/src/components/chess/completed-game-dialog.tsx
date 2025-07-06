@@ -29,7 +29,7 @@ export const CompletedGameDialog: React.FC<Props> = ({ game }) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[720px] rounded-2xl bg-gradient-to-b from-gray-900/20 to-black/80 backdrop-blur-lg border-none">
         <DialogHeader>
-          <DialogTitle className="text-md font-semibold text-center"><h2 className="text-xl font-bold">Game Scoreboard</h2></DialogTitle>
+          <DialogTitle className="text-md font-semibold text-center"><span className="text-xl font-bold">Game Scoreboard</span></DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-2 w-full">
           {scoreboard && <Scoreboard scoreboard={scoreboard} />}

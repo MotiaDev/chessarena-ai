@@ -41,8 +41,6 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
     )
   }
 
-  console.log("game", game)
-
   const role = gameWithRole?.role ?? 'spectator'
   const isSpectator = role === 'spectator'
 

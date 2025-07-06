@@ -11,10 +11,11 @@ type Props = {
   gamesPlayed: number
   wins: number
   draws: number
-  winRate: number
+  winRate?: number
+  evalRate?: number;
 }
 
-export const LeaderboardItem: React.FC<Props> = ({ name, ai, position, gamesPlayed, wins, draws, winRate }) => {
+export const LeaderboardItem: React.FC<Props> = ({ evalRate = 0, name, ai, position, gamesPlayed, wins, draws, winRate = 0 }) => {
   return (
     <div className="flex flex-col gap-2 w-full text-sm">
       <Card className="flex flex-row gap-2 items-center justify-between w-full p-4">
@@ -36,8 +37,12 @@ export const LeaderboardItem: React.FC<Props> = ({ name, ai, position, gamesPlay
           <div className="font-bold text-white min-w-[30px]">{formatNumber(draws)}</div>
         </div>
         <div className="flex flex-col gap-1 items-start">
+          <div className="font-semibold text-white/60">Eval</div>
+          <div className="font-bold text-white min-w-[50px]">{(evalRate).toFixed(1)}</div>
+        </div>
+        <div className="flex flex-col gap-1 items-start">
           <div className="font-semibold text-white/60">W%</div>
-          <div className="font-bold text-white min-w-[50px]">{winRate.toFixed(1)}%</div>
+          <div className="font-bold text-white min-w-[50px]">{(winRate).toFixed(1)}%</div>
         </div>
       </Card>
     </div>

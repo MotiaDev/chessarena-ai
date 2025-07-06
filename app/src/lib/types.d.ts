@@ -37,6 +37,16 @@ export type GameWithRole = Game & {
   passwords?: Password
 }
 
+export type PlayerAnalysis = {
+  strength: number
+  consistency: number
+  trend: number
+  reliability: number
+  gamesAnalyzed: number
+  whiteGames: number
+  blackGames: number
+}
+
 export type Leaderboard = {
   provider: 'openai' | 'gemini' | 'claude'
   model: string
@@ -44,6 +54,7 @@ export type Leaderboard = {
   wins: number
   draws: number
   illegalMoves: number
+  analysis?: PlayerAnalysis
 }
 
 export type Scoreboard = {

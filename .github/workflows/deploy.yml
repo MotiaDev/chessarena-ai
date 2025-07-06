@@ -39,6 +39,16 @@ jobs:
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
           echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env
 
+      - name: Download Stockfish
+        run: |
+          mkdir stockfish
+          cd stockfish
+          git clone git@github.com:official-stockfish/Stockfish.git .
+          cd src
+          make -j profile-build ARCH=x86-64
+          mkdir -p ../../api/lib
+          mv stockfish ../../lib/stockfish
+
       - name: Deploy using Motia Cloud
         working-directory: api
         run: |

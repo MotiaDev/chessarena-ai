@@ -10,7 +10,8 @@ config = {
     "subscribes": ["evaluate-player-move"], 
     "emits": ["player-move-score"],
     "flows": ["chess"],
-    "input": None
+    "input": None,
+    "includeFiles": ["./../../lib/lambda-stockfish"]
 }
 
 def normalize_score(score: chess.engine.Score, is_mate: bool) -> float:

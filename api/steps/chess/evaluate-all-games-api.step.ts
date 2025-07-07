@@ -5,6 +5,7 @@ import { generateGameScore } from '../../services/chess/generate-game-score'
 import { GameMove } from './streams/00-chess-game-move.stream'
 import { updateLeaderboard } from '../../services/chess/update-leaderboard'
 import { analyzePlayerStrength } from '../../services/chess/analyze-player-strength'
+import { Leaderboard } from '../../steps/chess/streams/00-chess-leaderboard.stream'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -31,6 +32,8 @@ export const handler: Handlers['EvaluateAllGames'] = async (req, { logger, strea
   }
 
   try {
+    let leaderboards: Record<string, Leaderboard> = {}
+
     for (const game of games) {
       if (['completed', 'draw'].includes(game.status)) {
         const moves = await streams.chessGameMove.getGroup(game.id)
@@ -56,23 +59,20 @@ export const handler: Handlers['EvaluateAllGames'] = async (req, { logger, strea
 
           logger.info('[EvaluateAllGames] game evaluated', { gameId: game.id })
 
-          await updateLeaderboard(game as Game, streams, scoreboard, { skipAnalysis: true })
+          leaderboards = await updateLeaderboard(game as Game, leaderboards, scoreboard, { skipAnalysis: true })
 
           logger.info('[EvaluateAllGames] leaderboard updated', { gameId: game.id })
         }
       }
     }
+    
+    const groupId = 'global'
 
-    const leaderboards = await streams.chessLeaderboard.getGroup('global');
-
-    console.log('leaderboards', leaderboards)
-
-    for (const leaderboard of leaderboards) {
-      logger.info('[EvaluateAllGames] leaderboard analysis')
-
-      await streams.chessLeaderboard.set('global', leaderboard.model, {
-        ...leaderboard,
-        analysis: analyzePlayerStrength(leaderboard.averageEvals)
+    for (const model of Object.keys(leaderboards)) {
+      const analysis = analyzePlayerStrength(leaderboards[model].averageEvals)
+      await streams.chessLeaderboard.set(groupId, model, {
+        ...leaderboards[model],
+        analysis
       })
     }
     

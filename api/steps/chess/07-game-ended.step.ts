@@ -4,6 +4,7 @@ import { generateGameScore } from '../../services/chess/generate-game-score'
 import { Game } from './streams/00-chess-game.stream'
 import { GameMove } from './streams/00-chess-game-move.stream'
 import { updateLeaderboard } from '../../services/chess/update-leaderboard'
+import { Leaderboard } from './streams/00-chess-leaderboard.stream'
 
 /*
  * Warning: This can lead to race conditions if two games end at the same time.
@@ -57,5 +58,23 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
     scoreboard
   })
 
-  await updateLeaderboard(game as Game, streams, scoreboard)
+  if (!game.players.white.ai || !game.players.black.ai) {
+    return
+  }
+
+  const currentLeaderboard = (await streams.chessLeaderboard.getGroup('global')).reduce((acc, item) => {
+    acc[item.provider] = item
+    return acc
+  }, {} as Record<string, Leaderboard>)
+
+  const leaderboards = await updateLeaderboard(game as Game, currentLeaderboard, scoreboard)
+
+  /*
+     * Initially, we're going to have only a global leaderboard
+     * But we want to have a weekly or monthly leaderboard at some point
+     */
+  const groupId = 'global'
+
+  await streams.chessLeaderboard.set(groupId, game.players.white.ai, leaderboards[game.players.white.ai])
+  await streams.chessLeaderboard.set(groupId, game.players.black.ai, leaderboards[game.players.black.ai])
 }

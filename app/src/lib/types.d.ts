@@ -47,6 +47,12 @@ export type PlayerAnalysis = {
   blackGames: number
 }
 
+export type GameEvaluation = {
+  evaluation: number
+  color: 'white' | 'black'
+  timestamp: number
+}
+
 export type Leaderboard = {
   provider: 'openai' | 'gemini' | 'claude'
   model: string
@@ -55,6 +61,7 @@ export type Leaderboard = {
   draws: number
   illegalMoves: number
   analysis?: PlayerAnalysis
+  averageEvals: GameEvaluation[]
 }
 
 export type Scoreboard = {

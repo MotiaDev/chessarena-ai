@@ -2,23 +2,20 @@ import { FlowContextStateStreams } from "motia";
 import { Game, Scoreboard } from "../../steps/chess/streams/00-chess-game.stream";
 import { models } from "../ai/models";
 import { analyzePlayerStrength } from "./analyze-player-strength";
+import { Leaderboard } from "../../steps/chess/streams/00-chess-leaderboard.stream";
 
 type Options = {
   skipAnalysis?: boolean
 }
 
-export const updateLeaderboard = async (game: Game, streams: FlowContextStateStreams, scoreboard?: Scoreboard, options?: Options) => {
+export const updateLeaderboard = async (game: Game, leaderboards: Record<string, Leaderboard>, scoreboard?: Scoreboard, options?: Options) => {
   // NOTE: board is limited just for AI player for now
   if (!game.players.white.ai || !game.players.black.ai) {
-    return
+    return leaderboards
   }
-  /*
-     * Initially, we're going to have only a global leaderboard
-     * But we want to have a weekly or monthly leaderboard at some point
-     */
-  const groupId = 'global'
-  const rankingWhite = await streams.chessLeaderboard.get(groupId, game.players.white.ai)
-  const rankingBlack = await streams.chessLeaderboard.get(groupId, game.players.black.ai)
+  
+  const rankingWhite = leaderboards[game.players.white.ai] ?? {}
+  const rankingBlack = leaderboards[game.players.black.ai] ?? {}
 
   const whiteGamesPlayed = rankingWhite?.gamesPlayed ?? 0
   const blackGamesPlayed = rankingBlack?.gamesPlayed ?? 0
@@ -39,11 +36,10 @@ export const updateLeaderboard = async (game: Game, streams: FlowContextStateStr
   const blackEvaluation = scoreboard?.black.averageEval ? {evaluation: scoreboard.black.averageEval!, color: 'black', timestamp: Date.now()} : undefined;
   const blackAverageEvals = [...(rankingBlack?.averageEvals ?? []), ...(blackEvaluation ? [blackEvaluation] : [])];
 
-  console.log('whiteAverageEvals', rankingWhite?.averageEvals, whiteAverageEvals)
-  console.log('blackAverageEvals', rankingBlack?.averageEvals, blackAverageEvals)
-
-  await Promise.all([
-    streams.chessLeaderboard.set(groupId, whiteModel, {
+  return {
+    ...leaderboards,
+    [game.players.white.ai]: {
+      ...rankingWhite,
       provider: game.players.white.ai,
       model: whiteModel,
       gamesPlayed: whiteGamesPlayed + 1,
@@ -52,8 +48,9 @@ export const updateLeaderboard = async (game: Game, streams: FlowContextStateStr
       illegalMoves: whiteIllegalMoves + (game.players.white.illegalMoveAttempts ?? 0),
       averageEvals: whiteAverageEvals,
       analysis: options?.skipAnalysis ? rankingWhite?.analysis : analyzePlayerStrength(whiteAverageEvals)
-    }),
-    streams.chessLeaderboard.set(groupId, blackModel, {
+    },
+    [game.players.black.ai]: {
+      ...rankingBlack,
       provider: game.players.black.ai,
       model: blackModel,
       gamesPlayed: blackGamesPlayed + 1,
@@ -62,6 +59,6 @@ export const updateLeaderboard = async (game: Game, streams: FlowContextStateStr
       illegalMoves: blackIllegalMoves + (game.players.black.illegalMoveAttempts ?? 0),
       averageEvals: blackAverageEvals,
       analysis: options?.skipAnalysis ? rankingBlack?.analysis : analyzePlayerStrength(blackAverageEvals)
-    }),
-  ])
+    }
+  }
 }

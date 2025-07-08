@@ -42,13 +42,12 @@ jobs:
 
       - name: Download Stockfish
         run: |
-          mkdir stockfish
-          cd stockfish
-          git clone git@github.com:official-stockfish/Stockfish.git .
-          cd src
-          make -j profile-build ARCH=x86-64
-          mkdir -p ../../api/lib
-          mv stockfish ../../lib/stockfish
+          mkdir -p lib
+          curl -L https://github.com/official-stockfish/Stockfish/releases/latest/download/stockfish-ubuntu-x86-64-avx2.tar -o stockfish.tar
+          tar -xvf stockfish.tar -C lib/
+          chmod +x lib/stockfish-ubuntu-x86-64-avx2/stockfish-ubuntu-x86-64-avx2
+          mv lib/stockfish-ubuntu-x86-64-avx2/stockfish-ubuntu-x86-64-avx2 lib/stockfish
+          rm -rf stockfish.tar lib/stockfish-ubuntu-x86-64-avx2
 
       - name: Deploy using Motia Cloud
         working-directory: api

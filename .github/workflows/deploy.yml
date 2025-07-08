@@ -41,6 +41,7 @@ jobs:
           echo "STOCKFISH_PATH=./../../lib/stockfish" >> .env
 
       - name: Download Stockfish
+        working-directory: api
         run: |
           mkdir -p lib
           curl -L https://github.com/official-stockfish/Stockfish/releases/latest/download/stockfish-ubuntu-x86-64-avx2.tar -o stockfish.tar

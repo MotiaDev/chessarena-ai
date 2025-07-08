@@ -11,7 +11,7 @@ config = {
     "emits": ["player-move-score"],
     "flows": ["chess"],
     "input": None,
-    # NOTE: restore this once lambda deployments can support sourcing from s3 bucket
+    # NOTE: restore this once lambda deployments can support sourcing lambda code from s3 bucket
     # "includeFiles": ["./../../lib/stockfish"]
 }
 

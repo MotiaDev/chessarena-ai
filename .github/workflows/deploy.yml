@@ -44,11 +44,11 @@ jobs:
         working-directory: api
         run: |
           mkdir -p lib
-          curl -L https://github.com/official-stockfish/Stockfish/releases/latest/download/stockfish-ubuntu-x86-64-avx2.tar -o stockfish.tar
-          tar -xvf stockfish.tar -C lib/
-          chmod +x lib/stockfish-ubuntu-x86-64-avx2/stockfish-ubuntu-x86-64-avx2
-          mv lib/stockfish-ubuntu-x86-64-avx2/stockfish-ubuntu-x86-64-avx2 lib/stockfish
-          rm -rf stockfish.tar lib/stockfish-ubuntu-x86-64-avx2
+          curl -L https://github.com/official-stockfish/Stockfish/releases/latest/download/stockfish-ubuntu-x86-64-avx2.tar -o stockfish-source.tar
+          tar -xvf stockfish-source.tar -C lib/
+          chmod +x lib/stockfish-source/stockfish
+          mv lib/stockfish-source/stockfish lib/stockfish
+          rm -rf stockfish-source.tar lib/stockfish-source
 
       - name: Deploy using Motia Cloud
         working-directory: api

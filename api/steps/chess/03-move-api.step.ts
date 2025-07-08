@@ -2,7 +2,7 @@ import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { move } from '../../services/chess/move'
 import { validateMoveAccess } from '../../services/chess/validate-move-access'
-import { gameSchema } from './streams/00-chess-game.stream'
+import { Game, gameSchema } from './streams/00-chess-game.stream'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -10,7 +10,7 @@ export const config: ApiRouteConfig = {
   description: 'Move a piece',
   path: '/chess/game/:id/move',
   method: 'POST',
-  emits: ['chess-game-moved', 'chess-game-ended'],
+  emits: ['chess-game-moved', 'chess-game-ended', 'evaluate-player-move'],
   flows: ['chess'],
   bodySchema: z.object({
     password: z.string({ description: 'The password for the game' }),
@@ -39,7 +39,7 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
     return { status: 400, body: { message: 'Cannot move as AI' } }
   }
 
-  const isValid = await validateMoveAccess({ state, gameId, game, password: req.body.password })
+  const isValid = await validateMoveAccess({ state, gameId, game: game as Game, password: req.body.password })
 
   if (!isValid) {
     return { status: 400, body: { message: 'Invalid password' } }
@@ -50,10 +50,10 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
       logger,
       streams,
       gameId,
-      game: game,
+      game: game as Game,
       player: game.turn,
       action: { from: req.body.from, to: req.body.to, promote: req.body.promote },
-      emit,
+      emit: emit as any,
     })
 
     logger.info('[MovePiece] Move made', { from: req.body.from, to: req.body.to })

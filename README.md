@@ -10,6 +10,20 @@ You will need to use PNPM to install the dependencies.
 pnpm install
 ```
 
+You will need to install Stockfish engine to evaluate strength of the AI moves. You can download it from [here](https://stockfishchess.org/).
+
+> If you are using macOS, you can install it using Homebrew:
+
+```bash
+brew install stockfish
+```
+
+Install python dependencies 
+
+```bash
+pip install -r api/requirements.txt
+```
+
 ## Preparation
 
 ### API

@@ -1,6 +1,10 @@
 import { EventConfig, Handlers } from 'motia'
 import { z } from 'zod'
-import { models } from '../../services/ai/models'
+import { generateGameScore } from '../../services/chess/generate-game-score'
+import { Game } from './streams/00-chess-game.stream'
+import { GameMove } from './streams/00-chess-game-move.stream'
+import { updateLeaderboard } from '../../services/chess/update-leaderboard'
+import { Leaderboard } from './streams/00-chess-leaderboard.stream'
 
 /*
  * Warning: This can lead to race conditions if two games end at the same time.
@@ -27,53 +31,50 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
   if (!game) {
     logger.error('Game not found', { gameId: input.gameId })
     return
-  } else if (game.status === 'pending') {
+  } 
+  
+  if (game.status === 'pending') {
     logger.error('Game is not completed', { gameId: input.gameId })
-    return
-  } else if (!game.winner) {
-    logger.error('Game has no winner', { gameId: input.gameId })
     return
   }
 
-  if (game.players.white.ai && game.players.black.ai) {
-    /*
+  const moves = await streams.chessGameMove.getGroup(input.gameId)
+
+  const {whiteScore, blackScore, scoreboard} = await generateGameScore(game as Game, moves as GameMove[])
+
+  await streams.chessGame.set('game', input.gameId, {
+    ...game,
+    players: {
+      ...game.players,
+      white: {
+        ...game.players.white,
+        score: whiteScore
+      },
+      black: {
+        ...game.players.black,
+        score: blackScore
+      }
+    },
+    scoreboard
+  })
+
+  if (!game.players.white.ai || !game.players.black.ai) {
+    return
+  }
+
+  const currentLeaderboard = (await streams.chessLeaderboard.getGroup('global')).reduce((acc, item) => {
+    acc[item.provider] = item
+    return acc
+  }, {} as Record<string, Leaderboard>)
+
+  const leaderboards = await updateLeaderboard(game as Game, currentLeaderboard, scoreboard)
+
+  /*
      * Initially, we're going to have only a global leaderboard
      * But we want to have a weekly or monthly leaderboard at some point
      */
-    const groupId = 'global'
-    const rankingWhite = await streams.chessLeaderboard.get(groupId, game.players.white.ai)
-    const rankingBlack = await streams.chessLeaderboard.get(groupId, game.players.black.ai)
+  const groupId = 'global'
 
-    const whiteGamesPlayed = rankingWhite?.gamesPlayed ?? 0
-    const blackGamesPlayed = rankingBlack?.gamesPlayed ?? 0
-    const whiteWins = rankingWhite?.wins ?? 0
-    const blackWins = rankingBlack?.wins ?? 0
-    const whiteDraws = rankingWhite?.draws ?? 0
-    const blackDraws = rankingBlack?.draws ?? 0
-
-    const whiteIllegalMoves = rankingWhite?.illegalMoves ?? 0
-    const blackIllegalMoves = rankingBlack?.illegalMoves ?? 0
-
-    const whiteModel = models[game.players.white.ai]
-    const blackModel = models[game.players.black.ai]
-
-    await Promise.all([
-      streams.chessLeaderboard.set(groupId, whiteModel, {
-        provider: game.players.white.ai,
-        model: whiteModel,
-        gamesPlayed: whiteGamesPlayed + 1,
-        wins: whiteWins + (game.winner === 'white' ? 1 : 0),
-        draws: whiteDraws + (game.status === 'draw' ? 1 : 0),
-        illegalMoves: whiteIllegalMoves + (game.players.white.illegalMoveAttempts ?? 0),
-      }),
-      streams.chessLeaderboard.set(groupId, blackModel, {
-        provider: game.players.black.ai,
-        model: blackModel,
-        gamesPlayed: blackGamesPlayed + 1,
-        wins: blackWins + (game.winner === 'black' ? 1 : 0),
-        draws: blackDraws + (game.status === 'draw' ? 1 : 0),
-        illegalMoves: blackIllegalMoves + (game.players.black.illegalMoveAttempts ?? 0),
-      }),
-    ])
-  }
+  await streams.chessLeaderboard.set(groupId, game.players.white.ai, leaderboards[game.players.white.ai])
+  await streams.chessLeaderboard.set(groupId, game.players.black.ai, leaderboards[game.players.black.ai])
 }

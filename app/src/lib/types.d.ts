@@ -26,6 +26,7 @@ export type Game = {
   status: 'created' | 'pending' | 'completed' | 'draw'
   lastMove: Key[]
   players: { white: Player; black: Player }
+  scoreboard?: Scoreboard
 }
 
 export type GameRole = 'white' | 'black' | 'spectator' | 'root'
@@ -36,6 +37,22 @@ export type GameWithRole = Game & {
   passwords?: Password
 }
 
+export type PlayerAnalysis = {
+  strength: number
+  consistency: number
+  trend: number
+  reliability: number
+  gamesAnalyzed: number
+  whiteGames: number
+  blackGames: number
+}
+
+export type GameEvaluation = {
+  evaluation: number
+  color: 'white' | 'black'
+  timestamp: number
+}
+
 export type Leaderboard = {
   provider: 'openai' | 'gemini' | 'claude'
   model: string
@@ -43,4 +60,33 @@ export type Leaderboard = {
   wins: number
   draws: number
   illegalMoves: number
+  analysis?: PlayerAnalysis
+  averageEvals: GameEvaluation[]
 }
+
+export type Scoreboard = {
+  white: {
+    name: string
+    score: number
+    averageEval: number
+    avgSwing: number
+    finalEval: number
+    trend: string
+  }
+  black: {
+    name: string
+    score: number
+    averageEval: number
+    avgSwing: number
+    finalEval: number
+    trend: string
+  }
+  gameStatus: string
+  totalMoves: number
+  decisiveMoment?: {
+    moveNumber: number
+    evalChange: number
+    fen: string
+  }
+}
+

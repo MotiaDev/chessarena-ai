@@ -15,6 +15,7 @@ import { ChessLastGameMove } from './chess-last-game-move'
 import { ChessMessages } from './chess-messages'
 import { ChessShare } from './chess-share'
 import { ChessSidechat } from './chess-sidechat'
+import { CompletedGameDialog } from './completed-game-dialog'
 
 type Props = {
   gameId: string
@@ -59,7 +60,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
         {!isMobile && (
           <Panel
             className="
-            flex flex-col flex-1 gap-4 items-center justify-between w-screen h-screen
+            flex flex-col flex-1 gap-4 items-center justify-between w-screen
             h-screen min-w-[400px] max-w-[400px] border-l-2 border-white/5
           "
           >
@@ -165,6 +166,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           </Card>
         )}
       </div>
+      <CompletedGameDialog game={game} />
     </div>
   )
 }

@@ -37,10 +37,13 @@ Your task is to play as **{{player}}**, and you will be given:
   - Control key files
   - Transition to favorable endgames
 - Make sure the next move isn't putting your piece in danger unless necessary
+- Use the move analysis score value in order to choose the best move, the higher the score the better the move
 
 Valid moves:
 {{#validMoves}}
-- From {{from}} to -> {{to}}
+- From {{move.from}} to -> {{move.to}}
+  Analysis: 
+    - Score: {{score}}
 {{/validMoves}}
 
 Behavior:

@@ -4,8 +4,9 @@ import mustache from 'mustache'
 import path from 'path'
 import { z } from 'zod'
 import { makePrompt } from '../../services/ai/make-prompt'
-import { getValidMoves } from '../../services/chess/get-valid-moves'
 import { move } from '../../services/chess/move'
+import { evaluateBestMoves } from '../../services/chess/evaluate-best-moves'
+import { Game } from './streams/00-chess-game.stream'
 
 const MAX_ATTEMPTS = 3
 
@@ -14,7 +15,7 @@ export const config: EventConfig = {
   name: 'AI_Player',
   description: 'AI Player',
   subscribes: ['ai-move'],
-  emits: ['chess-game-moved', 'chess-game-ended'],
+  emits: ['chess-game-moved', 'chess-game-ended', 'evaluate-player-move'],
   flows: ['chess'],
   input: z.object({
     player: z.enum(['white', 'black'], { description: 'The player that made the move' }),
@@ -61,7 +62,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
   }
 
   let attempts = 0
-  const validMoves = getValidMoves(game)
+  const validMoves = evaluateBestMoves(game as Game)
   let lastInvalidMove = undefined
 
   logger.info('Valid moves', { validMoves })
@@ -110,9 +111,9 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
         streams,
         gameId: input.gameId,
         player: input.player,
-        game,
+        game: game as Game,
         action: action.move,
-        emit,
+        emit: emit as any,
         illegalMoveAttempts: attempts,
       })
 

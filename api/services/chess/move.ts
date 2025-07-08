@@ -1,6 +1,8 @@
 import { Chess } from 'chess.js'
 import { Emitter, FlowContextStateStreams, Logger } from 'motia'
 import type { Game } from '../../steps/chess/streams/00-chess-game.stream'
+import { getCaptureScore } from './get-capture-score'
+import { randomUUID } from 'crypto'
 
 type Args = {
   logger: Logger
@@ -13,9 +15,18 @@ type Args = {
   emit: Emitter<
     | {
         topic: 'chess-game-moved'
-        data: { gameId: string; player: string; move: { from: string; to: string }; fenBefore: string }
+        data: { 
+          gameId: string; 
+          player: string; 
+          move: { 
+            from: string; 
+            to: string;
+          }; 
+          fenBefore: string 
+        }
       }
     | { topic: 'chess-game-ended'; data: { gameId: string } }
+    | {topic: 'evaluate-player-move'; data: { gameId: string; fenBefore: string; fenAfter: string; moveId: string } }
   >
 }
 
@@ -43,6 +54,12 @@ export const move = async ({
   const status = shouldBeDraw || chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
   const nextIllegalMoveAttempts = (game.players[player].illegalMoveAttempts ?? 0) + illegalMoveAttempts
   const endGameReason = chess.isCheckmate() ? 'Checkmate' : shouldBeDraw ? 'Draw' : undefined
+  const pieceCaptured = move?.captured ? {
+    piece: move.captured,
+    score: getCaptureScore(move.captured)
+  } : undefined
+  const isPawnPromotion = move?.promotion !== undefined
+  
   const newGame = await streams.chessGame.set('game', gameId, {
     id: gameId,
     fen: move.after,
@@ -54,9 +71,35 @@ export const move = async ({
     endGameReason,
     players: {
       ...game.players,
-      [player]: { ...game.players[player], illegalMoveAttempts: nextIllegalMoveAttempts },
+      [player]: { 
+        ...game.players[player], 
+        illegalMoveAttempts: nextIllegalMoveAttempts,
+        totalMoves: (game.players[player]?.totalMoves ?? 0) + 1,
+        captures: pieceCaptured ? [...(game.players[player].captures ?? []), pieceCaptured] : game.players[player].captures,
+        promotions: isPawnPromotion ? (game.players[player].promotions ?? 0) + 1 : game.players[player].promotions,
+      },
     },
     check: chess.inCheck(),
+  })
+
+  const moveId = randomUUID();
+
+  await streams.chessGameMove.set(gameId, moveId, {
+    color: player,
+    fenBefore: game.fen,
+    fenAfter: move.after,
+    lastMove: [move.from, move.to],
+    check: chess.inCheck(),
+  })
+
+  await emit({
+    topic: 'evaluate-player-move',
+    data: {
+      gameId,
+      fenBefore: game.fen,
+      fenAfter: move.after,
+      moveId,
+    },
   })
 
   if (status === 'pending') {
@@ -66,7 +109,10 @@ export const move = async ({
         gameId,
         player,
         fenBefore: game.fen,
-        move: { from: action.from, to: action.to },
+        move: { 
+          from: action.from, 
+          to: action.to,
+        },
       },
     })
   } else {
@@ -76,5 +122,5 @@ export const move = async ({
     })
   }
 
-  return newGame
+  return newGame as Game
 }

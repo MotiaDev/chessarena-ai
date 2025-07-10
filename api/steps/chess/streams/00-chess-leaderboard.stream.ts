@@ -3,9 +3,9 @@ import { z } from 'zod'
 
 const GameEvaluationSchema = z.object({
   evaluation: z.number(),
-  color: z.string({description: 'The color of the pieces that the player played, white or black'}),
-  timestamp: z.number({description: 'The timestamp of the evaluation'}),
-});
+  color: z.string({ description: 'The color of the pieces that the player played, white or black' }),
+  timestamp: z.number({ description: 'The timestamp of the evaluation' }),
+})
 
 const PlayerAnalysisSchema = z.object({
   strength: z.number(),
@@ -15,7 +15,7 @@ const PlayerAnalysisSchema = z.object({
   gamesAnalyzed: z.number(),
   whiteGames: z.number(),
   blackGames: z.number(),
-});
+})
 
 const LeaderBoardSchema = z.object({
   provider: z.enum(['openai', 'gemini', 'claude'], { description: 'The provider of the model' }),
@@ -33,7 +33,6 @@ export const config: StreamConfig = {
   schema: LeaderBoardSchema,
   baseConfig: { storageType: 'default' },
 }
-
 
 export type GameEvaluation = z.infer<typeof GameEvaluationSchema>
 export type PlayerAnalysis = z.infer<typeof PlayerAnalysisSchema>

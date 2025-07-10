@@ -1,7 +1,6 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { gameSchema } from './streams/00-chess-game.stream'
-import { createGameId } from '../../services/chess/create-game-id'
 import { createPasswords } from '../../services/chess/create-passwords'
 import { createGame } from '../../services/chess/create-game'
 

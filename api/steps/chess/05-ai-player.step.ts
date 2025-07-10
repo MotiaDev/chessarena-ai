@@ -6,7 +6,6 @@ import { z } from 'zod'
 import { makePrompt } from '../../services/ai/make-prompt'
 import { move } from '../../services/chess/move'
 import { evaluateBestMoves } from '../../services/chess/evaluate-best-moves'
-import { Game } from './streams/00-chess-game.stream'
 
 const MAX_ATTEMPTS = 3
 
@@ -62,7 +61,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
   }
 
   let attempts = 0
-  const validMoves = evaluateBestMoves(game as Game)
+  const validMoves = evaluateBestMoves(game)
   let lastInvalidMove = undefined
 
   logger.info('Valid moves', { validMoves })
@@ -111,9 +110,9 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
         streams,
         gameId: input.gameId,
         player: input.player,
-        game: game as Game,
+        game,
         action: action.move,
-        emit: emit as any,
+        emit,
         illegalMoveAttempts: attempts,
       })
 

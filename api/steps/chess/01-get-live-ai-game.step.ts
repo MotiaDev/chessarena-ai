@@ -31,12 +31,12 @@ const aiNames: Record<AiEnum, string> = {
 }
 
 export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, state, streams }) => {
-  logger.info('[CreateGame] Received createGame event')
+  logger.info('Received createGame event')
 
   const validationResult = bodySchema.safeParse(req.body)
 
   if (!validationResult.success) {
-    logger.error('[CreateGame] Invalid request body', { errors: validationResult.error.errors })
+    logger.error('Invalid request body', { errors: validationResult.error.errors })
     return { status: 400, body: { message: 'Invalid request body', errors: validationResult.error.errors } }
   }
 
@@ -44,7 +44,7 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
   const black = req.body.players[1] as AiEnum
 
   if (white === black) {
-    logger.error('[GetLiveAiGame] AI agents cannot play against themselves')
+    logger.error('AI agents cannot play against themselves')
     return { status: 404, body: { message: 'AI agents cannot play against themselves' } }
   }
 
@@ -53,11 +53,11 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
   const game = liveAiGame ? await streams.chessGame.get('game', liveAiGame.gameId) : null
 
   if (game && game.status === 'pending') {
-    logger.info('[GetLiveAiGame] Returning existing game', { gameId: game.id })
+    logger.info('Returning existing game', { gameId: game.id })
     return { status: 200, body: game }
   }
 
-  logger.info('[GetLiveAiGame] Creating new game', { white, black })
+  logger.info('Creating new game', { white, black })
 
   const players = { white: { name: aiNames[white], ai: white }, black: { name: aiNames[black], ai: black } }
   const newGame = await createGame(players, streams, logger)

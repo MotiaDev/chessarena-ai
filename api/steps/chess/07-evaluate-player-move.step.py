@@ -2,15 +2,22 @@ import chess
 import chess.engine
 import os
 from typing import Dict, Any
+from pydantic import BaseModel, Field
+
+class EvaluatePlayerMoveInput(BaseModel):
+    fenBefore: str = Field(description="The FEN of the game before the move")
+    fenAfter: str = Field(description="The FEN of the game after the move")
+    gameId: str = Field(description="The ID of the game")
+    moveId: str = Field(description="The ID of the move")
 
 config = {
     "type": "event",
     "name": "EvaluatePlayerMove",
     "description": "Evaluates the move picked by a player",
     "subscribes": ["evaluate-player-move"], 
-    "emits": ["player-move-score"],
+    "emits": [],
     "flows": ["chess"],
-    "input": None,
+    "input": EvaluatePlayerMoveInput.model_json_schema(),
     # NOTE: restore this once lambda deployments can be configured to support sourcing lambda code from s3 bucket
     # "includeFiles": ["./../../lib/stockfish"]
 }
@@ -49,12 +56,14 @@ async def evaluate_position(engine: chess.engine.SimpleEngine, board: chess.Boar
         "nps": info.get("nps", 0)
     }
 
-async def handler(input, ctx):
-    ctx.logger.info('[EvaluatePlayerMove] Received event', input)
+async def handler(input: EvaluatePlayerMoveInput, ctx):
+    ctx.logger.info("Received event", input)
 
     # Get FEN strings from input
-    fen_before = input.get('fenBefore')
-    fen_after = input.get('fenAfter')
+    fen_before = input.get("fenBefore")
+    fen_after = input.get("fenAfter")
+    game_id = input.get("gameId")
+    move_id = input.get("moveId")
     
     if not fen_before or not fen_after:
         raise ValueError("Both fenBefore and fenAfter must be provided")
@@ -62,7 +71,7 @@ async def handler(input, ctx):
     # Initialize Stockfish engine
     engine_path = os.getenv("STOCKFISH_BIN_PATH")
     if not engine_path:
-        ctx.logger.error('STOCKFISH_BIN_PATH environment variable not set')
+        ctx.logger.error("STOCKFISH_BIN_PATH environment variable not set")
         raise EnvironmentError("STOCKFISH_BIN_PATH environment variable not set")
     
     _, engine = await chess.engine.popen_uci(engine_path)
@@ -98,32 +107,43 @@ async def handler(input, ctx):
         if eval_before["best_move"] and move == eval_before["best_move"]:
             accuracy = 100.0  # Best move
         else:
-            # Scale accuracy based on how close the move is to the best move's evaluation
+            # Scale accuracy based on how close the move is to the best move"s evaluation
             best_move_eval = await evaluate_position(engine, board_before)
             accuracy = max(0, min(100, 50 + (move_quality * 50)))
         
-        ctx.logger.info(f"Move {move.uci()}: Score {eval_after['normalized_score']:.2f}, "
-                       f"Quality: {move_quality:.2f}, Accuracy: {accuracy:.1f}%")
+        ctx.logger.info("Move evaluation results", {
+            "move": move.uci(),
+            "score": eval_after["normalized_score"],
+            "quality": move_quality,
+            "accuracy": accuracy
+        })
+
+        ctx.logger.info("Fetching game move from Streams")
+        move_stream = await ctx.streams.chessGameMove.get(game_id, move_id)
+        ctx.logger.info("Game move fetched from Streams", { "move": move })
+
+        if not move_stream:
+            ctx.logger.error("Move not found", { "moveId": move_id })
+            raise ValueError("Move not found")
         
-        # Emit the results
-        result = {
-            "topic": "player-move-score",
-            "data": {
-                "evaluation": eval_after["normalized_score"],
-                # NOTE: This is the evaluation in centipawns
-                "evaluationCp": None if eval_after["is_mate"] else eval_after["score"].score(),
-                "isMate": eval_after["is_mate"],
-                "mateIn": eval_after["score"].mate() if eval_after["is_mate"] else None,
-                "bestMove": eval_after["best_move"].uci() if eval_after["best_move"] else None,
-                "movePlayed": move.uci(),
-                "moveQuality": move_quality,
-                "moveAccuracy": accuracy,
-                "gameId": input.get("gameId"),
-                "moveId": input.get("moveId"),
-                "color": "white" if board_before.turn == chess.BLACK else "black"
-            }
+        evaluation = {
+            "evaluation": eval_after["normalized_score"],
+            # Evaluation in centipawns
+            "evaluationCp": None if eval_after["is_mate"] else eval_after["score"].score(),
+            "isMate": eval_after["is_mate"],
+            "mateIn": eval_after["score"].mate() if eval_after["is_mate"] else None,
+            "bestMove": eval_after["best_move"].uci() if eval_after["best_move"] else None,
+            "movePlayed": move.uci(),
+            "moveQuality": move_quality,
+            "moveAccuracy": accuracy,
         }
-        
-        await ctx.emit(result)
+        move_stream["evaluation"] = evaluation
+
+        ctx.logger.info("Updating game move with evaluation", {
+            "moveId": move_id,
+            "evaluation": evaluation
+        })
+        await ctx.streams.chessGameMove.set(game_id, move_id, move_stream)
+        ctx.logger.info("Game move updated with evaluation", { "move": move_stream })
     finally:
         await engine.quit()

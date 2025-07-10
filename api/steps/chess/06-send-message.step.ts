@@ -27,7 +27,7 @@ export const config: ApiRouteConfig = {
 }
 
 export const handler: Handlers['SendMessage'] = async (req, { logger, streams }) => {
-  logger.info('[SendMessage] Received SendMessage event', { gameId: req.pathParams.id })
+  logger.info('Received SendMessage event', { gameId: req.pathParams.id })
 
   const messageId = crypto.randomUUID()
   const game = await streams.chessGame.get('game', req.pathParams.id)

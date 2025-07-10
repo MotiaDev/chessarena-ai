@@ -1,16 +1,19 @@
 import { StreamConfig } from 'motia'
 import { z } from 'zod'
 
-export const MoveEvaluationSchema = z.object({
-  evaluation: z.number(),
-  evaluationCp: z.number(),
-  isMate: z.boolean(),
-  mateIn: z.number().nullable(),
-  bestMove: z.string().nullable().optional(),
-  movePlayed: z.string().nullable().optional(),
-  moveQuality: z.number(),
-  moveAccuracy: z.number(),
-})
+export const moveEvaluationSchema = () =>
+  z.object({
+    evaluation: z.number(),
+    evaluationCp: z.number(),
+    isMate: z.boolean(),
+    mateIn: z.number().nullable().optional(),
+    bestMove: z.string().nullable().optional(),
+    movePlayed: z.string().nullable().optional(),
+    moveQuality: z.number(),
+    moveAccuracy: z.number(),
+  })
+
+export const MoveEvaluationSchema = moveEvaluationSchema()
 
 const GameMoveSchema = z.object({
   color: z.enum(['white', 'black'], { description: 'The color that made the move' }),
@@ -18,7 +21,7 @@ const GameMoveSchema = z.object({
   fenAfter: z.string({ description: 'The FEN of the game after the move' }),
   lastMove: z.array(z.string(), { description: 'The last move made, example ["c3", "c4"]' }),
   check: z.boolean({ description: 'Whether the move is a check' }),
-  evaluation: MoveEvaluationSchema.optional(),
+  evaluation: moveEvaluationSchema().optional(),
 })
 
 export const config: StreamConfig = {

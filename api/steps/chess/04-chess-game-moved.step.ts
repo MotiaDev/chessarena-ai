@@ -15,17 +15,17 @@ export const config: EventConfig = {
 }
 
 export const handler: Handlers['ChessGameMoved'] = async (input, { logger, emit, streams }) => {
-  logger.info('[ChessGameMoved] Received ChessGameMoved event', { input })
+  logger.info('Received ChessGameMoved event', { input })
 
   const game = await streams.chessGame.get('game', input.gameId)
 
   if (!game) {
-    logger.error('[ChessGameMoved] Game not found', { gameId: input.gameId })
+    logger.error('Game not found', { gameId: input.gameId })
     return
   }
 
   if (game.status === 'completed') {
-    logger.info('[ChessGameMoved] Game is completed', { gameId: input.gameId })
+    logger.info('Game is completed', { gameId: input.gameId })
     return
   }
 
@@ -44,6 +44,6 @@ export const handler: Handlers['ChessGameMoved'] = async (input, { logger, emit,
       },
     })
   } else {
-    logger.info('[ChessGameMoved] No AI player found', { gameId: input.gameId })
+    logger.info('No AI player found', { gameId: input.gameId })
   }
 }

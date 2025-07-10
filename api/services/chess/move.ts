@@ -15,18 +15,18 @@ type Args = {
   emit: Emitter<
     | {
         topic: 'chess-game-moved'
-        data: { 
-          gameId: string; 
-          player: string; 
-          move: { 
-            from: string; 
-            to: string;
-          }; 
-          fenBefore: string 
+        data: {
+          gameId: string
+          player: string
+          move: {
+            from: string
+            to: string
+          }
+          fenBefore: string
         }
       }
     | { topic: 'chess-game-ended'; data: { gameId: string } }
-    | {topic: 'evaluate-player-move'; data: { gameId: string; fenBefore: string; fenAfter: string; moveId: string } }
+    | { topic: 'evaluate-player-move'; data: { gameId: string; fenBefore: string; fenAfter: string; moveId: string } }
   >
 }
 
@@ -54,12 +54,14 @@ export const move = async ({
   const status = shouldBeDraw || chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
   const nextIllegalMoveAttempts = (game.players[player].illegalMoveAttempts ?? 0) + illegalMoveAttempts
   const endGameReason = chess.isCheckmate() ? 'Checkmate' : shouldBeDraw ? 'Draw' : undefined
-  const pieceCaptured = move?.captured ? {
-    piece: move.captured,
-    score: getCaptureScore(move.captured)
-  } : undefined
+  const pieceCaptured = move?.captured
+    ? {
+        piece: move.captured,
+        score: getCaptureScore(move.captured),
+      }
+    : undefined
   const isPawnPromotion = move?.promotion !== undefined
-  
+
   const newGame = await streams.chessGame.set('game', gameId, {
     id: gameId,
     fen: move.after,
@@ -71,18 +73,20 @@ export const move = async ({
     endGameReason,
     players: {
       ...game.players,
-      [player]: { 
-        ...game.players[player], 
+      [player]: {
+        ...game.players[player],
         illegalMoveAttempts: nextIllegalMoveAttempts,
         totalMoves: (game.players[player]?.totalMoves ?? 0) + 1,
-        captures: pieceCaptured ? [...(game.players[player].captures ?? []), pieceCaptured] : game.players[player].captures,
+        captures: pieceCaptured
+          ? [...(game.players[player].captures ?? []), pieceCaptured]
+          : game.players[player].captures,
         promotions: isPawnPromotion ? (game.players[player].promotions ?? 0) + 1 : game.players[player].promotions,
       },
     },
     check: chess.inCheck(),
   })
 
-  const moveId = randomUUID();
+  const moveId = randomUUID()
 
   await streams.chessGameMove.set(gameId, moveId, {
     color: player,
@@ -109,8 +113,8 @@ export const move = async ({
         gameId,
         player,
         fenBefore: game.fen,
-        move: { 
-          from: action.from, 
+        move: {
+          from: action.from,
           to: action.to,
         },
       },
@@ -122,5 +126,5 @@ export const move = async ({
     })
   }
 
-  return newGame as Game
+  return newGame
 }

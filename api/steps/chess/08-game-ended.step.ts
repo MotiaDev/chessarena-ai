@@ -1,8 +1,6 @@
 import { EventConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { generateGameScore } from '../../services/chess/generate-game-score'
-import { Game } from './streams/00-chess-game.stream'
-import { GameMove } from './streams/00-chess-game-move.stream'
 import { updateLeaderboard } from '../../services/chess/update-leaderboard'
 import { Leaderboard } from './streams/00-chess-leaderboard.stream'
 
@@ -31,48 +29,44 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
   if (!game) {
     logger.error('Game not found', { gameId: input.gameId })
     return
-  } 
-  
+  }
+
   if (game.status === 'pending') {
     logger.error('Game is not completed', { gameId: input.gameId })
     return
   }
 
   const moves = await streams.chessGameMove.getGroup(input.gameId)
-
-  const {whiteScore, blackScore, scoreboard} = await generateGameScore(game as Game, moves as GameMove[])
+  const { whiteScore, blackScore, scoreboard } = await generateGameScore(game, moves)
 
   await streams.chessGame.set('game', input.gameId, {
     ...game,
     players: {
       ...game.players,
-      white: {
-        ...game.players.white,
-        score: whiteScore
-      },
-      black: {
-        ...game.players.black,
-        score: blackScore
-      }
+      white: { ...game.players.white, score: whiteScore },
+      black: { ...game.players.black, score: blackScore },
     },
-    scoreboard
+    scoreboard,
   })
 
   if (!game.players.white.ai || !game.players.black.ai) {
     return
   }
 
-  const currentLeaderboard = (await streams.chessLeaderboard.getGroup('global')).reduce((acc, item) => {
-    acc[item.provider] = item
-    return acc
-  }, {} as Record<string, Leaderboard>)
+  const currentLeaderboard = (await streams.chessLeaderboard.getGroup('global')).reduce(
+    (acc, item) => {
+      acc[item.provider] = item
+      return acc
+    },
+    {} as Record<string, Leaderboard>,
+  )
 
-  const leaderboards = await updateLeaderboard(game as Game, currentLeaderboard, scoreboard)
+  const leaderboards = await updateLeaderboard(game, currentLeaderboard, scoreboard)
 
   /*
-     * Initially, we're going to have only a global leaderboard
-     * But we want to have a weekly or monthly leaderboard at some point
-     */
+   * Initially, we're going to have only a global leaderboard
+   * But we want to have a weekly or monthly leaderboard at some point
+   */
   const groupId = 'global'
 
   await streams.chessLeaderboard.set(groupId, game.players.white.ai, leaderboards[game.players.white.ai])

@@ -1,12 +1,16 @@
 import { StreamConfig } from 'motia'
 import { z } from 'zod'
 
-const PlayerScore = z.object({
-  averageEvaluation: z.number({ description: 'The average evaluation of the game' }),
-  evaluationSwings: z.number({ description: 'The evaluation swings of the game' }),
-  finalPositionEvaluation: z.number({ description: 'The final position evaluation of the game' }),
-  overallTrend: z.number({ description: 'The overall trend of the game' }),
-})
+// Issue: reusing same object in multiple places is not working
+const playerScoreSchema = () =>
+  z.object({
+    averageEvaluation: z.number({ description: 'The average evaluation of the game' }),
+    evaluationSwings: z.number({ description: 'The evaluation swings of the game' }),
+    finalPositionEvaluation: z.number({ description: 'The final position evaluation of the game' }),
+    overallTrend: z.number({ description: 'The overall trend of the game' }),
+  })
+
+const PlayerScore = playerScoreSchema()
 
 const Scoreboard = z.object({
   white: z.object({
@@ -27,13 +31,14 @@ const Scoreboard = z.object({
   }),
   gameStatus: z.string({ description: 'The status of the game' }),
   totalMoves: z.number({ description: 'The total number of moves' }),
-  decisiveMoment: z.object({
-    moveNumber: z.number({ description: 'The move number' }),
-    evalChange: z.number({ description: 'The evaluation change' }),
-    fen: z.string({ description: 'The FEN of the game' }),
-  }).optional(),
+  decisiveMoment: z
+    .object({
+      moveNumber: z.number({ description: 'The move number' }),
+      evalChange: z.number({ description: 'The evaluation change' }),
+      fen: z.string({ description: 'The FEN of the game' }),
+    })
+    .optional(),
 })
-
 
 export const gameSchema = z.object({
   id: z.string({ description: 'The ID of the game' }),
@@ -50,28 +55,36 @@ export const gameSchema = z.object({
       ai: z.enum(['openai', 'gemini', 'claude']).optional(),
       illegalMoveAttempts: z.number({ description: 'The number of illegal move attempts' }).optional(),
       totalMoves: z.number({ description: 'The total number of moves' }).optional(),
-      captures: z.array(z.object({
-        piece: z.string({ description: 'The piece captured' }),
-        score: z.number({ description: 'The score of the capture' }),
-      })).optional(),
+      captures: z
+        .array(
+          z.object({
+            piece: z.string({ description: 'The piece captured' }),
+            score: z.number({ description: 'The score of the capture' }),
+          }),
+        )
+        .optional(),
       promotions: z.number({ description: 'The number of pawn promotions' }).optional(),
-      score: PlayerScore.extend({}).optional(),
+      score: playerScoreSchema().optional(),
     }),
     black: z.object({
       name: z.string({ description: 'The name of the player' }),
       ai: z.enum(['openai', 'gemini', 'claude']).optional(),
       illegalMoveAttempts: z.number({ description: 'The number of illegal move attempts' }).optional(),
       totalMoves: z.number({ description: 'The total number of moves' }).optional(),
-      captures: z.array(z.object({
-        piece: z.string({ description: 'The piece captured' }),
-        score: z.number({ description: 'The score of the capture' }),
-      })).optional(),
+      captures: z
+        .array(
+          z.object({
+            piece: z.string({ description: 'The piece captured' }),
+            score: z.number({ description: 'The score of the capture' }),
+          }),
+        )
+        .optional(),
       promotions: z.number({ description: 'The number of pawn promotions' }).optional(),
-      score: PlayerScore.extend({}).optional(),
+      score: playerScoreSchema().optional(),
     }),
   }),
   check: z.boolean({ description: 'Whether the game is in check' }),
-  scoreboard: Scoreboard.extend({}).optional(),
+  scoreboard: Scoreboard.optional(),
 })
 
 export type Game = z.infer<typeof gameSchema>
@@ -81,7 +94,6 @@ export const config: StreamConfig = {
   schema: gameSchema,
   baseConfig: { storageType: 'default' },
 }
-
 
 export type PlayerScore = z.infer<typeof PlayerScore>
 

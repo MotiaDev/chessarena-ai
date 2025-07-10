@@ -1,9 +1,9 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
-import { Game, gameSchema } from './streams/00-chess-game.stream'
-import { Password } from './types'
 import { getGameRole } from '../../services/chess/get-game-role'
 import { getUserName } from '../../services/chess/get-user-name'
+import { gameSchema } from './streams/00-chess-game.stream'
+import { Password } from './types'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -27,7 +27,7 @@ export const config: ApiRouteConfig = {
 }
 
 export const handler: Handlers['GetGame'] = async (req, { logger, state, streams }) => {
-  logger.info('[GetGame] Received getGame event')
+  logger.info('Received getGame event')
 
   const gameId = req.pathParams.id
   const game = await streams.chessGame.get('game', gameId)
@@ -38,7 +38,7 @@ export const handler: Handlers['GetGame'] = async (req, { logger, state, streams
 
   const passwords = (await state.get<Password>(gameId, 'passwords')) ?? undefined
   const role = await getGameRole({
-    game: game as Game,
+    game,
     password: req.queryParams.password as string,
     passwords,
   })
@@ -48,7 +48,7 @@ export const handler: Handlers['GetGame'] = async (req, { logger, state, streams
     body: {
       ...game,
       role,
-      username: getUserName({ game: game as Game, role }),
+      username: getUserName({ game, role }),
       passwords: role === 'root' ? passwords : undefined,
     },
   }

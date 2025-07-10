@@ -50,6 +50,10 @@ jobs:
           mv stockfish/stockfish-ubuntu-x86-64-avx2 lib/stockfish
           rm -rf stockfish-source.tar stockfish
 
+      - name: Motia Install
+        working-directory: api
+        run: npx motia install
+
       - name: Deploy using Motia Cloud
         working-directory: api
         run: |

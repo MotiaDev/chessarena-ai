@@ -52,7 +52,9 @@ jobs:
 
       - name: Motia Install
         working-directory: api
-        run: npx motia install
+        run: |
+          npx motia install
+          source python_modules/bin/activate
 
       - name: Deploy using Motia Cloud
         working-directory: api

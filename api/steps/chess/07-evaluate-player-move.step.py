@@ -2,13 +2,6 @@ import chess
 import chess.engine
 import os
 from typing import Dict, Any
-from pydantic import BaseModel, Field
-
-class EvaluatePlayerMoveInput(BaseModel):
-    fenBefore: str = Field(description="The FEN of the game before the move")
-    fenAfter: str = Field(description="The FEN of the game after the move")
-    gameId: str = Field(description="The ID of the game")
-    moveId: str = Field(description="The ID of the move")
 
 config = {
     "type": "event",
@@ -17,7 +10,28 @@ config = {
     "subscribes": ["evaluate-player-move"], 
     "emits": [],
     "flows": ["chess"],
-    "input": EvaluatePlayerMoveInput.model_json_schema(),
+    "input": {
+        "type": "object",
+        "properties": {
+            "fenBefore": {
+                "type": "string",
+                "description": "The FEN of the game before the move"
+            },
+            "fenAfter": {
+                "type": "string", 
+                "description": "The FEN of the game after the move"
+            },
+            "gameId": {
+                "type": "string",
+                "description": "The ID of the game"
+            },
+            "moveId": {
+                "type": "string",
+                "description": "The ID of the move"
+            }
+        },
+        "required": ["fenBefore", "fenAfter", "gameId", "moveId"]
+    },
     # NOTE: restore this once lambda deployments can be configured to support sourcing lambda code from s3 bucket
     # "includeFiles": ["./../../lib/stockfish"]
 }
@@ -56,7 +70,7 @@ async def evaluate_position(engine: chess.engine.SimpleEngine, board: chess.Boar
         "nps": info.get("nps", 0)
     }
 
-async def handler(input: EvaluatePlayerMoveInput, ctx):
+async def handler(input, ctx):
     ctx.logger.info("Received event", input)
 
     # Get FEN strings from input
@@ -141,7 +155,7 @@ async def handler(input: EvaluatePlayerMoveInput, ctx):
 
         ctx.logger.info("Updating game move with evaluation", {
             "moveId": move_id,
-            "evaluation": evaluation
+            "evaluation": evaluation,
         })
         await ctx.streams.chessGameMove.set(game_id, move_id, move_stream)
         ctx.logger.info("Game move updated with evaluation", { "move": move_stream })

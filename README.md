@@ -10,18 +10,31 @@ You will need to use PNPM to install the dependencies.
 pnpm install
 ```
 
-You will need to install Stockfish engine to evaluate strength of the AI moves. You can download it from [here](https://stockfishchess.org/).
+### Stockfish
 
-> If you are using macOS, you can install it using Homebrew:
+ChessArena uses Stockfish engine to evaluate strength of every move.
+
+You can install Stockfish engine with the following command:
 
 ```bash
-brew install stockfish
+pnpm install-stockfish -- <platform>
 ```
 
-Install python dependencies 
+The platforms are:
+
+- `linux-x86`
+- `mac-m1`
+
+Optionally you can install it with brew, you can also download it from [here](https://stockfishchess.org/).
+
+Make sure to configure `STOCKFISH_BIN_PATH` in `api/.env` file.
+
+### Python dependencies
+
+Install python dependencies with Motia.
 
 ```bash
-pip install -r api/requirements.txt
+npx motia install
 ```
 
 ## Preparation

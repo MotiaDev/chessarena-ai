@@ -9,4 +9,4 @@ dist
 .DS_Store
 .vscode
 .env
-api/lib/stockfish
+api/lib/*

@@ -30,8 +30,8 @@ importers:
         specifier: ^1.3.1
         version: 1.3.1
       motia:
-        specifier: 0.4.0-beta.90
-        version: 0.4.0-beta.90(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))
+        specifier: 0.4.1-beta.92
+        version: 0.4.1-beta.92(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))
       mustache:
         specifier: ^4.2.0
         version: 4.2.0
@@ -556,33 +556,33 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@motiadev/core@0.4.0-beta.90':
-    resolution: {integrity: sha512-NjvMvqzErx/KhDVKFoM5acoSScnlSo0ZuJLeHeI0zdPpMCsfDWEl0WKW8ZfMBjrkjDgDpCl82Vd13tlBRs3h+A==}
+  '@motiadev/core@0.4.1-beta.92':
+    resolution: {integrity: sha512-vUAyDxvm0hgdZP0sfZs8c5BE46kLc50D7PU1yqJoryKmQf7r8bDcqTAHk0wTakfN8E53zJ/2vRyTVplV4Nz1rA==}
 
   '@motiadev/stream-client-browser@0.2.1-beta.73':
     resolution: {integrity: sha512-o0ug4DQSx6Wq7jVozbA7i8ca/Q4zkGYc84rA0y8y7sBP6SO6Rp+ysmuMR0bqH1rkQwihhRqKYT15qOsoJWUrIA==}
 
-  '@motiadev/stream-client-browser@0.4.0-beta.90':
-    resolution: {integrity: sha512-01HrOIA3YQVc5CvOvcsbPMt29mNZj6ozDoxslS/BN1136PUk5HP5cutcEd95QBsBWk2gxJ7vj2lLfwWyYDa1qA==}
+  '@motiadev/stream-client-browser@0.4.1-beta.92':
+    resolution: {integrity: sha512-Esk6ZmFs5TSo39CCk0XWYbPktZ3I2ck4AF+iyx9la4lpcmfUOvuw6nnxEIGdNBLjGH+073fd3WufyGtaguBikA==}
 
   '@motiadev/stream-client-react@0.2.1-beta.73':
     resolution: {integrity: sha512-KjkZkDv5QYQwG4DLKpjpkamjXBdjU16tn/vQ7yJBx36wUy7xbWUwhrr4qQiKvLBxwbWGcsfeXPWTVT+tubnqZg==}
     peerDependencies:
       react: ^19.1.0
 
-  '@motiadev/stream-client-react@0.4.0-beta.90':
-    resolution: {integrity: sha512-YRqDgFPziqMm/DD6U/z0c9KkFQ3bXDVOT/0O6b8T0idM7SOZ9V74QnfACM+920EvyIg25jtjQ7J3Ke2d0CDS3A==}
+  '@motiadev/stream-client-react@0.4.1-beta.92':
+    resolution: {integrity: sha512-0B6TsSQzgNjOZQeqzZPmUnROLe41DMTDvp4UsDGbt1QL5W72KbzILe08TL1/n6t/DPlkRL3zBOLMj47vWUmS5g==}
     peerDependencies:
       react: ^19.1.0
 
-  '@motiadev/ui@0.4.0-beta.90':
-    resolution: {integrity: sha512-23Ufy+48EyDU7nXfv6EjFXaVDEYx+aOGQHoK3nbmJgH3vQD38ODe7biAA9nGFRsZlNC3OMk4DCsRcQwm+ZvT9Q==}
+  '@motiadev/ui@0.4.1-beta.92':
+    resolution: {integrity: sha512-Q1IEgohxuqRvM4bvAa0ssSBv5eRpn9FD+b7x6Dn0aaKN1DzBvcEyfzOq41ptHCASBWZP3BvRPu0sbBi7gLSKnw==}
     peerDependencies:
       react: ^19.1.0
       react-dom: ^19.1.0
 
-  '@motiadev/workbench@0.4.0-beta.90':
-    resolution: {integrity: sha512-t6ukpRvXk0B84yuGyAaIrsSwg2yEhz8P+mobNRelksYY/4w+nQIpZEGo3xBZfjs12mUZAUKZ5O7vUVf/d7Irug==}
+  '@motiadev/workbench@0.4.1-beta.92':
+    resolution: {integrity: sha512-CvoCjJ72wYEQr3yJWl58ETmn++nEpfZnH28TeKsN5ynRcIixEMr15M0GtxIsE2CSTr0TE1RmdqqdyZSjtRL05A==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2762,8 +2762,8 @@ packages:
   monaco-editor@0.52.2:
     resolution: {integrity: sha512-GEQWEZmfkOGLdd3XK8ryrfWz3AIP8YymVXiPHEdewrUq7mh0qrKrfHLNCXcbB6sTnMLnOZ3ztSiKcciFUkIJwQ==}
 
-  motia@0.4.0-beta.90:
-    resolution: {integrity: sha512-rHobFv2oz3MEc4emcOQMt/aqtr61v1qV2ErExXRA2QgdwPDYNKcifTKTyJTvg160RjBQUJ7RRYzHXHOOBTXlLg==}
+  motia@0.4.1-beta.92:
+    resolution: {integrity: sha512-WhxGH9XNz2h/6oC4rIP6kLhz9dbDIhldrG9heUOUiXJXGy6W/d8aDMkIeavdqle+qfxEYwL/VBQP58yrx9ekkA==}
     hasBin: true
 
   ms@2.0.0:
@@ -3984,7 +3984,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@motiadev/core@0.4.0-beta.90(@types/node@22.15.21)(typescript@5.8.3)':
+  '@motiadev/core@0.4.1-beta.92(@types/node@22.15.21)(typescript@5.8.3)':
     dependencies:
       '@amplitude/analytics-node': 1.3.9
       body-parser: 1.20.3
@@ -4012,7 +4012,7 @@ snapshots:
     dependencies:
       uuid: 11.1.0
 
-  '@motiadev/stream-client-browser@0.4.0-beta.90':
+  '@motiadev/stream-client-browser@0.4.1-beta.92':
     dependencies:
       uuid: 11.1.0
 
@@ -4021,12 +4021,12 @@ snapshots:
       '@motiadev/stream-client-browser': 0.2.1-beta.73
       react: 19.1.0
 
-  '@motiadev/stream-client-react@0.4.0-beta.90(react@19.1.0)':
+  '@motiadev/stream-client-react@0.4.1-beta.92(react@19.1.0)':
     dependencies:
-      '@motiadev/stream-client-browser': 0.4.0-beta.90
+      '@motiadev/stream-client-browser': 0.4.1-beta.92
       react: 19.1.0
 
-  '@motiadev/ui@0.4.0-beta.90(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@motiadev/ui@0.4.1-beta.92(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@radix-ui/react-dropdown-menu': 2.1.15(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-label': 2.1.7(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -4044,11 +4044,11 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@motiadev/workbench@0.4.0-beta.90(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(use-sync-external-store@1.5.0(react@19.1.0))':
+  '@motiadev/workbench@0.4.1-beta.92(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(use-sync-external-store@1.5.0(react@19.1.0))':
     dependencies:
       '@monaco-editor/react': 4.7.0(monaco-editor@0.52.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@motiadev/stream-client-react': 0.4.0-beta.90(react@19.1.0)
-      '@motiadev/ui': 0.4.0-beta.90(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@motiadev/stream-client-react': 0.4.1-beta.92(react@19.1.0)
+      '@motiadev/ui': 0.4.1-beta.92(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-collapsible': 1.1.11(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-dialog': 1.1.14(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-dropdown-menu': 2.1.15(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -6418,11 +6418,11 @@ snapshots:
 
   monaco-editor@0.52.2: {}
 
-  motia@0.4.0-beta.90(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0)):
+  motia@0.4.1-beta.92(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0)):
     dependencies:
       '@amplitude/analytics-node': 1.3.9
-      '@motiadev/core': 0.4.0-beta.90(@types/node@22.15.21)(typescript@5.8.3)
-      '@motiadev/workbench': 0.4.0-beta.90(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(use-sync-external-store@1.5.0(react@19.1.0))
+      '@motiadev/core': 0.4.1-beta.92(@types/node@22.15.21)(typescript@5.8.3)
+      '@motiadev/workbench': 0.4.1-beta.92(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(use-sync-external-store@1.5.0(react@19.1.0))
       archiver: 7.0.1
       axios: 1.10.0
       chokidar: 4.0.3

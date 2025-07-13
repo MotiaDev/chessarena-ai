@@ -46,7 +46,7 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
   }
 
   try {
-    await move({
+    const newGame = await move({
       logger,
       streams,
       gameId,
@@ -58,7 +58,7 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
 
     logger.info('Move made', { from: req.body.from, to: req.body.to })
 
-    return { status: 200, body: game }
+    return { status: 200, body: newGame }
   } catch (error) {
     return { status: 400, body: { message: 'Invalid move' } }
   }

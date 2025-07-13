@@ -1,40 +1,28 @@
 import { StreamConfig } from 'motia'
 import { z } from 'zod'
 
-// Issue: reusing same object in multiple places is not working
-const playerScoreSchema = () =>
+const playerScore = () =>
   z.object({
-    averageEvaluation: z.number({ description: 'The average evaluation of the game' }),
-    evaluationSwings: z.number({ description: 'The evaluation swings of the game' }),
-    finalPositionEvaluation: z.number({ description: 'The final position evaluation of the game' }),
-    overallTrend: z.number({ description: 'The overall trend of the game' }),
+    averageSwing: z.number({ description: 'The average swing of the player' }),
+    medianSwing: z.number({ description: 'The median swing of the player' }),
+    highestSwing: z.number({ description: 'The highest swing of the player' }),
+    highestCentipawnScore: z.number({ description: 'The highest centipawn score of the player' }),
+    lowestCentipawnScore: z.number({ description: 'The lowest centipawn score of the player' }),
+    averageCentipawnScore: z.number({ description: 'The average centipawn score of the player' }),
+    medianCentipawnScore: z.number({ description: 'The median centipawn score of the player' }),
+    finalCentipawnScore: z.number({ description: 'The final centipawn score of the player' }),
+    blunders: z.number({ description: 'The number of blunders of the player' }),
   })
 
-const PlayerScore = playerScoreSchema()
-
 const Scoreboard = z.object({
-  white: z.object({
-    name: z.string({ description: 'The name of the player' }),
-    score: z.number({ description: 'The score of the player' }),
-    averageEval: z.number({ description: 'The average evaluation of the player' }),
-    avgSwing: z.number({ description: 'The average swing of the player' }),
-    finalEval: z.number({ description: 'The final evaluation of the player' }),
-    trend: z.string({ description: 'The trend of the player' }),
-  }),
-  black: z.object({
-    name: z.string({ description: 'The name of the player' }),
-    score: z.number({ description: 'The score of the player' }),
-    averageEval: z.number({ description: 'The average evaluation of the player' }),
-    avgSwing: z.number({ description: 'The average swing of the player' }),
-    finalEval: z.number({ description: 'The final evaluation of the player' }),
-    trend: z.string({ description: 'The trend of the player' }),
-  }),
-  gameStatus: z.string({ description: 'The status of the game' }),
+  white: playerScore(),
+  black: playerScore(),
   totalMoves: z.number({ description: 'The total number of moves' }),
   decisiveMoment: z
     .object({
       moveNumber: z.number({ description: 'The move number' }),
-      evalChange: z.number({ description: 'The evaluation change' }),
+      evaluationSwing: z.number({ description: 'The evaluation swing' }),
+      move: z.array(z.string({ description: 'The move that caused the decisive moment' })),
       fen: z.string({ description: 'The FEN of the game' }),
     })
     .optional(),
@@ -64,7 +52,6 @@ export const gameSchema = z.object({
         )
         .optional(),
       promotions: z.number({ description: 'The number of pawn promotions' }).optional(),
-      score: playerScoreSchema().optional(),
     }),
     black: z.object({
       name: z.string({ description: 'The name of the player' }),
@@ -80,7 +67,6 @@ export const gameSchema = z.object({
         )
         .optional(),
       promotions: z.number({ description: 'The number of pawn promotions' }).optional(),
-      score: playerScoreSchema().optional(),
     }),
   }),
   check: z.boolean({ description: 'Whether the game is in check' }),
@@ -95,6 +81,5 @@ export const config: StreamConfig = {
   baseConfig: { storageType: 'default' },
 }
 
-export type PlayerScore = z.infer<typeof PlayerScore>
-
+export type PlayerScore = z.infer<ReturnType<typeof playerScore>>
 export type Scoreboard = z.infer<typeof Scoreboard>

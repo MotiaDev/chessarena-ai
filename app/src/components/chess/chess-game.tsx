@@ -15,7 +15,7 @@ import { ChessLastGameMove } from './chess-last-game-move'
 import { ChessMessages } from './chess-messages'
 import { ChessShare } from './chess-share'
 import { ChessSidechat } from './chess-sidechat'
-import { CompletedGameDialog } from './completed-game-dialog'
+import Scoreboard from './game-scoreboard'
 
 type Props = {
   gameId: string
@@ -80,6 +80,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
 
             <div className={cn('px-4 flex flex-col flex-1 w-full overflow-y-auto', isSpectator && 'pb-4')}>
               <ChessMessages gameId={gameId} />
+              {game.scoreboard && <Scoreboard scoreboard={game.scoreboard} game={game} />}
             </div>
             {!isSpectator && gameWithRole && (
               <div className="pb-4 px-4 w-full">
@@ -166,7 +167,6 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           </Card>
         )}
       </div>
-      <CompletedGameDialog game={game} />
     </div>
   )
 }

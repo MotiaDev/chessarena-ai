@@ -1,88 +1,102 @@
-import type { Scoreboard as ScoreboardType } from '@/lib/types';
-import React from 'react';
-
-type ScoreTrendProps = {
-  trend: string;
-};
-
-const ScoreTrend: React.FC<ScoreTrendProps> = ({ trend }) => {
-  if (trend.match(/disadvantage/)) {
-    return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-      {trend}
-    </span>
-    )
-  }
-
-  if (trend.match(/advantage/)) {
-    return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-      {trend}
-    </span>
-    )
-  }
-
-  return null;
-};
+import type { Game, Scoreboard as ScoreboardType } from '@/lib/types'
+import { useScrollIntoView } from '@/lib/use-scroll-into-view'
+import type { Key } from 'chessground/types'
+import React from 'react'
+import { Card } from '../ui/card'
+import { ChessIcon } from './chess-icon'
+import { ChessMove } from './chess-state'
 
 interface ScoreboardProps {
-  scoreboard: ScoreboardType;
-  className?: string;
+  scoreboard: ScoreboardType
+  game: Game
 }
 
-export const Scoreboard: React.FC<ScoreboardProps> = ({ scoreboard, className = '' }) => {
-  const renderPlayerCard = (player: ScoreboardType['white'], isWhite: boolean) => (
-    <div className={`p-4 rounded-lg ${isWhite ? 'bg-white text-black' : 'bg-black text-white'}`}>
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-bold">{player.name}</h3>
-        <div className="text-2xl font-bold">{player.score}</div>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-2 text-sm">
-        <div className="space-y-1">
-          <div className="text-gray-500">Avg. Eval</div>
-          <div className="font-mono">{player.averageEval.toFixed(2)}</div>
-        </div>
-        <div className="space-y-1">
-          <div className="text-gray-500">Avg. Swing</div>
-          <div className="font-mono">{player.avgSwing.toFixed(2)}</div>
-        </div>
-        <div className="space-y-1">
-          <div className="text-gray-500">Final Eval</div>
-          <div className="font-mono">{player.finalEval.toFixed(2)}</div>
-        </div>
-        <div className="space-y-1">
-          <div className="text-gray-500">Trend</div>
-          <ScoreTrend trend={player.trend} />
-        </div>
-      </div>
-    </div>
-  );
+const PlayerCard: React.FC<{ scoreboard: ScoreboardType }> = ({ scoreboard }) => {
+  return (
+    <Card className="bg-black/20 rounded-md">
+      <table className="w-full">
+        <thead>
+          <tr>
+            <th className="text-left font-bold">Evaluation</th>
+            <th className="text-right">
+              <ChessIcon size={20} color="white" style={{ float: 'right' }} />
+            </th>
+            <th className="text-right">
+              <ChessIcon size={20} color="black" style={{ float: 'right' }} />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="text-white/50">Avg. Score</td>
+            <td className="text-right">{scoreboard.white.averageCentipawnScore}</td>
+            <td className="text-right font-bold">{scoreboard.black.averageCentipawnScore}</td>
+          </tr>
+          <tr>
+            <td className="text-white/50">Median Score</td>
+            <td className="text-right">{scoreboard.white.medianCentipawnScore}</td>
+            <td className="text-right font-bold">{scoreboard.black.medianCentipawnScore}</td>
+          </tr>
+          <tr>
+            <td className="text-white/50">Median Swing</td>
+            <td className="text-right">{scoreboard.white.medianSwing}</td>
+            <td className="text-right font-bold">{scoreboard.black.medianSwing}</td>
+          </tr>
+          <tr>
+            <td className="text-white/50">Highest Swing</td>
+            <td className="text-right">{scoreboard.white.highestSwing}</td>
+            <td className="text-right font-bold">{scoreboard.black.highestSwing}</td>
+          </tr>
+          <tr>
+            <td className="text-white/50">Avg. Swing</td>
+            <td className="text-right">{scoreboard.white.averageSwing}</td>
+            <td className="text-right font-bold">{scoreboard.black.averageSwing}</td>
+          </tr>
+          <tr>
+            <td className="text-white/50">Final Score</td>
+            <td className="text-right">{scoreboard.white.finalCentipawnScore}</td>
+            <td className="text-right font-bold">{scoreboard.black.finalCentipawnScore}</td>
+          </tr>
+          <tr>
+            <td className="text-white/50">Blunders</td>
+            <td className="text-right">{scoreboard.white.blunders}</td>
+            <td className="text-right font-bold">{scoreboard.black.blunders}</td>
+          </tr>
+        </tbody>
+      </table>
+    </Card>
+  )
+}
+
+export const Scoreboard: React.FC<ScoreboardProps> = ({ scoreboard, game }) => {
+  const ref = useScrollIntoView(!!scoreboard.decisiveMoment)
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-white font-bold mx-auto">
-          {scoreboard.totalMoves} moves • {scoreboard.gameStatus}
+    <Card className="bg-black/20 rounded-xl mt-4" ref={ref}>
+      <div className="flex flex-col gap-4">
+        <div className="text-sm text-white font-bold mx-auto text-center w-full">
+          {scoreboard.totalMoves} moves • {game.endGameReason}
         </div>
+
+        <PlayerCard scoreboard={scoreboard} />
+
+        {scoreboard.decisiveMoment && (
+          <Card className="bg-black/20 rounded-md">
+            <h3 className="font-semibold mb-2">Decisive Moment</h3>
+            <p className="text-sm text-white/70 mb-2">
+              Biggest evaluation swing ({scoreboard.decisiveMoment.evaluationSwing}) occurred at move{' '}
+              {scoreboard.decisiveMoment.moveNumber}
+            </p>
+            <div className="min-h-[300px]">
+              {scoreboard.decisiveMoment && (
+                <ChessMove fen={scoreboard.decisiveMoment.fen} lastMove={scoreboard.decisiveMoment.move as Key[]} />
+              )}
+            </div>
+          </Card>
+        )}
       </div>
+    </Card>
+  )
+}
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {renderPlayerCard(scoreboard.white, true)}
-        {renderPlayerCard(scoreboard.black, false)}
-      </div>
-
-      {scoreboard.decisiveMoment && (
-        <div className="mt-4 p-4 bg-black/50 rounded-lg">
-          <h3 className="text-white font-semibold mb-2">Decisive Moment</h3>
-          <p className="text-sm text-white">
-            Biggest evaluation swing ({scoreboard.decisiveMoment.evalChange.toFixed(2)}) 
-            occurred at move {scoreboard.decisiveMoment.moveNumber}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default Scoreboard;
+export default Scoreboard

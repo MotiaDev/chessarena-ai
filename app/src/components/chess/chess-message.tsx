@@ -3,7 +3,7 @@ import { useScrollIntoView } from '@/lib/use-scroll-into-view'
 import { cn } from '@/lib/utils'
 import type { Key } from 'chessground/types'
 import { OctagonX } from 'lucide-react'
-import React, { memo, useEffect } from 'react'
+import React, { memo } from 'react'
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../ui/chat/chat-bubble'
 import { ChessMove } from './chess-move'
 

@@ -3,14 +3,10 @@ import { z } from 'zod'
 
 export const moveEvaluationSchema = () =>
   z.object({
-    evaluation: z.number(),
-    evaluationCp: z.number(),
-    isMate: z.boolean(),
-    mateIn: z.number().nullable().optional(),
-    bestMove: z.string().nullable().optional(),
-    movePlayed: z.string().nullable().optional(),
-    moveQuality: z.number(),
-    moveAccuracy: z.number(),
+    centipawnScore: z.number({ description: 'The evaluation in centipawns' }),
+    bestMove: z.string(),
+    evaluationSwing: z.number({ description: 'The evaluation swing, from -1000 to 1000' }),
+    blunder: z.boolean({ description: 'Whether the move is a blunder' }),
   })
 
 export const MoveEvaluationSchema = moveEvaluationSchema()
@@ -30,4 +26,5 @@ export const config: StreamConfig = {
   baseConfig: { storageType: 'default' },
 }
 
+export type MoveEvaluation = z.infer<typeof MoveEvaluationSchema>
 export type GameMove = z.infer<typeof GameMoveSchema>

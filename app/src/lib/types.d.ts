@@ -22,6 +22,7 @@ export type Game = {
   id: string
   fen: string
   turn: 'white' | 'black'
+  endGameReason?: string
   winner?: 'white' | 'black'
   status: 'created' | 'pending' | 'completed' | 'draw'
   lastMove: Key[]
@@ -64,29 +65,26 @@ export type Leaderboard = {
   averageEvals: GameEvaluation[]
 }
 
+export type PlayerScore = {
+  averageSwing: number
+  medianSwing: number
+  highestSwing: number
+  highestCentipawnScore: number
+  lowestCentipawnScore: number
+  averageCentipawnScore: number
+  medianCentipawnScore: number
+  finalCentipawnScore: number
+  blunders: number
+}
+
 export type Scoreboard = {
-  white: {
-    name: string
-    score: number
-    averageEval: number
-    avgSwing: number
-    finalEval: number
-    trend: string
-  }
-  black: {
-    name: string
-    score: number
-    averageEval: number
-    avgSwing: number
-    finalEval: number
-    trend: string
-  }
-  gameStatus: string
+  white: PlayerScore
+  black: PlayerScore
   totalMoves: number
   decisiveMoment?: {
     moveNumber: number
-    evalChange: number
+    evaluationSwing: number
+    move: string[]
     fen: string
   }
 }
-

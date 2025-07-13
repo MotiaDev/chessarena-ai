@@ -25,6 +25,6 @@ if [ ! -d "lib" ]; then
 fi
 
 tar -xvf stockfish-source.tar
-chmod +x stockfish/${STOCKFISH_BINARY}
+chmod 777 stockfish/${STOCKFISH_BINARY}
 mv stockfish/${STOCKFISH_BINARY} lib/stockfish
 rm -rf stockfish-source.tar stockfish/

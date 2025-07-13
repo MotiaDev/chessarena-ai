@@ -1,8 +1,9 @@
 import type { Message } from '@/lib/types'
+import { useScrollIntoView } from '@/lib/use-scroll-into-view'
 import { cn } from '@/lib/utils'
 import type { Key } from 'chessground/types'
 import { OctagonX } from 'lucide-react'
-import React, { memo, useEffect, useRef } from 'react'
+import React, { memo, useEffect } from 'react'
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../ui/chat/chat-bubble'
 import { ChessMove } from './chess-move'
 
@@ -25,13 +26,7 @@ const avatarImages = {
 }
 
 export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (isLast && ref.current) {
-      ref.current.scrollIntoView({ behavior: 'instant', block: 'end' })
-    }
-  }, [isLast, message.message])
+  const ref = useScrollIntoView(!!isLast)
 
   const image =
     message.role === 'spectator'

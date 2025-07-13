@@ -1,7 +1,8 @@
 import { EventConfig, Handlers } from 'motia'
 import { z } from 'zod'
+import { models } from '../../services/ai/models'
 import { generateGameScore } from '../../services/chess/generate-game-score'
-import { updateLeaderboard } from '../../services/chess/update-leaderboard'
+import { Scoreboard } from './streams/00-chess-game.stream'
 import { Leaderboard } from './streams/00-chess-leaderboard.stream'
 
 /*
@@ -21,8 +22,11 @@ export const config: EventConfig = {
   }),
 }
 
-export const handler: Handlers['GameEnded'] = async (input, { logger, emit, streams }) => {
+export const handler: Handlers['GameEnded'] = async (input, { logger, streams }) => {
   logger.info('Received chess-game-ended event', { gameId: input.gameId })
+
+  // We need to wait a few seconds to make sure the moves are evaluated
+  await new Promise((resolve) => setTimeout(resolve, 8000))
 
   const game = await streams.chessGame.get('game', input.gameId)
 
@@ -31,44 +35,44 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, emit, stre
     return
   }
 
-  if (game.status === 'pending') {
-    logger.error('Game is not completed', { gameId: input.gameId })
-    return
-  }
-
   const moves = await streams.chessGameMove.getGroup(input.gameId)
-  const { whiteScore, blackScore, scoreboard } = await generateGameScore(game, moves)
+  const scoreboard = generateGameScore(moves)
 
-  await streams.chessGame.set('game', input.gameId, {
-    ...game,
-    players: {
-      ...game.players,
-      white: { ...game.players.white, score: whiteScore },
-      black: { ...game.players.black, score: blackScore },
-    },
-    scoreboard,
-  })
+  await streams.chessGame.set('game', game.id, { ...game, scoreboard })
 
   if (!game.players.white.ai || !game.players.black.ai) {
     return
   }
-
-  const currentLeaderboard = (await streams.chessLeaderboard.getGroup('global')).reduce(
-    (acc, item) => {
-      acc[item.provider] = item
-      return acc
-    },
-    {} as Record<string, Leaderboard>,
-  )
-
-  const leaderboards = await updateLeaderboard(game, currentLeaderboard, scoreboard)
 
   /*
    * Initially, we're going to have only a global leaderboard
    * But we want to have a weekly or monthly leaderboard at some point
    */
   const groupId = 'global'
+  const whiteModel = models[game.players.white.ai]
+  const blackModel = models[game.players.black.ai]
+  const whiteLeaderboard = await streams.chessLeaderboard.get(groupId, whiteModel)
+  const blackLeaderboard = await streams.chessLeaderboard.get(groupId, blackModel)
 
-  await streams.chessLeaderboard.set(groupId, game.players.white.ai, leaderboards[game.players.white.ai])
-  await streams.chessLeaderboard.set(groupId, game.players.black.ai, leaderboards[game.players.black.ai])
+  const overrideLeaderboard = (color: 'white' | 'black', score: Scoreboard, leaderboard: Leaderboard | null) => {
+    const player = color === 'white' ? 'white' : 'black'
+    const playerScore = score[player]
+    const playerIllegalMoves = game.players[player].illegalMoveAttempts ?? 0
+    const provider = game.players[player].ai!
+
+    return {
+      provider,
+      model: models[provider],
+      ...(leaderboard ?? {}),
+      gamesPlayed: (leaderboard?.gamesPlayed ?? 0) + 1,
+      wins: (leaderboard?.wins ?? 0) + (game.winner === color ? 1 : 0),
+      draws: (leaderboard?.draws ?? 0) + (game.status === 'draw' ? 1 : 0),
+      illegalMoves: (leaderboard?.illegalMoves ?? 0) + playerIllegalMoves,
+      sumCentipawnScores: (leaderboard?.sumCentipawnScores ?? 0) + playerScore.finalCentipawnScore,
+      sumHighestSwing: (leaderboard?.sumHighestSwing ?? 0) + playerScore.highestSwing,
+    }
+  }
+
+  await streams.chessLeaderboard.set(groupId, whiteModel, overrideLeaderboard('white', scoreboard, whiteLeaderboard))
+  await streams.chessLeaderboard.set(groupId, blackModel, overrideLeaderboard('black', scoreboard, blackLeaderboard))
 }

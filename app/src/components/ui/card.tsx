@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import React from 'react'
 
 type Props = {
   children: React.ReactNode
@@ -6,10 +7,10 @@ type Props = {
   onClick?: () => void
 }
 
-export const Card: React.FC<Props> = ({ children, className, onClick }) => {
+export const Card = React.forwardRef<HTMLDivElement, Props>(({ children, className, onClick }, ref) => {
   return (
-    <div className={cn('font-medium p-4 rounded-sm bg-white/5', className)} onClick={onClick}>
+    <div className={cn('font-medium p-4 rounded-sm bg-white/5', className)} onClick={onClick} ref={ref}>
       {children}
     </div>
   )
-}
+})

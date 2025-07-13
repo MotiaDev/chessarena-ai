@@ -1,11 +1,12 @@
 type Props = {
   size?: number
   color?: string
+  style?: React.CSSProperties
 }
 
-export const ChessIcon: React.FC<Props> = ({ size = 40, color = 'white' }) => {
+export const ChessIcon: React.FC<Props> = ({ size = 40, color = 'white', style }) => {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg style={style} width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

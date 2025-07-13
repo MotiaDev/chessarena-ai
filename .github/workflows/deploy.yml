@@ -23,8 +23,14 @@ jobs:
         with:
           ref: ${{ github.event.release.tag_name || github.ref }}
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '20.11.1'
           cache: 'pnpm'
@@ -38,7 +44,7 @@ jobs:
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
           echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env
-          echo "STOCKFISH_BIN_PATH=/var/task/lib/stockfish" >> .env
+          echo "STOCKFISH_BIN_PATH=/opt/lib/stockfish" >> .env
 
       - name: Download Stockfish Binary
         working-directory: api

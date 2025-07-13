@@ -26,7 +26,16 @@ type Args = {
         }
       }
     | { topic: 'chess-game-ended'; data: { gameId: string } }
-    | { topic: 'evaluate-player-move'; data: { gameId: string; fenBefore: string; fenAfter: string; moveId: string } }
+    | {
+        topic: 'evaluate-player-move'
+        data: {
+          gameId: string
+          fenBefore: string
+          fenAfter: string
+          moveId: string
+          player: string
+        }
+      }
   >
 }
 
@@ -103,6 +112,7 @@ export const move = async ({
       fenBefore: game.fen,
       fenAfter: move.after,
       moveId,
+      player,
     },
   })
 

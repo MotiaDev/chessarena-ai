@@ -3,13 +3,8 @@
     "id": "chess",
     "config": {
       "steps/chess/08-game-ended.step.ts": {
-        "x": 1369,
-        "y": 114,
-        "targetHandlePosition": "left"
-      },
-      "steps/chess/07-evaluate-player-move.step.py": {
-        "x": 1416,
-        "y": 298,
+        "x": 1377,
+        "y": 134,
         "targetHandlePosition": "left"
       },
       "steps/chess/06-send-message.step.ts": {
@@ -41,6 +36,10 @@
       "steps/chess/01-create-game.step.ts": {
         "x": 482,
         "y": 92
+      },
+      "steps/chess/07-evaluate-player-move.step.py": {
+        "x": 0,
+        "y": 0
       }
     }
   }

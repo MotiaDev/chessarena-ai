@@ -121,6 +121,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
             "
             >
               {isSidechatOpen ? <ChessSidechat gameId={gameId} /> : <ChessMessages gameId={gameId} />}
+              {game.scoreboard && <Scoreboard scoreboard={game.scoreboard} game={game} />}
             </Panel>
             {(isSidechatOpen || !isSpectator) && gameWithRole && (
               <Panel className="p-4 w-full">

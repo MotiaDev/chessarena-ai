@@ -43,7 +43,13 @@ export const ChessChatInput: React.FC<Props> = ({ game }) => {
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
       />
-      <Button variant="default" className="h-12 w-12" onClick={handleSendMessage} disabled={isSending}>
+      <Button
+        data-testid="send-message-button"
+        variant="default"
+        className="h-12 w-12"
+        onClick={handleSendMessage}
+        disabled={isSending}
+      >
         {isSending ? <Loader2 className="size-5 animate-spin" /> : <ArrowRight className="size-5" />}
       </Button>
     </div>

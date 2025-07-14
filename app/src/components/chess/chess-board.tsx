@@ -7,6 +7,7 @@ import type { Key, Role } from 'chessground/types'
 import { useEffect, useState } from 'react'
 import { Chessground } from './chessground'
 import { ChessPromote } from './promote/chess-promote'
+import { ChessSound } from './chess-sound'
 
 export function toDests(chess: Chess): Map<Key, Key[]> {
   const dests = new Map()
@@ -90,6 +91,7 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
   return (
     <>
       <Chessground config={config} />
+      <ChessSound game={game} />
       <ChessPromote color={game.turn} isOpen={!!promote} onPromote={onPromote} />
     </>
   )

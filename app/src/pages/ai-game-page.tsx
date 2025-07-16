@@ -1,6 +1,8 @@
 import { ChessGame } from '@/components/chess/chess-game'
 import { Page } from '@/components/page'
 import { useGetLiveAiGame, type AiModel } from '@/lib/use-get-live-ai-game'
+import { usePageTitle } from '@/lib/use-page-title'
+import { useTrackEvent } from '@/lib/use-track-event'
 import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
@@ -11,6 +13,9 @@ export const AiGamePage = () => {
   const { getLiveAiGame, isLoading } = useGetLiveAiGame()
   const [gameId, setGameId] = useState<string>()
   const [error, setError] = useState<string>()
+  const trackEvent = useTrackEvent()
+
+  usePageTitle('AI Game')
 
   useEffect(() => {
     if (!id) {
@@ -24,11 +29,16 @@ export const AiGamePage = () => {
       .then((game) => {
         if (!game) setError('Game not found')
         else {
+          trackEvent('ai_game_loaded', {
+            game_id: game.id,
+            white_model: white,
+            black_model: black,
+          })
           setGameId(game.id)
           setError(undefined)
         }
       })
-  }, [getLiveAiGame, id])
+  }, [getLiveAiGame, id, trackEvent])
 
   if (gameId) {
     return (

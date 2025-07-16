@@ -1,12 +1,15 @@
 import { LiveMatch } from '@/components/live-match'
 import { MotiaPowered } from '@/components/motia-powered'
 import { Page } from '@/components/page'
+import { usePageTitle } from '@/lib/use-page-title'
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router'
 
 export const LiveMatchesPage = () => {
   const navigate = useNavigate()
   const onBack = () => navigate('/')
+
+  usePageTitle('Live Matches')
 
   return (
     <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg">

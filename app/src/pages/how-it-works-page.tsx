@@ -1,5 +1,6 @@
 import { MotiaPowered } from '@/components/motia-powered'
 import { Page } from '@/components/page'
+import { usePageTitle } from '@/lib/use-page-title'
 import { cn } from '@/lib/utils'
 import { ArrowLeft } from 'lucide-react'
 import React from 'react'
@@ -16,6 +17,8 @@ export const DISCORD_HANDLE = 'https://discord.com/invite/nJFfsH5d6v'
 export const HowItWorksPage = () => {
   const navigate = useNavigate()
   const onBack = () => navigate('/')
+
+  usePageTitle('How it works')
 
   return (
     <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">

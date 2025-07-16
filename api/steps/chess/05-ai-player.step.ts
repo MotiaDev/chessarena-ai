@@ -4,8 +4,8 @@ import mustache from 'mustache'
 import path from 'path'
 import { z } from 'zod'
 import { makePrompt } from '../../services/ai/make-prompt'
-import { move } from '../../services/chess/move'
 import { evaluateBestMoves } from '../../services/chess/evaluate-best-moves'
+import { ActionMove, move } from '../../services/chess/move'
 
 const MAX_ATTEMPTS = 3
 
@@ -92,15 +92,27 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       { escape: (value: string) => value },
     )
 
-    logger.info('Prompt', { prompt })
-    const action = await makePrompt(prompt, responseSchema, player.ai, logger)
+    let action: { thought: string; move: ActionMove } | undefined
 
-    logger.info('Updating message', { messageId, gameId: input.gameId })
-    await streams.chessGameMessage.set(input.gameId, messageId, {
-      ...message,
-      message: action.thought,
-      move: action.move,
-    })
+    try {
+      logger.info('Prompt', { prompt })
+      action = await makePrompt(prompt, responseSchema, player.ai, logger)
+
+      logger.info('Updating message', { messageId, gameId: input.gameId })
+      await streams.chessGameMessage.set(input.gameId, messageId, {
+        ...message,
+        message: action.thought,
+        move: action.move,
+      })
+    } catch (err) {
+      await streams.chessGameMessage.set(input.gameId, messageId, {
+        ...message,
+        message: 'Error making prompt, I will need to try again soon',
+      })
+
+      logger.error('Error making prompt', { err })
+      throw err
+    }
 
     try {
       logger.info('AI response', { action })

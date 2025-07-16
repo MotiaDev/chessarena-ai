@@ -56,16 +56,32 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
 
   const overrideLeaderboard = (color: 'white' | 'black', score: Scoreboard, leaderboard: Leaderboard | null) => {
     const player = color === 'white' ? 'white' : 'black'
+    const otherPlayer = color === 'white' ? 'black' : 'white'
     const playerScore = score[player]
+    const otherPlayerScore = score[otherPlayer]
     const playerIllegalMoves = game.players[player].illegalMoveAttempts ?? 0
     const provider = game.players[player].ai!
+
+    const finalPlayerScore = playerScore.finalCentipawnScore
+    const finalOtherPlayerScore = otherPlayerScore.finalCentipawnScore
+
+    let winner = game.winner
+
+    if (!winner) {
+      if (finalPlayerScore > finalOtherPlayerScore) {
+        winner = player
+      } else if (finalPlayerScore < finalOtherPlayerScore) {
+        winner = otherPlayer
+      }
+    }
 
     return {
       provider,
       model: models[provider],
       ...(leaderboard ?? {}),
       gamesPlayed: (leaderboard?.gamesPlayed ?? 0) + 1,
-      wins: (leaderboard?.wins ?? 0) + (game.winner === color ? 1 : 0),
+      victories: (leaderboard?.victories ?? 0) + (winner === color ? 1 : 0),
+      checkmates: (leaderboard?.checkmates ?? 0) + (game.winner === color ? 1 : 0),
       draws: (leaderboard?.draws ?? 0) + (game.status === 'draw' ? 1 : 0),
       illegalMoves: (leaderboard?.illegalMoves ?? 0) + playerIllegalMoves,
       sumCentipawnScores: (leaderboard?.sumCentipawnScores ?? 0) + playerScore.finalCentipawnScore,

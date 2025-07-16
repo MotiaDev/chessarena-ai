@@ -1,11 +1,22 @@
 import type { Key } from 'chessground/types'
 import { ArrowRight } from 'lucide-react'
 import type React from 'react'
+import { cn } from '@/lib/utils'
 
-export const ChessMove: React.FC<{ move: Key[] }> = ({ move }) => {
+type Props = {
+  move: Key[]
+  color: 'white' | 'black'
+}
+
+export const ChessMove: React.FC<Props> = ({ move, color }) => {
   return (
-    <div className="flex flex-row gap-2 items-center uppercase font-bold text-lg">
-      {move[0]} <ArrowRight className="size-4 text-muted-foreground" /> {move[1]}
+    <div
+      className={cn(
+        'flex flex-row gap-2 items-center uppercase font-bold text-lg',
+        color === 'white' ? 'text-black' : 'text-white',
+      )}
+    >
+      {move[0]} <ArrowRight className={cn('size-4', color === 'white' ? 'text-gray-700' : 'text-gray-400')} /> {move[1]}
     </div>
   )
 }

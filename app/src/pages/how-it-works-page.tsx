@@ -1,9 +1,8 @@
-import { GithubStars } from '@/components/about/github-stars'
 import { MotiaPowered } from '@/components/motia-powered'
 import { Page } from '@/components/page'
 import { cn } from '@/lib/utils'
 import { ArrowLeft } from 'lucide-react'
-import type React from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router'
 
 type ParagraphProps = React.PropsWithChildren<{ className?: string }>

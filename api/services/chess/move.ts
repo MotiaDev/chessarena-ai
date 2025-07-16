@@ -4,12 +4,13 @@ import type { Game } from '../../steps/chess/streams/00-chess-game.stream'
 import { getCaptureScore } from './get-capture-score'
 import { randomUUID } from 'crypto'
 
+export type ActionMove = { from: string; to: string; promote?: 'queen' | 'rook' | 'bishop' | 'knight' }
 type Args = {
   logger: Logger
   streams: FlowContextStateStreams
   gameId: string
   game: Game
-  action: { from: string; to: string; promote?: 'queen' | 'rook' | 'bishop' | 'knight' }
+  action: ActionMove
   player: 'white' | 'black'
   illegalMoveAttempts?: number
   emit: Emitter<

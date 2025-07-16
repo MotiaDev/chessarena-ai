@@ -10,6 +10,8 @@ const chatBubbleVariant = cva('flex gap-2 items-start relative group', {
     variant: {
       received: 'self-start',
       sent: 'self-end flex-row-reverse',
+      white: 'self-start',
+      black: 'self-end flex-row-reverse',
     },
     layout: {
       default: '',
@@ -59,6 +61,9 @@ const chatBubbleMessageVariants = cva('p-4', {
     variant: {
       received: 'backdrop-blur-lg bg-white/5 rounded-r-2xl rounded-bl-sm rounded-bl-2xl',
       sent: 'backdrop-blur-lg bg-white/5 rounded-r-2xl rounded-l-lg rounded-br-lg',
+
+      white: 'backdrop-blur-lg bg-white/60 text-black rounded-r-2xl rounded-bl-sm rounded-bl-2xl',
+      black: 'backdrop-blur-lg bg-black/40 text-white rounded-l-2xl rounded-br-2xl',
     },
     layout: {
       default: '',

@@ -7,7 +7,7 @@ import { useDeviceWidth } from '@/lib/use-device-width'
 import { useGetGame } from '@/lib/use-get-game'
 import { cn } from '@/lib/utils'
 import { useStreamItem } from '@motiadev/stream-client-react'
-import { ArrowLeft, ChevronRight, Loader2, MessagesSquare } from 'lucide-react'
+import { ArrowLeft, ChevronRight, Loader2, MessageCircle, MessagesSquare, Workflow } from 'lucide-react'
 import { useState } from 'react'
 import { ChessBoard } from './chess-board'
 import { ChessChatInput } from './chess-chat-input'
@@ -15,7 +15,8 @@ import { ChessLastGameMove } from './chess-last-game-move'
 import { ChessMessages } from './chess-messages'
 import { ChessShare } from './chess-share'
 import { ChessSidechat } from './chess-sidechat'
-import Scoreboard from './game-scoreboard'
+import Scoreboard from './scoreboard/game-scoreboard'
+import { Tab } from '../ui/tab'
 
 type Props = {
   gameId: string
@@ -74,9 +75,11 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
               <ChessShare game={gameWithRole ?? game} />
             </header>
 
-            <div className="px-4 w-full border-b-2 border-white/5 pb-4 max-md:pt-4">
-              <ChessLastGameMove game={game} />
-            </div>
+            {game.status === 'pending' && (
+              <div className="px-4 w-full border-b-2 border-white/5 pb-4 max-md:pt-4">
+                <ChessLastGameMove game={game} />
+              </div>
+            )}
 
             <div className={cn('px-4 flex flex-col flex-1 w-full overflow-y-auto', isSpectator && 'pb-4')}>
               <ChessMessages gameId={gameId} />
@@ -100,18 +103,17 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
 
         {isMobile ? (
           <>
-            <Panel>
-              <div className="flex flex-row gap-4 px-4 w-full border-b-2 border-white/5 pb-4 max-md:pt-4">
-                <ChessLastGameMove game={game} />
-                <Card
-                  className={cn(
-                    'flex flex-row gap-2 items-center hover:bg-white/10 transition-colors cursor-pointer font-bold',
-                    isSidechatOpen && 'bg-white/30 hover:bg-white/30',
-                  )}
-                  onClick={() => setIsSidechatOpen(!isSidechatOpen)}
-                >
-                  <MessagesSquare /> Sidechat
-                </Card>
+            <Panel className="p-0">
+              <div className="flex flex-row gap-4 px-4 w-full border-b-2 border-white/5 max-md:pt-4">
+                {game.status === 'pending' && <ChessLastGameMove game={game} />}
+                <Tab isSelected={!isSidechatOpen} onClick={() => setIsSidechatOpen(false)}>
+                  <Workflow className="size-4" />
+                  Gameplay
+                </Tab>
+                <Tab isSelected={isSidechatOpen} onClick={() => setIsSidechatOpen(true)}>
+                  <MessageCircle className="size-4" />
+                  Sidechat
+                </Tab>
               </div>
             </Panel>
             <Panel

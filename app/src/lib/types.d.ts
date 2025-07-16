@@ -57,12 +57,15 @@ export type GameEvaluation = {
 export type Leaderboard = {
   provider: 'openai' | 'gemini' | 'claude'
   model: string
-  gamesPlayed: number
-  wins: number
   draws: number
+  gamesPlayed: number
   illegalMoves: number
-  analysis?: PlayerAnalysis
-  averageEvals: GameEvaluation[]
+  model: string
+  provider: string
+  sumCentipawnScores: number
+  sumHighestSwing: number
+  victories: number
+  checkmates: number
 }
 
 export type PlayerScore = {

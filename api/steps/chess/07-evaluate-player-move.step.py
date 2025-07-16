@@ -18,6 +18,7 @@ config = {
     "emits": [],
     "flows": ["chess"],
     "input": EvaluatePlayerMoveInput.model_json_schema(),
+    "includeFiles": ["../../lib/stockfish"]
 }
 
 class Evaluation(BaseModel):

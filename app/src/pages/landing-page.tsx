@@ -1,6 +1,7 @@
 import { CreateGameButton, CreateGameButtonAlt } from '@/components/chess/create-game/create-game-button'
 import { MotiaPowered } from '@/components/motia-powered'
 import { Page } from '@/components/page'
+import { usePageTitle } from '@/lib/use-page-title'
 import { Trophy } from 'lucide-react'
 import { useNavigate } from 'react-router'
 
@@ -10,6 +11,8 @@ export const LandingPage = () => {
     e.preventDefault()
     navigate('/about')
   }
+
+  usePageTitle('ChessArena.AI - Powered by Motia')
 
   return (
     <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg">

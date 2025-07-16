@@ -1,6 +1,7 @@
 import { GithubStars } from '@/components/about/github-stars'
 import { MotiaPowered } from '@/components/motia-powered'
 import { Page } from '@/components/page'
+import { usePageTitle } from '@/lib/use-page-title'
 import { cn } from '@/lib/utils'
 import { ArrowLeft } from 'lucide-react'
 import type React from 'react'
@@ -17,6 +18,8 @@ export const DISCORD_HANDLE = 'https://discord.com/invite/nJFfsH5d6v'
 export const AboutPage = () => {
   const navigate = useNavigate()
   const onBack = () => navigate('/')
+
+  usePageTitle('About')
 
   return (
     <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">

@@ -1,12 +1,13 @@
 import { LeaderboardItem } from '@/components/leaderboard-item'
 import { LeaderboardSkeleton } from '@/components/leaderboard-skeleton'
+import { PageDialog } from '@/components/page-dialog'
 import { Tab } from '@/components/ui/tab'
 import type { Leaderboard } from '@/lib/types'
+import { usePageTitle } from '@/lib/use-page-title'
 import { useStreamGroup } from '@motiadev/stream-client-react'
 import { ArrowLeft } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { PageDialog } from '../components/page-dialog'
 
 export const LeaderboardPage = () => {
   const navigate = useNavigate()
@@ -16,6 +17,8 @@ export const LeaderboardPage = () => {
     groupId: 'global',
     streamName: 'chessLeaderboard',
   })
+
+  usePageTitle('Leaderboard')
 
   const sortedLeaderboard = useMemo(() => {
     if (selectedTab === 'victories') {

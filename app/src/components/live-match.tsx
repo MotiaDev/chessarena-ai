@@ -28,7 +28,7 @@ export const LiveMatch: React.FC<Props> = ({ white, black, onClick }) => {
           <div className="text-md font-bold text-white">White</div>
         </div>
         <div className="flex flex-row gap-2 items-center">
-          <AiIcon ai={white.ai} />
+          <AiIcon ai={white.ai} color="white" />
           <div className="text-md font-medium text-white/80">{white.name}</div>
         </div>
       </div>
@@ -40,7 +40,7 @@ export const LiveMatch: React.FC<Props> = ({ white, black, onClick }) => {
         </div>
         <div className="flex flex-row gap-2 items-center">
           <div className="text-md font-medium text-white/80">{black.name}</div>
-          <AiIcon ai={black.ai} />
+          <AiIcon ai={black.ai} color="white" />
         </div>
       </div>
     </Card>

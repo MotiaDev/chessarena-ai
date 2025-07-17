@@ -83,7 +83,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
 
             <div className={cn('px-4 flex flex-col flex-1 w-full overflow-y-auto', isSpectator && 'pb-4')}>
               <ChessMessages gameId={gameId} />
-              {game.scoreboard && <Scoreboard scoreboard={game.scoreboard} game={game} />}
+              {['completed', 'draw'].includes(game.status) && <Scoreboard game={game} />}
             </div>
             {!isSpectator && gameWithRole && (
               <div className="pb-4 px-4 w-full">
@@ -123,7 +123,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
             "
             >
               {isSidechatOpen ? <ChessSidechat gameId={gameId} /> : <ChessMessages gameId={gameId} />}
-              {game.scoreboard && <Scoreboard scoreboard={game.scoreboard} game={game} />}
+              {['completed', 'draw'].includes(game.status) && <Scoreboard game={game} />}
             </Panel>
             {(isSidechatOpen || !isSpectator) && gameWithRole && (
               <Panel className="p-4 w-full">

@@ -34,7 +34,7 @@ export const LandingPage = () => {
           <CreateGameButton onClick={() => navigate('/new')}>Create Game</CreateGameButton>
           <div className="flex flex-row gap-2 items-center justify-center w-full">
             <CreateGameButtonAlt className="w-full flex-1" onClick={() => navigate('/live-matches')}>
-              View live match
+              View live matches
             </CreateGameButtonAlt>
             <CreateGameButtonAlt onClick={() => navigate('/leaderboard')}>
               <Trophy /> Leaderboard

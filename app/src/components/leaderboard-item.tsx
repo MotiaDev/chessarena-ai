@@ -6,6 +6,7 @@ import { AiIcon } from './chess/ai-icon'
 type Props = {
   position: number
   leaderboard: Leaderboard
+  tab: string
 }
 
 const LeaderboardRow = ({ label, value }: { label: string; value: React.ReactNode }) => {
@@ -17,7 +18,7 @@ const LeaderboardRow = ({ label, value }: { label: string; value: React.ReactNod
   )
 }
 
-export const LeaderboardItem: React.FC<Props> = ({ position, leaderboard }) => {
+export const LeaderboardItem: React.FC<Props> = ({ position, leaderboard, tab }) => {
   const winRate =
     leaderboard.victories > 0 ? (leaderboard.victories / (leaderboard.gamesPlayed - leaderboard.draws)) * 100 : 0
   const score = leaderboard.sumCentipawnScores / leaderboard.gamesPlayed
@@ -38,13 +39,13 @@ export const LeaderboardItem: React.FC<Props> = ({ position, leaderboard }) => {
           </div>
         </div>
         <LeaderboardRow label="Matches" value={formatNumber(leaderboard.gamesPlayed)} />
-        <LeaderboardRow label="Victories" value={formatNumber(leaderboard.victories)} />
+        {tab === 'wins' && <LeaderboardRow label="Wins" value={formatNumber(leaderboard.victories)} />}
         <LeaderboardRow label="Checkmates" value={formatNumber(leaderboard.checkmates)} />
         <LeaderboardRow label="Draws" value={formatNumber(leaderboard.draws)} />
-        <LeaderboardRow label="Win %" value={`${winRate.toFixed(1)}%`} />
-        <LeaderboardRow label="Avg. Score" value={score.toFixed(0)} />
-        <LeaderboardRow label="Avg. Illegal Moves" value={`${illegalMoves.toFixed(0)}`} />
-        <LeaderboardRow label="Avg. Swing" value={swing.toFixed(0)} />
+        {tab === 'wins' && <LeaderboardRow label="Win %" value={`${winRate.toFixed(1)}%`} />}
+        {tab === 'score' && <LeaderboardRow label="Avg. Score" value={score.toFixed(0)} />}
+        {tab === 'illegalMoves' && <LeaderboardRow label="Avg. Illegal Moves" value={`${illegalMoves.toFixed(0)}`} />}
+        {tab === 'swing' && <LeaderboardRow label="Avg. Swing" value={swing.toFixed(0)} />}
       </div>
     </div>
   )

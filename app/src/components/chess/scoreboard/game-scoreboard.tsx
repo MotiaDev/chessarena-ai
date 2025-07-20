@@ -85,7 +85,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ game }) => {
               <Info className="w-12" />
               <span>
                 LLMs can't really win games, which is why we're evaluating scores, number of blunders, etc.{' '}
-                <a href="/how-it-works" className="text-white font-bold" target="_blank">
+                <a href="/about" className="text-white font-bold" target="_blank">
                   Click here
                 </a>{' '}
                 to learn more.

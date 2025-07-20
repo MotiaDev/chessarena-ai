@@ -48,9 +48,9 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
   return (
     <div className="flex flex-col items-center mx-auto w-screen h-screen justify-between">
       <div className="flex md:flex-row max-md:flex-col items-center justify-between w-full h-screen max-h-screen">
-        <header className="md:hidden flex flex-row gap-2 items-center justify-between p-4 w-full md:border-b-2 md:border-white/5">
-          <Button variant="default" className="h-12 w-12" onClick={onClose}>
-            <ArrowLeft className="size-5" />
+        <header className="md:hidden flex flex-row gap-2 items-center justify-between p-2 md:p-4 w-full md:border-b-2 md:border-white/5">
+          <Button variant="default" className="h-8 w-8 md:h-12 md:w-12" onClick={onClose}>
+            <ArrowLeft className="size-4" />
           </Button>
           <MotiaPowered size="sm" />
           <div className="flex flex-row gap-2 items-center justify-end">
@@ -104,7 +104,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
         {isMobile ? (
           <>
             <Panel className="p-0">
-              <div className="flex flex-col gap-4 px-4 w-full border-b-2 border-white/5 max-md:pt-4">
+              <div className="flex flex-col gap-2 px-2 w-full border-b-2 border-white/5 max-md:pt-2">
                 {game.status === 'pending' && <ChessLastGameMove game={game} />}
                 <div className="flex flex-row gap-2 items-center justify-center">
                   <Tab isSelected={!isSidechatOpen} onClick={() => setIsSidechatOpen(false)}>
@@ -124,11 +124,17 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
               overflow-y-auto p-4
             "
             >
-              {isSidechatOpen ? <ChessSidechat gameId={gameId} /> : <ChessMessages gameId={gameId} />}
-              {['completed', 'draw'].includes(game.status) && <Scoreboard game={game} />}
+              {isSidechatOpen ? (
+                <ChessSidechat gameId={gameId} />
+              ) : (
+                <>
+                  <ChessMessages gameId={gameId} />
+                  {['completed', 'draw'].includes(game.status) && <Scoreboard game={game} />}
+                </>
+              )}
             </Panel>
             {(isSidechatOpen || !isSpectator) && gameWithRole && (
-              <Panel className="p-4 w-full">
+              <Panel className="p-2 w-full">
                 <ChessChatInput game={gameWithRole} />
               </Panel>
             )}

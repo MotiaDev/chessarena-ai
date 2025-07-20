@@ -13,7 +13,7 @@ export const ChessLastGameMove: React.FC<{ game: Game }> = ({ game }) => {
   return (
     <div
       className={cn(
-        'font-medium p-4 rounded-sm flex flex-row justify-between w-full',
+        'font-medium p-2 md:p-4  rounded-sm flex flex-row justify-between w-full',
         color === 'white' ? 'bg-white/60 text-black' : 'bg-black/40 text-white',
         !move && 'text-muted-foreground',
         (isCompleted || isDraw) && 'bg-green-500/20 text-green-100',

@@ -8,13 +8,13 @@ export const GithubStars: React.FC<{ repo: string; defaultStars: number }> = ({ 
     <a
       href={`https://github.com/MotiaDev/${repo}`}
       target="_blank"
-      className="flex cursor-pointer items-center gap-4 text-white font-semibold border-2 border-white/15 rounded-md px-4 w-full"
+      className="flex cursor-pointer items-center text-white font-semibold border-2 border-white/15 rounded-md px-1 md:px-4 w-full mb-4 hover:bg-white/5 transition-all duration-300"
     >
-      <div className="flex items-center gap-[6px] text-white py-1 line-height-[17px] flex-1">
+      <div className="flex items-center gap-[4px] md:gap-[6px] text-white py-1 line-height-[17px] flex-1 text-xs md:text-sm">
         {githubIcon} {repo}
       </div>
       <div className="w-[2px] h-full bg-white/15" />
-      <div className="flex flex-row items-center gap-[6px] text-white py-1 line-height-[17px] justify-end min-w-[60px]">
+      <div className="flex flex-row items-center gap-[2px] md:gap-[6px] text-white py-1 line-height-[17px] justify-end text-xs md:text-sm">
         {starIcon} <p>{stars}</p>
       </div>
     </a>

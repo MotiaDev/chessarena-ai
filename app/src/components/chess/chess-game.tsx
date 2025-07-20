@@ -104,16 +104,18 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
         {isMobile ? (
           <>
             <Panel className="p-0">
-              <div className="flex flex-row gap-4 px-4 w-full border-b-2 border-white/5 max-md:pt-4">
+              <div className="flex flex-col gap-4 px-4 w-full border-b-2 border-white/5 max-md:pt-4">
                 {game.status === 'pending' && <ChessLastGameMove game={game} />}
-                <Tab isSelected={!isSidechatOpen} onClick={() => setIsSidechatOpen(false)}>
-                  <Workflow className="size-4" />
-                  Gameplay
-                </Tab>
-                <Tab isSelected={isSidechatOpen} onClick={() => setIsSidechatOpen(true)}>
-                  <MessageCircle className="size-4" />
-                  Sidechat
-                </Tab>
+                <div className="flex flex-row gap-2 items-center justify-center">
+                  <Tab isSelected={!isSidechatOpen} onClick={() => setIsSidechatOpen(false)}>
+                    <Workflow className="size-4" />
+                    Gameplay
+                  </Tab>
+                  <Tab isSelected={isSidechatOpen} onClick={() => setIsSidechatOpen(true)}>
+                    <MessageCircle className="size-4" />
+                    Sidechat
+                  </Tab>
+                </div>
               </div>
             </Panel>
             <Panel

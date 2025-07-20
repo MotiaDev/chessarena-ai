@@ -25,7 +25,7 @@ export function CreateGameButtonAlt({ className, ...props }: React.ComponentProp
         `
       inline-flex items-center justify-center gap-2 whitespace-nowrap
       text-lg font-extrabold transition-all 
-      h-[64px] rounded-md px-8
+      h-[64px] rounded-md md:px-8 px-4
        shadow-[0px_4px_8px_rgba(0,0,0,0.3)]
       border-1 border-[#C8C8C8]/60 border-solid
       cursor-pointer

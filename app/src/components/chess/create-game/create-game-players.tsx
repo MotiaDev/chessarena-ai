@@ -30,8 +30,8 @@ export const CreateGamePlayers: React.FC<Props> = ({
       <div className="flex-1" />
 
       <div className="flex flex-col gap-2 items-center justify-center">
-        <img src="/horse.png" alt="ChessArena.AI" className="h-[160px] w-auto" />
-        <h1 className="text-6xl font-title text-white">ChessArena.AI</h1>
+        <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
+        <h1 className="text-6xl font-title text-white">Chessarena.ai</h1>
       </div>
 
       <div className="flex flex-col gap-2 items-center justify-center w-full">

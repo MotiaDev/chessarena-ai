@@ -22,7 +22,7 @@ export const LiveMatchesPage = () => {
         <div className="flex-1" />
 
         <div className="flex flex-col gap-6 items-center justify-center w-full">
-          <div className="text-md font-semibold text-white">Matches</div>
+          <div className="text-lg font-bold text-white">Live Matches</div>
           <LiveMatch
             white={{ name: 'OpenAI', ai: 'openai' }}
             black={{ name: 'Gemini', ai: 'gemini' }}

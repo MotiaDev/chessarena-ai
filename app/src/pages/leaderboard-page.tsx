@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router'
 export const LeaderboardPage = () => {
   const navigate = useNavigate()
   const onBack = () => navigate('/')
-  const [selectedTab, setSelectedTab] = useState<string>('victories')
+  const [selectedTab, setSelectedTab] = useState<string>('wins')
   const { data: leaderboard } = useStreamGroup<Leaderboard>({
     groupId: 'global',
     streamName: 'chessLeaderboard',
@@ -21,7 +21,7 @@ export const LeaderboardPage = () => {
   usePageTitle('Leaderboard')
 
   const sortedLeaderboard = useMemo(() => {
-    if (selectedTab === 'victories') {
+    if (selectedTab === 'wins') {
       return leaderboard?.sort((a, b) => b.victories - a.victories)
     }
     if (selectedTab === 'checkmates') {
@@ -61,9 +61,9 @@ export const LeaderboardPage = () => {
         <h1 className="text-lg font-semibold text-white">Leaderboard</h1>
       </div>
 
-      <div className="flex flex-row gap-2 items-center justify-center px-6 border-b border-white/10 w-full overflow-x-auto">
-        <Tab isSelected={selectedTab === 'victories'} onClick={() => setSelectedTab('victories')}>
-          Victories
+      <div className="flex flex-row gap-2 items-center md:justify-center px-6 border-b border-white/10 w-full max-w-screen overflow-x-auto">
+        <Tab isSelected={selectedTab === 'wins'} onClick={() => setSelectedTab('wins')}>
+          Wins
         </Tab>
         <Tab isSelected={selectedTab === 'score'} onClick={() => setSelectedTab('score')}>
           Score
@@ -88,7 +88,7 @@ export const LeaderboardPage = () => {
           </>
         ) : (
           sortedLeaderboard.map((item, index) => (
-            <LeaderboardItem key={item.model} leaderboard={item} position={index + 1} />
+            <LeaderboardItem key={item.model} leaderboard={item} position={index + 1} tab={selectedTab} />
           ))
         )}
       </div>

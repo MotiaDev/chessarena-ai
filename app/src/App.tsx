@@ -9,7 +9,6 @@ import { LandingPage } from './pages/landing-page'
 import { LeaderboardPage } from './pages/leaderboard-page'
 import { LiveMatchesPage } from './pages/live-matches-page'
 import { AboutPage } from './pages/about-page'
-import { HowItWorksPage } from './pages/how-it-works-page'
 
 function App() {
   return (
@@ -23,7 +22,6 @@ function App() {
           <Route path="/game/:gameId" element={<ChessGamePage />} />
           <Route path="/ai-game/:id" element={<AiGamePage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/how-it-works" element={<HowItWorksPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster />

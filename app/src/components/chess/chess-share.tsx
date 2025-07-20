@@ -34,8 +34,8 @@ export const ChessShare: React.FC<Props> = ({ game }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="h-12 w-12">
-          <Share className="size-5" onClick={() => setIsOpen(true)} />
+        <Button variant="default" className="h-8 w-8 md:h-12 md:w-12">
+          <Share className="size-3 md:size-5" onClick={() => setIsOpen(true)} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] rounded-2xl bg-gradient-to-b from-gray-900/20 to-black/80 border-none backdrop-blur-lg border-1 border-white/10 border-solid">

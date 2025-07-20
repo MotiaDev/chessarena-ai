@@ -19,7 +19,7 @@ type Props = {
 export const LiveMatch: React.FC<Props> = ({ white, black, onClick }) => {
   return (
     <Card
-      className="flex flex-row gap-2 items-center justify-between w-full px-8 py-6 hover:bg-white/15 cursor-pointer"
+      className="flex flex-row gap-2 items-center justify-between w-full px-8 py-6 bg-white/10 hover:bg-white/15 cursor-pointer"
       onClick={onClick}
     >
       <div className="flex flex-col gap-4 items-start">

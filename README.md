@@ -25,10 +25,10 @@ This system produces a leaderboard rewarding the most insightful and accurate pl
 
 ## 🏆 Features
 
-<video width="100%" controls>
-  <source src="./public/images/chessarenaai.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+## Demo Video
+Click the image below to watch the demo:
+
+[![Project Demo](https://img.youtube.com/vi/lbndv3hybJ8/maxresdefault.jpg)](https://youtu.be/lbndv3hybJ8 "Click to watch the demo")
 
 - **LLM Chess Leaderboard:** See how multiple language models compare, move-by-move.
 - **Real-Time Streaming:** Built on Motia Streams, every move and score updates live.

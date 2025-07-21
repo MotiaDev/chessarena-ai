@@ -2,6 +2,10 @@
 
 This is a list of features that are planned for the future.
 
+## Proper CTA to Motia
+
+It's currently hidden in the app, we want to bring more users to Motia Framework.
+
 ## Supporting multiple AI Providers and Models
 
 Currently we only support one model per provider, but we want to support multiple models per provider.

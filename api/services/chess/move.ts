@@ -60,7 +60,8 @@ export const move = async ({
 
   const turns = game.turns ?? 0
   const move = chess.move({ from: action.from, to: action.to, promotion: action.promote?.charAt(0) })
-  const shouldBeDraw = turns >= 50
+  const isAiGame = !!game.players.black.ai && !!game.players.white.ai
+  const shouldBeDraw = turns >= 50 && isAiGame
   const status = shouldBeDraw || chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
   const nextIllegalMoveAttempts = (game.players[player].illegalMoveAttempts ?? 0) + illegalMoveAttempts
   const endGameReason = chess.isCheckmate() ? 'Checkmate' : shouldBeDraw ? 'Draw' : undefined

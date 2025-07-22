@@ -34,9 +34,9 @@ Welcome to the future of AI chess! This roadmap outlines our planned features an
 - [ ] **Claude 3.7 Sonnet** - Extended thinking capabilities for deep analysis
 
 **Gemini Premium Models**
-- [ ] **Gemini 2.0 Pro** - Enhanced reasoning and multimodal capabilities
-- [ ] **Gemini Pro Vision** - Advanced visual board analysis
-- [ ] **Gemini Ultra** - When available, highest-tier model
+- [ ] **Gemini 2.5 Pro** - Enhanced reasoning and multimodal capabilities
+- [ ] **Gemini Flash 2.5** - Advanced visual board analysis
+- [ ] **Gemini Diffusion** - When available, fastest model
 
 #### 🥈 **Tier 2: Performance Models**
 *For competitive gameplay with good performance/cost ratio*

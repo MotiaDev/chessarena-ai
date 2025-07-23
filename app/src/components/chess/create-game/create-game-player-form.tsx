@@ -41,7 +41,7 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
           </div>
           <div className="flex flex-row gap-2 items-center justify-center w-full">
             <Selector isSelected={ai === 'openai'} className="w-full flex flex-col" onClick={() => setAi('openai')}>
-              <AiIcon ai="openai" />
+              <AiIcon ai="openai" color="white" />
               ChatGPT
             </Selector>
             <Selector isSelected={ai === 'gemini'} className="w-full flex flex-col" onClick={() => setAi('gemini')}>

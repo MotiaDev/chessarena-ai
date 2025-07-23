@@ -217,6 +217,6 @@ Want to contribute to the future of AI chess? Here's how:
 
 ---
 
-*Last updated: January 2025 | Next review: February 2025*
+*Last updated: July 2025 | Next review: August 2025*
 
 **Built with ❤️ using the [Motia Framework](https://github.com/motiadev/motia) - The modern backend framework**

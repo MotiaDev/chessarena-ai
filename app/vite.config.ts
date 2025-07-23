@@ -32,6 +32,6 @@ export default defineConfig({
         ws: true,
       },
     },
-    allowedHosts: ['0.0.0.0'],
+    allowedHosts: true,
   },
 })

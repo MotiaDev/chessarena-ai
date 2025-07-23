@@ -49,7 +49,7 @@ export const AiGamePage = () => {
   }
 
   return (
-    <Page className="w-screen h-screen flex flex-col items-center justify-center">
+    <Page className="w-screen h-dvh flex flex-col items-center justify-center">
       {isLoading && (
         <div className="w-full flex items-center justify-center">
           <Loader2 className="size-10 animate-spin" />

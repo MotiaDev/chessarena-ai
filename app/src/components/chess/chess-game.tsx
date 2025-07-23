@@ -36,7 +36,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
 
   if (!game) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
+      <div className="w-screen h-dvh flex items-center justify-center">
         <Loader2 className="size-10 animate-spin" />
       </div>
     )
@@ -46,8 +46,8 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
   const isSpectator = role === 'spectator'
 
   return (
-    <div className="flex flex-col items-center mx-auto w-screen h-screen justify-between">
-      <div className="flex md:flex-row max-md:flex-col items-center justify-between w-full h-screen max-h-screen">
+    <div className="flex flex-col items-center mx-auto w-screen h-dvh justify-between">
+      <div className="flex md:flex-row max-md:flex-col items-center justify-between w-full h-dvh max-h-dvh">
         <header className="md:hidden flex flex-row gap-2 items-center justify-between p-2 md:p-4 w-full md:border-b-2 md:border-white/5">
           <Button variant="default" className="h-8 w-8 md:h-12 md:w-12" onClick={onClose}>
             <ArrowLeft className="size-4" />
@@ -62,7 +62,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           <Panel
             className="
             flex flex-col flex-1 gap-4 items-center justify-between w-screen
-            h-screen min-w-[400px] max-w-[400px] border-l-2 border-white/5
+            h-dvh min-w-[400px] max-w-[400px] border-l-2 border-white/5
           "
           >
             <header className="max-md:hidden flex flex-row gap-2 items-center justify-between p-6 w-full md:border-b-2 md:border-white/5">
@@ -142,8 +142,8 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
         ) : isSidechatOpen ? (
           <Panel
             className="
-              flex flex-col flex-1 gap-4 items-center justify-between w-screen h-screen
-              h-screen min-w-[300px] max-w-[400px] border-l-2 border-white/5
+              flex flex-col flex-1 gap-4 items-center justify-between w-screen h-dvh
+              h-dvh min-w-[300px] max-w-[400px] border-l-2 border-white/5
             "
           >
             <header className="border-b-2 border-white/5 w-full p-4">

@@ -8,7 +8,9 @@
     "api": "pnpm --filter chessarena-ai-api dev",
     "install-stockfish": "pnpm --filter chessarena-ai-api install-stockfish $1",
     "app": "pnpm --filter chessarena-ai-app dev",
-    "dev": "pnpm --filter chessarena-ai-app dev & pnpm --filter chessarena-ai-api dev"
+    "dev": "pnpm --filter chessarena-ai-app dev & pnpm --filter chessarena-ai-api dev",
+    "lint": "pnpm --filter chessarena-ai-app run lint & pnpm --filter chessarena-ai-api run lint",
+    "build": "pnpm --filter chessarena-ai-app run build & pnpm --filter chessarena-ai-api run build"
   },
   "keywords": [
     "motia"

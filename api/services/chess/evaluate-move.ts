@@ -75,7 +75,6 @@ function getPawnAttacks(chess: Chess, color: 'w' | 'b'): Set<string> {
     for (let j = 0; j < 8; j++) {
       const square = board[i][j]
       if (square && square.type === 'p' && square.color === color) {
-        const file = String.fromCharCode(97 + j) // a-h
         const rank = 8 - i
         // Add diagonal squares that pawns attack
         if (color === 'w') {

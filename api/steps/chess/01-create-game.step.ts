@@ -3,16 +3,49 @@ import { z } from 'zod'
 import { gameSchema } from './streams/00-chess-game.stream'
 import { createPasswords } from '../../services/chess/create-passwords'
 import { createGame } from '../../services/chess/create-game'
+import { supportedModelsByProvider } from '../../services/ai/models'
 
 const bodySchema = z.object({
   players: z.object({
     white: z.object({
       name: z.string({ description: 'The name of the player' }),
     }),
-    black: z.object({
-      name: z.string({ description: 'The name of the player' }),
-      ai: z.enum(['openai', 'gemini', 'claude']).optional(),
-    }),
+    black: z
+      .object({
+        name: z.string({ description: 'The name of the player' }),
+        ai: z.enum(['openai', 'gemini', 'claude']).optional(),
+        model: z.string().optional(),
+      })
+      .superRefine((data, ctx) => {
+        if (data.ai && !data.model) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['model'],
+            message: 'Model is required when AI is enabled',
+          })
+        }
+
+        if (data.ai) {
+          const isValidAiProvider = data.ai in supportedModelsByProvider
+          const isValidModel = data.model && supportedModelsByProvider[data.ai].includes(data.model)
+
+          if (!isValidAiProvider) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['ai'],
+              message: 'Invalid AI provider',
+            })
+          }
+
+          if (!isValidModel) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['model'],
+              message: 'Invalid AI model',
+            })
+          }
+        }
+      }),
   }),
 })
 

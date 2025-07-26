@@ -64,8 +64,6 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
   const validMoves = evaluateBestMoves(game)
   let lastInvalidMove = undefined
 
-  logger.info('Valid moves', { validMoves })
-
   while (true) {
     const messageId = crypto.randomUUID()
 
@@ -95,8 +93,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
     let action: { thought: string; move: ActionMove } | undefined
 
     try {
-      logger.info('Prompt', { prompt })
-      action = await makePrompt(prompt, responseSchema, player.ai, logger)
+      action = await makePrompt(prompt, responseSchema, player.ai, logger, player.model)
 
       logger.info('Updating message', { messageId, gameId: input.gameId })
       await streams.chessGameMessage.set(input.gameId, messageId, {

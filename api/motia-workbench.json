@@ -2,6 +2,10 @@
   {
     "id": "chess",
     "config": {
+      "steps/chess/available-models-api.step.ts": {
+        "x": 0,
+        "y": 0
+      },
       "steps/chess/08-game-ended.step.ts": {
         "x": 1318,
         "y": 420,
@@ -11,6 +15,10 @@
         "x": 1589,
         "y": 326,
         "targetHandlePosition": "left"
+      },
+      "steps/chess/07-evaluate-player-move.step.py": {
+        "x": 2209,
+        "y": 275
       },
       "steps/chess/06-send-message.step.ts": {
         "x": 104,

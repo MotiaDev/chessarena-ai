@@ -18,6 +18,8 @@ export const claude: Handler = async <T extends ZodRawShape>(
 
   const nextModel = model ?? models.claude
 
+  logger.debug("Claude tool choice input schema", {schema: zodToJsonSchema(zod)})
+
   const response = await client.messages.create({
     model: nextModel,
     messages: [{ role: 'user', content: prompt }],
@@ -29,6 +31,8 @@ export const claude: Handler = async <T extends ZodRawShape>(
   logger.info('Claude response received', { model: nextModel })
 
   const toolUse = response.content.find((c) => c.type === 'tool_use')
+
+  logger.debug('Claude tool used', { toolUse })
 
   return zod.parse(toolUse?.input)
 }

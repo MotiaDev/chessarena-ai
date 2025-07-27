@@ -15,7 +15,7 @@ export type Message = {
 }
 
 export type Password = { white: string; black: string }
-export type Player = { name: string; ai?: 'openai' | 'gemini' | 'claude' }
+export type Player = { name: string; ai?: 'openai' | 'gemini' | 'claude'; model?: string }
 export type Players = { white: Player; black: Player }
 
 export type Game = {

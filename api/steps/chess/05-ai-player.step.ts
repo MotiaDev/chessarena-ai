@@ -96,7 +96,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
 
     try {
       logger.info('Prompt', { prompt })
-      action = await makePrompt(prompt, responseSchema, player.ai, logger)
+      action = await makePrompt(prompt, responseSchema, player.ai, logger, player.model)
 
       logger.info('Updating message', { messageId, gameId: input.gameId })
       await streams.chessGameMessage.set(input.gameId, messageId, {

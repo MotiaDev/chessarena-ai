@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { CreateGamePlayerForm } from './create-game-player-form'
 import { CreateGamePlayers } from './create-game-players'
+import { toast } from 'sonner'
 
 type Props = {
   onGameCreated: (gameId: string, password: string) => void
@@ -21,6 +22,15 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
   const selectedPlayerColor = selectedPlayer === whitePlayer ? 'white' : 'black'
 
   const handlePlayerSubmit = (player: Player, color: 'white' | 'black') => {
+
+    if (player.ai && !player.model) {
+      toast('An ai model is required', {
+        description: 'You must select an ai model to continue',
+        position: 'top-right',
+      })
+      return
+    }
+
     if (color === 'white') {
       setWhitePlayer(player)
     } else {
@@ -38,8 +48,8 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
 
     try {
       const game = await createGame({
-        white: { name: whitePlayer.name, ai: whitePlayer.ai },
-        black: { name: blackPlayer.name, ai: blackPlayer.ai },
+        white: { name: whitePlayer.name, ai: whitePlayer.ai, model: whitePlayer.model },
+        black: { name: blackPlayer.name, ai: blackPlayer.ai, model: blackPlayer.model },
       })
 
       onGameCreated(game.id, game.passwords.root)

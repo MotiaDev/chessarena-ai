@@ -26,7 +26,7 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
     if (player.ai && !player.model) {
       toast('An ai model is required', {
         description: 'You must select an ai model to continue',
-        position: 'top-right',
+        position: 'bottom-center',
       })
       return
     }

@@ -10,8 +10,6 @@ type Props = {
 export const AiProviderModelsSelect: React.FC<Props> = ({ onModelSection, models, value }) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  console.log("value", value)
-
   return (
     <Select open={isOpen} onOpenChange={setIsOpen} value={value} onValueChange={onModelSection}>
       <SelectTrigger isOpen={isOpen} placeholder={"Select a model"} />

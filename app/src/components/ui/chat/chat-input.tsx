@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-interface ChatInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+type ChatInputProps = React.InputHTMLAttributes<HTMLInputElement>
 
 const ChatInput: React.FC<ChatInputProps> = ({ className, ...props }) => (
   <input

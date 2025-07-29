@@ -9,14 +9,12 @@ export const gemini: Handler = async <T extends ZodRawShape>(
   prompt: string,
   zod: ZodObject<T>,
   logger: Logger,
-  model?: string
+  model = models.gemini,
 ): Promise<z.infer<typeof zod>> => {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
-  const nextModel = model ?? models.gemini
-
   const completion = await ai.models.generateContent({
-    model: nextModel,
+    model,
     contents: prompt,
     config: {
       responseMimeType: 'application/json',
@@ -24,7 +22,7 @@ export const gemini: Handler = async <T extends ZodRawShape>(
     },
   })
 
-  logger.info('Gemini response received', { model: nextModel })
+  logger.info('Gemini response received', { model })
 
   const content = JSON.parse(completion.candidates?.[0]?.content?.parts?.[0]?.text ?? '{}')
 

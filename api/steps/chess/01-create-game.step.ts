@@ -10,40 +10,42 @@ const bodySchema = z.object({
     white: z.object({
       name: z.string({ description: 'The name of the player' }),
     }),
-    black: z.object({
-      name: z.string({ description: 'The name of the player' }),
-      ai: z.enum(['openai', 'gemini', 'claude']).optional(),
-      model: z.string().optional(),
-    }).superRefine((data, ctx) => {
-      if (data.ai && !data.model) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['model'],
-          message: 'Model is required when AI is enabled',
-        })
-      }
-    
-      if (data.ai) {
-        const isValidAiProvider = data.ai in supportedModelsByProvider;
-        const isValidModel = data.model && supportedModelsByProvider[data.ai].includes(data.model);
-    
-        if (!isValidAiProvider) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['ai'],
-            message: 'Invalid AI provider',
-          })
-        }
-
-        if (!isValidModel) {
+    black: z
+      .object({
+        name: z.string({ description: 'The name of the player' }),
+        ai: z.enum(['openai', 'gemini', 'claude']).optional(),
+        model: z.string().optional(),
+      })
+      .superRefine((data, ctx) => {
+        if (data.ai && !data.model) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ['model'],
-            message: 'Invalid AI model',
+            message: 'Model is required when AI is enabled',
           })
         }
-      }
-    })
+
+        if (data.ai) {
+          const isValidAiProvider = data.ai in supportedModelsByProvider
+          const isValidModel = data.model && supportedModelsByProvider[data.ai].includes(data.model)
+
+          if (!isValidAiProvider) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['ai'],
+              message: 'Invalid AI provider',
+            })
+          }
+
+          if (!isValidModel) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['model'],
+              message: 'Invalid AI model',
+            })
+          }
+        }
+      }),
   }),
 })
 

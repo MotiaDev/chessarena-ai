@@ -5,5 +5,5 @@ export type Handler = <T extends ZodRawShape>(
   input: string,
   zod: ZodObject<T>,
   logger: Logger,
-  model?: string
+  model?: string,
 ) => Promise<z.infer<typeof zod>>

@@ -20,5 +20,5 @@ export const makePrompt = async <T extends ZodRawShape>(
 ): Promise<z.infer<typeof zod>> => {
   const handler = models[provider]
 
-  return handler(input, zod, logger, model) 
+  return handler(input, zod, logger, model)
 }

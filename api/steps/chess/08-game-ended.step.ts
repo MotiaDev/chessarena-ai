@@ -56,7 +56,12 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
   const whiteLeaderboard = await streams.chessLeaderboard.get(groupId, whiteModel)
   const blackLeaderboard = await streams.chessLeaderboard.get(groupId, blackModel)
 
-  const overrideLeaderboard = (color: 'white' | 'black', model: string, score: Scoreboard, leaderboard: Leaderboard | null) => {
+  const overrideLeaderboard = (
+    color: 'white' | 'black',
+    model: string,
+    score: Scoreboard,
+    leaderboard: Leaderboard | null,
+  ) => {
     const player = color === 'white' ? 'white' : 'black'
     const otherPlayer = color === 'white' ? 'black' : 'white'
     const playerScore = score[player]
@@ -91,6 +96,14 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
     }
   }
 
-  await streams.chessLeaderboard.set(groupId, whiteModel, overrideLeaderboard('white', whiteModel, scoreboard, whiteLeaderboard))
-  await streams.chessLeaderboard.set(groupId, blackModel, overrideLeaderboard('black', blackModel, scoreboard, blackLeaderboard))
+  await streams.chessLeaderboard.set(
+    groupId,
+    whiteModel,
+    overrideLeaderboard('white', whiteModel, scoreboard, whiteLeaderboard),
+  )
+  await streams.chessLeaderboard.set(
+    groupId,
+    blackModel,
+    overrideLeaderboard('black', blackModel, scoreboard, blackLeaderboard),
+  )
 }

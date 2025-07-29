@@ -9,7 +9,8 @@
     "build": "motia build",
     "install-stockfish": "bash download.sh $1",
     "clean": "rm -rf dist node_modules python_modules .motia .mermaid",
-    "lint": "prettier --check ."
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write ."
   },
   "keywords": [
     "motia"

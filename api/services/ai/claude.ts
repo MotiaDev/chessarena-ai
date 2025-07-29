@@ -10,22 +10,27 @@ export const claude: Handler = async <T extends ZodRawShape>(
   prompt: string,
   zod: ZodObject<T>,
   logger: Logger,
+  model = models.claude,
 ): Promise<z.infer<typeof zod>> => {
   const client = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
   })
 
+  logger.debug('Claude tool choice input schema', { schema: zodToJsonSchema(zod) })
+
   const response = await client.messages.create({
-    model: models.claude,
+    model,
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 1000,
     tools: [{ name: 'move_action', input_schema: zodToJsonSchema(zod) as Tool.InputSchema }],
     tool_choice: { name: 'move_action', type: 'tool' },
   })
 
-  logger.info('Claude response received')
+  logger.info('Claude response received', { model })
 
   const toolUse = response.content.find((c) => c.type === 'tool_use')
+
+  logger.debug('Claude tool used', { toolUse })
 
   return zod.parse(toolUse?.input)
 }

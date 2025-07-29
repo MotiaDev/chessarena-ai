@@ -40,7 +40,8 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
 
   await streams.chessGame.set('game', game.id, { ...game, scoreboard })
 
-  if (!game.players.white.ai || !game.players.black.ai) {
+  const isAiVsAiGame = game.players.white.ai && game.players.black.ai
+  if (!isAiVsAiGame) {
     return
   }
 
@@ -49,12 +50,18 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
    * But we want to have a weekly or monthly leaderboard at some point
    */
   const groupId = 'global'
-  const whiteModel = models[game.players.white.ai]
-  const blackModel = models[game.players.black.ai]
+  // NOTE: I am leaving the default to be the models object reference to have backwards compatibility for active games previous to this change
+  const whiteModel = game.players.white.model ?? models[game.players.white.ai!]
+  const blackModel = game.players.black.model ?? models[game.players.black.ai!]
   const whiteLeaderboard = await streams.chessLeaderboard.get(groupId, whiteModel)
   const blackLeaderboard = await streams.chessLeaderboard.get(groupId, blackModel)
 
-  const overrideLeaderboard = (color: 'white' | 'black', score: Scoreboard, leaderboard: Leaderboard | null) => {
+  const overrideLeaderboard = (
+    color: 'white' | 'black',
+    model: string,
+    score: Scoreboard,
+    leaderboard: Leaderboard | null,
+  ) => {
     const player = color === 'white' ? 'white' : 'black'
     const otherPlayer = color === 'white' ? 'black' : 'white'
     const playerScore = score[player]
@@ -77,7 +84,7 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
 
     return {
       provider,
-      model: models[provider],
+      model,
       ...(leaderboard ?? {}),
       gamesPlayed: (leaderboard?.gamesPlayed ?? 0) + 1,
       victories: (leaderboard?.victories ?? 0) + (winner === color ? 1 : 0),
@@ -89,6 +96,14 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
     }
   }
 
-  await streams.chessLeaderboard.set(groupId, whiteModel, overrideLeaderboard('white', scoreboard, whiteLeaderboard))
-  await streams.chessLeaderboard.set(groupId, blackModel, overrideLeaderboard('black', scoreboard, blackLeaderboard))
+  await streams.chessLeaderboard.set(
+    groupId,
+    whiteModel,
+    overrideLeaderboard('white', whiteModel, scoreboard, whiteLeaderboard),
+  )
+  await streams.chessLeaderboard.set(
+    groupId,
+    blackModel,
+    overrideLeaderboard('black', blackModel, scoreboard, blackLeaderboard),
+  )
 }

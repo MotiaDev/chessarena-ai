@@ -41,6 +41,7 @@ export const gameSchema = z.object({
     white: z.object({
       name: z.string({ description: 'The name of the player' }),
       ai: z.enum(['openai', 'gemini', 'claude']).optional(),
+      model: z.string().optional(),
       illegalMoveAttempts: z.number({ description: 'The number of illegal move attempts' }).optional(),
       totalMoves: z.number({ description: 'The total number of moves' }).optional(),
       captures: z
@@ -56,6 +57,7 @@ export const gameSchema = z.object({
     black: z.object({
       name: z.string({ description: 'The name of the player' }),
       ai: z.enum(['openai', 'gemini', 'claude']).optional(),
+      model: z.string().optional(),
       illegalMoveAttempts: z.number({ description: 'The number of illegal move attempts' }).optional(),
       totalMoves: z.number({ description: 'The total number of moves' }).optional(),
       captures: z

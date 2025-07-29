@@ -9,10 +9,12 @@ export const openai: Handler = async <T extends ZodRawShape>(
   prompt: string,
   zod: ZodObject<T>,
   logger: Logger,
+  model = models.openai,
 ): Promise<z.infer<typeof zod>> => {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
   const completion = await openai.chat.completions.create({
-    model: models.openai,
+    model,
     messages: [{ role: 'user', content: prompt }],
     response_format: {
       type: 'json_schema',
@@ -20,7 +22,7 @@ export const openai: Handler = async <T extends ZodRawShape>(
     },
   })
 
-  logger.info('OpenAI response received')
+  logger.info('OpenAI response received', { model })
 
   const content = JSON.parse(completion.choices[0].message.content ?? '{}')
 

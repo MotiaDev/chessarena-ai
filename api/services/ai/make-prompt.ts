@@ -14,10 +14,11 @@ const models: Record<Models, Handler> = {
 export const makePrompt = async <T extends ZodRawShape>(
   input: string,
   zod: ZodObject<T>,
-  model: Models,
+  provider: Models,
   logger: Logger,
+  model?: string,
 ): Promise<z.infer<typeof zod>> => {
-  const handler = models[model]
+  const handler = models[provider]
 
-  return handler(input, zod, logger)
+  return handler(input, zod, logger, model)
 }

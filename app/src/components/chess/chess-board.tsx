@@ -1,6 +1,6 @@
 import type { Game, GameRole } from '@/lib/types'
 import { useChessInstance } from '@/lib/use-chess-instance'
-import { useMove } from '@/lib/use-move'
+import { useMove, useRetryMove } from '@/lib/use-move'
 import { Chess, SQUARES, type Square } from 'chess.js'
 import type { Config } from 'chessground/config'
 import type { Key, Role } from 'chessground/types'
@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react'
 import { Chessground } from './chessground'
 import { ChessPromote } from './promote/chess-promote'
 import { ChessSound } from './chess-sound'
+import { toast } from 'sonner'
+import { ChessRetryMove } from './chess-retry-move'
 
 export function toDests(chess: Chess): Map<Key, Key[]> {
   const dests = new Map()
@@ -36,6 +38,7 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
   const { getInstance } = useChessInstance()
 
   const move = useMove({ gameId: game.id })
+  const retryMove = useRetryMove({ gameId: game.id })
   const [moves, setMoves] = useState<Map<Key, Key[]>>(new Map())
   const [promote, setPromote] = useState<Promote>()
 
@@ -48,8 +51,14 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
     }
   }, [game?.fen])
 
-  if (!game) {
-    return <Chessground />
+  useEffect(() => {
+    console.log("game?.status", game?.status)
+  }, [game?.status])
+
+  const handleRetryMove = () => {
+    retryMove().catch(() => {
+      toast.error('Failed to retry move')
+    })
   }
 
   const onPromote = (piece: Role) => {
@@ -57,6 +66,10 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
 
     move(promote.from, promote.to, password, piece)
     setPromote(undefined)
+  }
+
+  if (!game) {
+    return <Chessground />
   }
 
   // define based on the role
@@ -93,6 +106,7 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
       <Chessground config={config} />
       <ChessSound game={game} />
       <ChessPromote color={game.turn} isOpen={!!promote} onPromote={onPromote} />
+      {game.status === 'requires-retry' && <ChessRetryMove onClick={() => handleRetryMove()} />}
     </>
   )
 }

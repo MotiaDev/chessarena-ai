@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 if [ -z "$1" ]; then
     echo "Error: Platform is required"
     exit 1

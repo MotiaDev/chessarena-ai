@@ -30,6 +30,15 @@ const aiNames: Record<AiEnum, string> = {
   claude: 'Claude',
 }
 
+const isOlderThan10Minutes = (createdAt?: string) => {
+  if (!createdAt) return true
+
+  const tenMinutesInMilliseconds = 10 * 60 * 1000
+  const createdAtDate = new Date(createdAt)
+
+  return Date.now() - createdAtDate.getTime() > tenMinutesInMilliseconds
+}
+
 export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, state, streams }) => {
   logger.info('Received createGame event')
 
@@ -50,11 +59,14 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
 
   const id = `${white}-vs-${black}`
   const liveAiGame = await streams.chessLiveAiGames.get('game', id)
-  const game = liveAiGame ? await streams.chessGame.get('game', liveAiGame.gameId) : null
 
-  if (game && game.status === 'pending') {
-    logger.info('Returning existing game', { gameId: game.id })
-    return { status: 200, body: game }
+  if (liveAiGame && !isOlderThan10Minutes(liveAiGame.createdAt)) {
+    const game = await streams.chessGame.get('game', liveAiGame.gameId)
+
+    if (game && game.status === 'pending') {
+      logger.info('Returning existing game', { gameId: game.id })
+      return { status: 200, body: game }
+    }
   }
 
   logger.info('Creating new game', { white, black })
@@ -65,6 +77,7 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
   await streams.chessLiveAiGames.set('game', id, {
     id,
     gameId: newGame.id,
+    createdAt: new Date().toISOString(),
     players: { white, black },
   })
 

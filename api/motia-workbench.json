@@ -3,43 +3,47 @@
     "id": "chess",
     "config": {
       "steps/chess/08-game-ended.step.ts": {
-        "x": 1377,
-        "y": 134,
+        "x": 1318,
+        "y": 420,
+        "targetHandlePosition": "left"
+      },
+      "steps/chess/07-evaluate-player-move.step.py": {
+        "x": 1589,
+        "y": 326,
         "targetHandlePosition": "left"
       },
       "steps/chess/06-send-message.step.ts": {
-        "x": -237,
-        "y": 82
+        "x": 104,
+        "y": 104
       },
       "steps/chess/05-ai-player.step.ts": {
-        "x": 1091,
-        "y": 415,
+        "x": 1093,
+        "y": 558,
         "sourceHandlePosition": "bottom"
       },
       "steps/chess/04-chess-game-moved.step.ts": {
-        "x": 530,
-        "y": 415,
-        "sourceHandlePosition": "bottom"
+        "x": 783,
+        "y": 404,
+        "sourceHandlePosition": "bottom",
+        "targetHandlePosition": "left"
       },
       "steps/chess/03-move-api.step.ts": {
         "x": 903,
         "y": 98
       },
       "steps/chess/02-get-game.step.ts": {
-        "x": -107,
-        "y": 339
+        "x": 440,
+        "y": 494
       },
       "steps/chess/01-get-live-ai-game.step.ts": {
-        "x": 149,
-        "y": 154
+        "x": 498,
+        "y": 58,
+        "sourceHandlePosition": "bottom"
       },
       "steps/chess/01-create-game.step.ts": {
-        "x": 482,
-        "y": 92
-      },
-      "steps/chess/07-evaluate-player-move.step.py": {
-        "x": 0,
-        "y": 0
+        "x": 164,
+        "y": 371,
+        "sourceHandlePosition": "right"
       }
     }
   }

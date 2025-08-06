@@ -17,51 +17,96 @@ Welcome to the future of AI chess! This roadmap outlines our planned features an
 
 ## 🚧 Upcoming Features
 
+Here is an enhanced "Advanced AI Model Support" section for your ROADMAP.md, incorporating your provided tiers, model names, and ordering based on premium/next-gen models as highest priority, while maintaining your existing section structure and markdown format. This can be pasted directly in place of your current "Advanced AI Model Support" roadmap section:
+
+## 🚧 Upcoming Features
+
 ### 1. 🤖 Advanced AI Model Support
 
-#### 🥇 **Tier 1: Premium Models**
-*For tournaments and professional analysis*
+#### 🏅 **Tier 0: Next-Generation Reasoning Models** (Highest Priority)
+*Industry-leading, cutting-edge models for deep reasoning, research, and analysis.*
 
-**OpenAI Premium Models**
-- [ ] **GPT-4o** - Latest multimodal model, superior reasoning
-- [ ] **GPT-4 Turbo** - High-performance variant with 128K context
-- [ ] **O1-Pro** - Advanced reasoning model for complex strategies
-- [ ] **O3/O4-Mini** - Next-generation reasoning models
+**OpenAI Advanced Reasoning Series**
+- [ ] **OpenAI o3-pro** – Most capable reasoning model
+- [ ] **OpenAI o4-mini** – Next-generation cost-efficient reasoning
+- [ ] **OpenAI GPT-4.1** – Flagship 1M token context, advanced depth
+- [ ] **OpenAI Deep Research** – Specialized for research automation
 
-**Claude Premium Models**
-- [ ] **Claude 4 Opus** - Most capable model ($75/MTok output, 200K context)
-- [ ] **Claude 4 Sonnet** - High-performance balanced model ($15/MTok output)
-- [ ] **Claude 3.7 Sonnet** - Extended thinking capabilities for deep analysis
+**Google DeepMind Reasoning**
+- [ ] **Gemini 2.5 Pro** – 86.4 GPQA Diamond score, top-tier reasoning
+- [ ] **Gemini 2.5 Flash** – Fast, multimodal reasoning
+- [ ] **Gemini 2.0 Flash Thinking** – Transparent, explainable reasoning
 
-**Gemini Premium Models**
-- [ ] **Gemini 2.5 Pro** - Enhanced reasoning and multimodal capabilities
-- [ ] **Gemini Flash 2.5** - Advanced visual board analysis
-- [ ] **Gemini Diffusion** - When available, fastest model
+**xAI Advanced Models**
+- [ ] **Grok 4** – Most intelligent, real-time search
+- [ ] **Grok 4 Heavy** – Multi-agent collaborative reasoning ($300/month tier)
+- [ ] **Grok 3 Reasoning** – Advanced math & scientific reasoning
 
-#### 🥈 **Tier 2: Performance Models**
-*For competitive gameplay with good performance/cost ratio*
+#### 🥇 **Tier 1: Multimodal Intelligence**
+*Comprehensive language, vision, and audio reasoning for general and chess-specific tasks.*
 
-**OpenAI Performance Models**
-- [ ] **GPT-4** - Reliable, well-tested baseline
-- [ ] **GPT-3.5-Turbo variants** - Various specialized versions
-  - [ ] `gpt-3.5-turbo-1106`
-  - [ ] `gpt-3.5-turbo-0125`
-  - [ ] `gpt-3.5-turbo-instruct`
+**Vision-Language-Audio**
+- [ ] **Claude Opus 4.1** – Most capable multimodal reasoning
+- [ ] **GPT-4.1 Multimodal** – Advanced image, text, and reasoning integration
+- [ ] **Llama 4 Scout** – 10M token context, native multimodality
+- [ ] **Llama 4 Maverick** – 400B params, vision-enabled
+- [ ] **Pixtral Large** – 124B, multimodal vision (Mistral)
 
-**Claude Performance Models**
-- [ ] **Claude 3.5 Sonnet (Previous)** - `claude-3-5-sonnet-20240620`
-- [ ] **Claude 3 Opus** - High-capability legacy model ($75/MTok)
+**Specialized Multimodal**
+- [ ] **Gemini Robotics** – Vision-language-action for robotics
+- [ ] **Phi 4 Multimodal** – Efficient multimodal (Microsoft)
+- [ ] **DeepSeek Janus Pro** – Advanced multimodal reasoning
 
-#### 🥉 **Tier 3: Efficient Models**
-*For high-volume games and experimentation*
+#### 🥈 **Tier 2: Domain-Specific Chess AI**
+*Tailored for chess, strategic gaming, and advanced move analysis.*
 
-**Claude Efficient Models**
-- [ ] **Claude 3.5 Haiku** - Fastest model ($4/MTok output, blazing speed)
-- [ ] **Claude 3 Haiku** - Most cost-effective ($1.25/MTok output)
+**Gaming & Strategic**
+- [ ] **Custom Chess Reasoning Agents** – Fine-tuned on large chess DBs
+- [ ] **Opening Book Integration Models** – Chess openings expert systems
+- [ ] **Endgame Specialist Models** – Tablebase-enhanced expertise
+- [ ] **Style-Adaptive Chess AI** – Dynamic play style adaptation
 
-**OpenAI Efficient Models**
-- [ ] **GPT-3.5-Turbo (Base)** - Cost-effective baseline
-- [ ] Additional mini variants as they become available
+**Chess-Specific**
+- [ ] **AlphaZero-LLM Hybrid** – Combination of traditional and LLM chess
+- [ ] **Chess Commentary Models** – Expert analysis and commentary
+- [ ] **Chess Teaching Models** – Instructional, improvement-oriented
+
+#### 🥉 **Tier 3: Open-Weight & Cost-Effective Models**
+*Open-source, high-throughput, and accessible models for scale and flexibility.*
+
+**OpenAI Open Models**
+- [ ] **GPT-oss-120b** – Data center class (Apache 2.0 license)
+- [ ] **GPT-oss-20b** – Medium-size, desktop-ready
+
+**Meta Open Source**
+- [ ] **Llama 4 Series** – Full open multimodal family
+- [ ] **Code Llama 4** – Coding LLM
+- [ ] **Llama Nemotron Ultra** – NVIDIA-optimized
+
+**Chinese Open Models**
+- [ ] **DeepSeek-R1-0528** – 37B, advanced reasoning
+- [ ] **Qwen3-235B-A22B-Thinking** – 262K context focus
+- [ ] **Kimi K2** – 32B multi-lingual parameters
+
+#### 🆕 **Tier 4: Specialized & Emerging Architectures**
+*Frontier architectures, mixtures of experts, and agent-based approaches.*
+
+**Mixture of Experts (MoE)**
+- [ ] **Mistral Medium 3** – Multimodal frontier MoE
+- [ ] **Magistral Medium** – Reasoning-focused MoE
+- [ ] **Codestral 2508** – Code specialization
+
+**Agent-Based Models**
+- [ ] **Agentic AI Workflows** – Designed for autonomous task completion
+- [ ] **Multi-Agent Chess Committees** – Collaborative move selection
+- [ ] **Chess Tournament Orchestration Agents** – Manage automated competitions
+
+**Edge & Efficiency**
+- [ ] **Ministral 3B/8B** – Best-in-class edge deployment
+- [ ] **Phi 4** – Latest small LLM (Microsoft)
+- [ ] **Solar Pro 2** – Efficient 66K context support
+
+*Latest, premium-tier, and next-generation reasoning models (Tier 0 & Tier 1) will be prioritized for integration and feature development.*
 
 ### 2. 🎨 User Experience
 

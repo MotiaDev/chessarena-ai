@@ -24,3 +24,18 @@ export const useMove = ({ gameId }: Args) => {
 
   return move
 }
+
+
+export const useRetryMove = ({ gameId }: Args) => {
+  const retryMove = useCallback(async () => {
+    const res = await fetch(`${apiUrl}/chess/game/${gameId}/retry-last-move`, {
+      method: 'POST',
+      body: JSON.stringify({}),
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    return res.ok
+  }, [])
+
+  return retryMove
+}

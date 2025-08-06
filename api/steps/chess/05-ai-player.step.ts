@@ -8,6 +8,7 @@ import { evaluateBestMoves } from '../../services/chess/evaluate-best-moves'
 import { ActionMove, move } from '../../services/chess/move'
 
 const MAX_ATTEMPTS = 3
+const MAX_AI_RETRY_MOVE_ATTEMPTS = 3;
 
 export const config: EventConfig = {
   type: 'event',
@@ -64,8 +65,6 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
   const validMoves = evaluateBestMoves(game)
   let lastInvalidMove = undefined
 
-  logger.info('Valid moves', { validMoves })
-
   while (true) {
     const messageId = crypto.randomUUID()
 
@@ -95,10 +94,10 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
     let action: { thought: string; move: ActionMove } | undefined
 
     try {
-      logger.info('Prompt', { prompt })
       action = await makePrompt(prompt, responseSchema, player.ai, logger)
 
       logger.info('Updating message', { messageId, gameId: input.gameId })
+
       await streams.chessGameMessage.set(input.gameId, messageId, {
         ...message,
         message: action.thought,
@@ -109,6 +108,33 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
         ...message,
         message: 'Error making prompt, I will need to try again soon',
       })
+
+      const nextRetryMoveAttempts = (game.players[input.player].retryMoveAttempts ?? 0) + 1
+
+      if (nextRetryMoveAttempts > MAX_AI_RETRY_MOVE_ATTEMPTS) {
+        await streams.chessGame.set('game', game.id, {
+          ...game,
+          status: 'completed',
+          endGameReason: 'Reached max retry attempts for AI player move',
+        })
+    
+        await emit({
+          topic: 'chess-game-ended',
+          data: { gameId: game.id },
+        })
+      } else {
+        await streams.chessGame.set('game', game.id, {
+          ...game,
+          status: 'requires-retry',
+          players: {
+            ...game.players,
+            [input.player]: {
+              ...game.players[input.player],
+              retryMoveAttempts: nextRetryMoveAttempts,
+            },
+          }
+        })
+      }
 
       logger.error('Error making prompt', { err })
       throw err

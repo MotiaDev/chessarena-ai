@@ -24,7 +24,7 @@ export type Game = {
   turn: 'white' | 'black'
   endGameReason?: string
   winner?: 'white' | 'black'
-  status: 'created' | 'pending' | 'completed' | 'draw'
+  status: 'created' | 'pending' | 'completed' | 'draw' | 'requires-retry'
   lastMove: Key[]
   players: { white: Player; black: Player }
   scoreboard?: Scoreboard

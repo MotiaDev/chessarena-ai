@@ -32,7 +32,7 @@ export const gameSchema = z.object({
   id: z.string({ description: 'The ID of the game' }),
   fen: z.string({ description: 'The FEN of the game' }),
   turn: z.enum(['white', 'black'], { description: 'The color of the current turn' }),
-  status: z.enum(['pending', 'completed', 'draw'], { description: 'The status of the game' }),
+  status: z.enum(['pending', 'completed', 'draw', 'requires-retry'], { description: 'The status of the game' }),
   lastMove: z.array(z.string({ description: 'The last move made' })).optional(),
   winner: z.enum(['white', 'black']).optional(),
   turns: z.number({ description: 'The number of turns' }).optional(),
@@ -52,6 +52,7 @@ export const gameSchema = z.object({
         )
         .optional(),
       promotions: z.number({ description: 'The number of pawn promotions' }).optional(),
+      retryMoveAttempts: z.number({ description: 'The number of retry move attempts' }).optional(),
     }),
     black: z.object({
       name: z.string({ description: 'The name of the player' }),
@@ -67,6 +68,7 @@ export const gameSchema = z.object({
         )
         .optional(),
       promotions: z.number({ description: 'The number of pawn promotions' }).optional(),
+      retryMoveAttempts: z.number({ description: 'The number of retry move attempts' }).optional(),
     }),
   }),
   check: z.boolean({ description: 'Whether the game is in check' }),

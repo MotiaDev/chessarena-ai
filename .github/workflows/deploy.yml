@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'api/**'
+      - .github/workflows/deploy.yml
 
 env:
   # Motia Deploy
@@ -45,6 +46,7 @@ jobs:
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
           echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env
           echo "STOCKFISH_BIN_PATH=/var/task/lib/stockfish" >> .env
+          echo "XAI_API_KEY=${{ secrets.XAI_API_KEY }}" >> .env
 
       - name: Download Stockfish Binary
         working-directory: api

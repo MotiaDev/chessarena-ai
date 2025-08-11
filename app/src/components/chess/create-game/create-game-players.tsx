@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react'
-import type { Player } from '@/lib/types'
+import type { Player } from '@chessarena/types/game'
 import { CreateGameButton } from './create-game-button'
 import { CreateGamePlayer } from './create-game-player'
 

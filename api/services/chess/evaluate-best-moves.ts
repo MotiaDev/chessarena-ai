@@ -1,6 +1,6 @@
+import type { Game } from '@chessarena/types/game'
 import { Chess } from 'chess.js'
 import { evaluateMove } from './evaluate-move'
-import { Game } from '../../steps/chess/streams/00-chess-game.stream'
 
 export const evaluateBestMoves = (game: Game) => {
   const chess = new Chess(game.fen)

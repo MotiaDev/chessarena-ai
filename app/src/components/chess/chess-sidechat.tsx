@@ -1,11 +1,11 @@
-import type { Message } from '@/lib/types'
+import type { GameMessage } from '@chessarena/types/game-message'
 import { useStreamGroup } from '@motiadev/stream-client-react'
 import { ChessSidechatMessage } from './chess-sidechat-message'
 
 type Props = { gameId: string }
 
 export const ChessSidechat: React.FC<Props> = ({ gameId }) => {
-  const { data: sidechatMessages } = useStreamGroup<Message>({
+  const { data: sidechatMessages } = useStreamGroup<GameMessage>({
     streamName: 'chessSidechatMessage',
     groupId: gameId,
   })

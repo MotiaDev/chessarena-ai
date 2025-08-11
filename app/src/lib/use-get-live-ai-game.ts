@@ -1,11 +1,10 @@
 import { useCallback, useState } from 'react'
 import { apiUrl } from './env'
-
-export type AiModel = 'openai' | 'gemini' | 'claude'
+import type { AiModelProvider } from '@chessarena/types/ai-models'
 
 export const useGetLiveAiGame = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const getLiveAiGame = useCallback(async (white: AiModel, black: AiModel) => {
+  const getLiveAiGame = useCallback(async (white: AiModelProvider, black: AiModelProvider) => {
     setIsLoading(true)
 
     try {

@@ -1,9 +1,12 @@
 import { Logger } from 'motia'
 
-export type Models = 'openai' | 'gemini' | 'claude'
-export type Handler = <T extends ZodRawShape>(
-  input: string,
-  zod: ZodObject<T>,
-  logger: Logger,
-  model?: string,
-) => Promise<z.infer<typeof zod>>
+type Stream = JSONStream<z.infer<typeof zod>>
+
+type HandlerInput<T extends ZodRawShape> = {
+  prompt: string
+  zod: ZodObject<T>
+  logger: Logger
+  model?: string
+}
+
+export type Handler = <T extends ZodRawShape>(input: HandlerInput<T>) => Promise<T>

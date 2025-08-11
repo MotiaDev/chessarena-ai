@@ -2,8 +2,8 @@ import { EventConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { models } from '../../services/ai/models'
 import { generateGameScore } from '../../services/chess/generate-game-score'
-import { Scoreboard } from './streams/00-chess-game.stream'
-import { Leaderboard } from './streams/00-chess-leaderboard.stream'
+import { Scoreboard } from '@chessarena/types/game'
+import { Leaderboard } from '@chessarena/types/leaderboard'
 
 /*
  * Warning: This can lead to race conditions if two games end at the same time.
@@ -51,8 +51,8 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
    */
   const groupId = 'global'
   // NOTE: I am leaving the default to be the models object reference to have backwards compatibility for active games previous to this change
-  const whiteModel = game.players.white.model ?? models[game.players.white.ai!]
-  const blackModel = game.players.black.model ?? models[game.players.black.ai!]
+  const whiteModel = game.players.white.model ?? models[game.players.white.ai!] ?? ''
+  const blackModel = game.players.black.model ?? models[game.players.black.ai!] ?? ''
   const whiteLeaderboard = await streams.chessLeaderboard.get(groupId, whiteModel)
   const blackLeaderboard = await streams.chessLeaderboard.get(groupId, blackModel)
 
@@ -61,7 +61,7 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
     model: string,
     score: Scoreboard,
     leaderboard: Leaderboard | null,
-  ) => {
+  ): Leaderboard => {
     const player = color === 'white' ? 'white' : 'black'
     const otherPlayer = color === 'white' ? 'black' : 'white'
     const playerScore = score[player]

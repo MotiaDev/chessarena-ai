@@ -1,9 +1,10 @@
-import type { Player } from '@/lib/types'
+import type { AiModelProvider } from '@chessarena/types/ai-models'
 
-const avatarImages: Record<NonNullable<Player['ai']>, string> = {
-  openai: '/openai.png',
-  gemini: '/gemini.png',
-  claude: '/claude.png',
+const avatarImages: Record<NonNullable<AiModelProvider>, string> = {
+  openai: '/avatars/openai-white.png',
+  gemini: '/avatars/gemini-white.png',
+  claude: '/avatars/claude.png',
+  grok: '/avatars/grok-white.png',
 }
 
 const OpenAI = ({ color }: { color?: string }) => {
@@ -17,7 +18,7 @@ const OpenAI = ({ color }: { color?: string }) => {
   )
 }
 
-export const AiIcon = ({ ai, color }: { ai: NonNullable<Player['ai']>; color?: string }) => {
+export const AiIcon = ({ ai, color }: { ai: NonNullable<AiModelProvider>; color?: string }) => {
   if (ai === 'openai') {
     return (
       <div className="w-[24px] h-[24px] flex items-center justify-center">
@@ -26,5 +27,5 @@ export const AiIcon = ({ ai, color }: { ai: NonNullable<Player['ai']>; color?: s
     )
   }
 
-  return <img src={avatarImages[ai]} alt={ai} className="w-[24px] h-[24px]" />
+  return <img src={avatarImages[ai]} alt={ai} className="w-[24px] h-[24px] rounded-full" />
 }

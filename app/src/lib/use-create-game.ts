@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { apiUrl } from './env'
-import type { Game, Password, Players } from './types'
+import type { Game, Password } from '@chessarena/types/game'
+import type { Players } from './types'
 
 export type CreatedGame = Game & { passwords: Password & { root: string } }
 

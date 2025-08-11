@@ -1,4 +1,4 @@
-import type { Game } from '@/lib/types'
+import type { Game } from '@chessarena/types/game'
 import { useEffect, useRef } from 'react'
 
 type Props = {

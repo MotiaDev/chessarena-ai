@@ -1,27 +1,32 @@
-import type { Message } from '@/lib/types'
 import { useScrollIntoView } from '@/lib/use-scroll-into-view'
 import { cn } from '@/lib/utils'
-import type { Key } from 'chessground/types'
+import type { AiModelProvider } from '@chessarena/types/ai-models'
+import type { GameMessage } from '@chessarena/types/game-message'
 import { OctagonX } from 'lucide-react'
 import React, { memo } from 'react'
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../ui/chat/chat-bubble'
 import { ChessMove } from './chess-move'
 
 type Props = {
-  message: Message
+  message: GameMessage
   isLast?: boolean
 }
 
-const avatarImages = {
+type ChessPlayer = { [key in AiModelProvider]: string }
+type ChessPlayers = { black: ChessPlayer; white: ChessPlayer }
+
+const avatarImages: ChessPlayers = {
   black: {
     openai: '/avatars/openai-black.png',
     gemini: '/avatars/gemini-black.png',
     claude: '/avatars/claude.webp',
+    grok: '/avatars/grok-white.png',
   },
   white: {
     openai: '/avatars/openai-white.png',
     gemini: '/avatars/gemini-white.png',
     claude: '/avatars/claude.webp',
+    grok: '/avatars/grok-white.png',
   },
 }
 
@@ -61,7 +66,7 @@ export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
             )}
           >
             {message.role === 'white' ? 'White move' : 'Black move'}
-            <ChessMove move={[message.move.from as Key, message.move.to as Key]} color={role} />
+            <ChessMove move={[message.move.from, message.move.to]} color={role} />
           </div>
         )}
       </ChatBubbleMessage>

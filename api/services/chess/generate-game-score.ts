@@ -1,5 +1,5 @@
-import type { GameMove, MoveEvaluation } from '../../steps/chess/streams/00-chess-game-move.stream'
-import type { PlayerScore, Scoreboard } from '../../steps/chess/streams/00-chess-game.stream'
+import type { GameMove, MoveEvaluation } from '@chessarena/types/game-move'
+import type { PlayerScore, Scoreboard } from '@chessarena/types/game'
 import { average, highest, lowest, median } from './utils'
 
 const generatePlayerScore = (moves: GameMove[], player: 'white' | 'black'): PlayerScore => {

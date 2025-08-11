@@ -1,12 +1,7 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { supportedModelsByProvider } from '../../services/ai/models'
 import { z } from 'zod'
-
-const modelsSchema = z.object({
-  openai: z.array(z.string()),
-  gemini: z.array(z.string()),
-  claude: z.array(z.string()),
-})
+import { AiModelsSchema } from '@chessarena/types/ai-models'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -18,7 +13,7 @@ export const config: ApiRouteConfig = {
   flows: ['chess'],
   bodySchema: z.object({}),
   responseSchema: {
-    200: z.object({ models: modelsSchema }),
+    200: z.object({ models: AiModelsSchema }),
     404: z.object({ message: z.string() }),
     400: z.object({ message: z.string() }),
   },

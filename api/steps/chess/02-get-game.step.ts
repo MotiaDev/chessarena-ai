@@ -1,9 +1,8 @@
+import { GameSchema, Password } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { getGameRole } from '../../services/chess/get-game-role'
 import { getUserName } from '../../services/chess/get-user-name'
-import { gameSchema } from './streams/00-chess-game.stream'
-import { Password } from './types'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -17,7 +16,7 @@ export const config: ApiRouteConfig = {
   queryParams: [{ name: 'password', description: 'The password to get the game' }],
   responseSchema: {
     200: z.object({
-      ...gameSchema.shape,
+      ...GameSchema.shape,
       role: z.enum(['white', 'black', 'spectator', 'root']),
       username: z.string(),
       passwords: z.object({ root: z.string(), white: z.string(), black: z.string() }).optional(),

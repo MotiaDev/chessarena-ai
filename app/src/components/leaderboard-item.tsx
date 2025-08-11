@@ -1,4 +1,4 @@
-import type { Leaderboard } from '@/lib/types'
+import type { Leaderboard } from '@chessarena/types/leaderboard'
 import type React from 'react'
 import { formatNumber } from '../lib/utils'
 import { AiIcon } from './chess/ai-icon'

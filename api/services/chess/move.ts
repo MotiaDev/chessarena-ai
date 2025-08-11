@@ -1,8 +1,8 @@
+import type { Game } from '@chessarena/types/game'
 import { Chess } from 'chess.js'
-import { Emitter, FlowContextStateStreams, Logger } from 'motia'
-import type { Game } from '../../steps/chess/streams/00-chess-game.stream'
-import { getCaptureScore } from './get-capture-score'
 import { randomUUID } from 'crypto'
+import { Emitter, FlowContextStateStreams, Logger } from 'motia'
+import { getCaptureScore } from './get-capture-score'
 
 export type ActionMove = { from: string; to: string; promote?: 'queen' | 'rook' | 'bishop' | 'knight' }
 type Args = {

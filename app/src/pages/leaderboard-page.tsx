@@ -2,7 +2,7 @@ import { LeaderboardItem } from '@/components/leaderboard-item'
 import { LeaderboardSkeleton } from '@/components/leaderboard-skeleton'
 import { PageDialog } from '@/components/page-dialog'
 import { Tab } from '@/components/ui/tab'
-import type { Leaderboard } from '@/lib/types'
+import type { Leaderboard } from '@chessarena/types/leaderboard'
 import { usePageTitle } from '@/lib/use-page-title'
 import { useStreamGroup } from '@motiadev/stream-client-react'
 import { ArrowLeft } from 'lucide-react'
@@ -57,7 +57,7 @@ export const LeaderboardPage = () => {
   return (
     <PageDialog>
       <div className="relative flex flex-row items-center justify-center w-full m-6">
-        <ArrowLeft className="absolute left-6 top-1 size-6 cursor-pointer" onClick={onBack} />
+        <ArrowLeft className="absolute left-6 top-0 size-6 cursor-pointer" onClick={onBack} />
         <h1 className="text-lg font-semibold text-white">Leaderboard</h1>
       </div>
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import type { Player } from '@/lib/types'
+import type { Player } from '@chessarena/types/game'
 import { AiIcon } from '../ai-icon'
 import { ChessIcon } from '../chess-icon'
 
@@ -14,7 +14,7 @@ export const Matchup: React.FC<MatchupProps> = ({ white, black }) => (
     <div className="flex items-start gap-2 justify-start bg-white text-black px-4 py-3 w-48 relative flex-1">
       {white.ai && <AiIcon ai={white.ai} color="black" />}
       <div className="flex flex-col">
-        {white.ai && <span className="font-bold">{white.name}</span>}
+        {white.ai && <span className="font-bold capitalize">{white.ai ?? white.name}</span>}
         <div className="flex gap-2">
           <ChessIcon color="white" size={20} transparent />
           <span className="font-semibold">White</span>
@@ -24,7 +24,7 @@ export const Matchup: React.FC<MatchupProps> = ({ white, black }) => (
 
     <div className="flex items-start gap-2 justify-end bg-black text-white px-4 py-3 w-48 relative flex-1">
       <div className="flex flex-col">
-        {black.ai && <span className="font-bold text-right">{black.name}</span>}
+        {black.ai && <span className="font-bold text-right capitalize">{black.ai ?? black.name}</span>}
         <div className="flex gap-2 text-right">
           <ChessIcon color="black" size={20} transparent />
           <span className="font-semibold">Black</span>

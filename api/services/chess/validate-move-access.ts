@@ -1,6 +1,5 @@
+import type { Game, Password } from '@chessarena/types/game'
 import { InternalStateManager } from 'motia'
-import { Password } from '../../steps/chess/types'
-import { Game } from '../../steps/chess/streams/00-chess-game.stream'
 
 type Args = {
   state: InternalStateManager

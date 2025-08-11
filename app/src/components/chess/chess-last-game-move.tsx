@@ -1,4 +1,4 @@
-import type { Game } from '@/lib/types'
+import type { Game } from '@chessarena/types/game'
 import { cn } from '@/lib/utils'
 import type React from 'react'
 import { ChessIcon } from './chess-icon'

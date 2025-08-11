@@ -1,17 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk'
-import z, { ZodObject, ZodRawShape } from 'zod'
-import zodToJsonSchema from 'zod-to-json-schema'
-import { Handler } from './types'
-import { Logger } from 'motia'
 import { Tool } from '@anthropic-ai/sdk/resources/messages'
+import zodToJsonSchema from 'zod-to-json-schema'
 import { models } from './models'
+import { Handler } from './types'
 
-export const claude: Handler = async <T extends ZodRawShape>(
-  prompt: string,
-  zod: ZodObject<T>,
-  logger: Logger,
-  model = models.claude,
-): Promise<z.infer<typeof zod>> => {
+export const claude: Handler = async ({ prompt, zod, logger, model }) => {
   const client = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
   })
@@ -19,7 +12,7 @@ export const claude: Handler = async <T extends ZodRawShape>(
   logger.debug('Claude tool choice input schema', { schema: zodToJsonSchema(zod) })
 
   const response = await client.messages.create({
-    model,
+    model: model ?? models.claude,
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 1000,
     tools: [{ name: 'move_action', input_schema: zodToJsonSchema(zod) as Tool.InputSchema }],

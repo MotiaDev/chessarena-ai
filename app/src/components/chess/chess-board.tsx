@@ -1,4 +1,5 @@
-import type { Game, GameRole } from '@/lib/types'
+import type { Game } from '@chessarena/types/game'
+import type { GameRole } from '@/lib/types'
 import { useChessInstance } from '@/lib/use-chess-instance'
 import { useMove } from '@/lib/use-move'
 import { Chess, SQUARES, type Square } from 'chess.js'
@@ -67,7 +68,7 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
     orientation: role === 'black' ? 'black' : 'white',
     turnColor: game.turn,
     coordinates: true,
-    lastMove: game.lastMove,
+    lastMove: game.lastMove as Key[] | undefined,
     movable: { color, free: false, showDests: true, dests: moves },
     events: {
       move: (from, to) => {

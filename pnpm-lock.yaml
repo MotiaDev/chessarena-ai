@@ -39,8 +39,8 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
       motia:
-        specifier: 0.5.4-beta.112
-        version: 0.5.4-beta.112(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))
+        specifier: 0.5.9-beta.117
+        version: 0.5.9-beta.117(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))
       mustache:
         specifier: ^4.2.0
         version: 4.2.0
@@ -226,11 +226,11 @@ packages:
   '@amplitude/analytics-connector@1.6.4':
     resolution: {integrity: sha512-SpIv0IQMNIq6SH3UqFGiaZyGSc7PBZwRdq7lvP0pBxW8i4Ny+8zwI0pV+VMfMHQwWY3wdIbWw5WQphNjpdq1/Q==}
 
-  '@amplitude/analytics-core@2.19.0':
-    resolution: {integrity: sha512-G1RwMOjkEV1Ccx7vU3CsPFt0w5yNFlVFNpCKaWO7zVbsqA9PRljPXj3fKXPrto6s2vKTXmuGG5NuWM/iSVfBwA==}
+  '@amplitude/analytics-core@2.20.1':
+    resolution: {integrity: sha512-D3qK1LOdZBPpX6Px2Y7nGgQsovOY09jtQ+W4/b+tWPncvGGgd1eaVWZ3RUV/HGDgf0EwsLfti4F33PkQosYVlA==}
 
-  '@amplitude/analytics-node@1.4.2':
-    resolution: {integrity: sha512-KVlOQyROTnn4a4ERTD+CJ6rcjhhfiJI0F/EpzM8xncrb3l2CkZKf/dS4bkWNZnYYkDvKJuDiL8Zbtz88qXRmOA==}
+  '@amplitude/analytics-node@1.5.1':
+    resolution: {integrity: sha512-icW9EEbl+rKNhtCXcS/EzUJY10bDgc07Rr9hezo0gWaJlfwZssjNfKHBp7gXDMiWjEgl1fyMYgQgAJucN/+dgQ==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -559,6 +559,12 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
+  '@inquirer/external-editor@1.0.0':
+    resolution: {integrity: sha512-5v3YXc5ZMfL6OJqXPrX9csb4l7NlQA2doO1yynUjpUChT9hg4JcuBVP0RbsEJ/3SL/sxWEyFjT2W69ZhtoBWqg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/node': '>=18'
+
   '@isaacs/balanced-match@4.0.1':
     resolution: {integrity: sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ==}
     engines: {node: 20 || >=22}
@@ -606,36 +612,36 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@motiadev/core@0.5.4-beta.112':
-    resolution: {integrity: sha512-IfI+WlltOHka2I+jK5sVcSopfoVTkX3hi2UlVtwyH/Bpb7re55phho3PTAJOG/bWTEPU70yaMaGywiqiKvOxLA==}
+  '@motiadev/core@0.5.9-beta.117':
+    resolution: {integrity: sha512-QpARgi7teFJLpbaOWMY/3++5+MBvk9tDu8lrlugoQD0NO7NBn/Vwwle8YkAn5VbQcZWqQImrFtIzsrlJCkn96w==}
 
   '@motiadev/stream-client-browser@0.2.1-beta.73':
     resolution: {integrity: sha512-o0ug4DQSx6Wq7jVozbA7i8ca/Q4zkGYc84rA0y8y7sBP6SO6Rp+ysmuMR0bqH1rkQwihhRqKYT15qOsoJWUrIA==}
 
-  '@motiadev/stream-client-browser@0.5.4-beta.112':
-    resolution: {integrity: sha512-PTUa/rwK57iy4jpujNJURJv04v56Mb9LAE/sO8O9I08FmO+wpm7TliZ+RC4rVa3r3rzjNKm2qxmPE4UJzN+nfg==}
+  '@motiadev/stream-client-browser@0.5.9-beta.117':
+    resolution: {integrity: sha512-AvodDFLlBf3I1bgU56EmABYJ62FHcroELyk9ejiN3Dn3anRo0E7HKnASwMeAc/GCG5opR2yBurQUSKakzO4fSA==}
 
   '@motiadev/stream-client-react@0.2.1-beta.73':
     resolution: {integrity: sha512-KjkZkDv5QYQwG4DLKpjpkamjXBdjU16tn/vQ7yJBx36wUy7xbWUwhrr4qQiKvLBxwbWGcsfeXPWTVT+tubnqZg==}
     peerDependencies:
       react: ^19.1.0
 
-  '@motiadev/stream-client-react@0.5.4-beta.112':
-    resolution: {integrity: sha512-0SISJR+LkZv+sDlukI321QWRr4zXhgPtChVT+8vS/p93vbfXuNlegS811igledl+thQa7TF/Xp6T9oNiCUl4nQ==}
+  '@motiadev/stream-client-react@0.5.9-beta.117':
+    resolution: {integrity: sha512-lD8iIQ2/DXQggL6/zyQtot1YPgP5fF8Bl7E6OI6FsCFnD455XMErZXVRKiXvarVRy5k7bRz0ZlofAJCPyPk5sg==}
     peerDependencies:
       react: ^19.1.0
 
-  '@motiadev/stream-client@0.5.4-beta.112':
-    resolution: {integrity: sha512-bdyvjs7Gp+GksO/B7fb1ESIJiNg6gI8PVcWmqFRthW/1j/coITRpz3pxkop5lXkVVIY2O7ZsCdFDTKCgwDlCPQ==}
+  '@motiadev/stream-client@0.5.9-beta.117':
+    resolution: {integrity: sha512-Ob+YzZlAA1mXra92mSy68RFmfKDz5WtThAK0uSOB+1OFdzdkSrTpixSL/DzooldKFdLbmX9ydOUZEgjPUuVeSg==}
 
-  '@motiadev/ui@0.5.4-beta.112':
-    resolution: {integrity: sha512-FG+fz7bD8+78YR9Dthsf3iCtzdDyZeDBkUbj0YeRWb0snXVWWifVunuWOM3otlzOTC9ZkigJY/1tqbqlEKKPAA==}
+  '@motiadev/ui@0.5.9-beta.117':
+    resolution: {integrity: sha512-mssz8LvzyHEZWWM3Dvf9TOK0Jq51MrtXGvWlTUsYrRxT205RFBv0o1TfNFg9Je/gE9guwf+1oMd9tD2M5NmfKw==}
     peerDependencies:
       react: ^19.1.0
       react-dom: ^19.1.0
 
-  '@motiadev/workbench@0.5.4-beta.112':
-    resolution: {integrity: sha512-RNec2MyuB9hkQyPhu4nBj15a9/IMhjHOWJjEsQ4In642totRUwoB3yS/baebx4rCi/mOfbJZMUo/lKOXOqAC6A==}
+  '@motiadev/workbench@0.5.9-beta.117':
+    resolution: {integrity: sha512-JQYklXGWlE4IJH1563M44BxS/Ac5eDWM/CJUZp7qBT8MELr61vjVHJThqnNkdZQyi5BJLjE3/52QOsETOC92Rg==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1666,8 +1672,8 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  bare-events@2.6.0:
-    resolution: {integrity: sha512-EKZ5BTXYExaNqi3I3f9RtEsaI/xBSGjE0XZCZilPzFAV/goswFHuPd9jEZlPIZ/iNZJwDSao9qRiScySz7MbQg==}
+  bare-events@2.6.1:
+    resolution: {integrity: sha512-AuTJkq9XmE6Vk0FJVNq5QxETrSA/vKHarWVBG5l/JbdCL1prJemiyJqUS0jrlXO0MftuPq4m3YVYhoNc5+aE/g==}
 
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
@@ -1761,8 +1767,8 @@ packages:
   character-reference-invalid@2.0.1:
     resolution: {integrity: sha512-iBZ4F4wRbyORVsu0jPV7gXkOsGYjGHPmAyv+HiHG8gi5PtC9KI2j1+v8/tlibRvjoWX027ypmG/n0HtO5t7unw==}
 
-  chardet@0.7.0:
-    resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
+  chardet@2.1.0:
+    resolution: {integrity: sha512-bNFETTG/pM5ryzQ9Ad0lJOTa6HWD/YsScAR3EnCPZRPlQh77JocYktSHOUHelyhm8IARL+o4c4F1bP5KVOjiRA==}
 
   chess.js@1.3.1:
     resolution: {integrity: sha512-gdMvss5QQNOQQKrglFxmGsb0ZMCMJ9sDVsGPXyW4EsQDo1dHBDjaatbuigqVrjoj9quTkTGzBWERXWAfjNT5fQ==}
@@ -2156,10 +2162,6 @@ packages:
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
 
-  external-editor@3.1.0:
-    resolution: {integrity: sha512-hMQ4CX1p1izmuLYyZqLMO/qGNw10wSv9QDCPfzXfyFrOaCSSoRfqE1Kf1s5an66J5JZC62NewG+mK49jOCtQew==}
-    engines: {node: '>=4'}
-
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -2438,8 +2440,8 @@ packages:
   inline-style-parser@0.2.4:
     resolution: {integrity: sha512-0aO8FkhNZlj/ZIbNi7Lxxr12obT7cL1moPfE4tg1LkX7LlLfC6DeX4l2ZEud1ukP9jNQyNnfzQVqwbwmAATY4Q==}
 
-  inquirer@8.2.6:
-    resolution: {integrity: sha512-M1WuAmb7pn9zdFRtQYk26ZBoY043Sse0wVDdk4Bppr+JOXyQYybdtvK+l9wUibhtjdjvtoiNy8tk+EgsYIUqKg==}
+  inquirer@8.2.7:
+    resolution: {integrity: sha512-UjOaSel/iddGZJ5xP/Eixh6dY1XghiBw4XK13rCCIJcJfyhhoul/7KhLLUGtebEj6GDYM6Vnx/mVsjx2L/mFIA==}
     engines: {node: '>=12.0.0'}
 
   ipaddr.js@1.9.1:
@@ -2877,8 +2879,8 @@ packages:
   monaco-editor@0.52.2:
     resolution: {integrity: sha512-GEQWEZmfkOGLdd3XK8ryrfWz3AIP8YymVXiPHEdewrUq7mh0qrKrfHLNCXcbB6sTnMLnOZ3ztSiKcciFUkIJwQ==}
 
-  motia@0.5.4-beta.112:
-    resolution: {integrity: sha512-Iyle41LZyrbkAyy3he33kd7IyEsQplAwRxl32UGZ3qCfh0F9Ca5fPYl4lZfevj9X5Ct1eHhPvC8clIj9XhRyzw==}
+  motia@0.5.9-beta.117:
+    resolution: {integrity: sha512-MXTAtGOLi4Ew75K2sjH6zh/ISSQTX2e5pwzD4cu46koQG9OtX5OS9VpKO6z81PO0FXVWTJsDXG4p0U2PoBQhnA==}
     hasBin: true
 
   ms@2.0.0:
@@ -2987,10 +2989,6 @@ packages:
   ora@5.4.1:
     resolution: {integrity: sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==}
     engines: {node: '>=10'}
-
-  os-tmpdir@1.0.2:
-    resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
-    engines: {node: '>=0.10.0'}
 
   p-limit@3.1.0:
     resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
@@ -3445,10 +3443,6 @@ packages:
     resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
     engines: {node: '>=12.0.0'}
 
-  tmp@0.0.33:
-    resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
-    engines: {node: '>=0.6.0'}
-
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
@@ -3817,14 +3811,14 @@ snapshots:
 
   '@amplitude/analytics-connector@1.6.4': {}
 
-  '@amplitude/analytics-core@2.19.0':
+  '@amplitude/analytics-core@2.20.1':
     dependencies:
       '@amplitude/analytics-connector': 1.6.4
       tslib: 2.8.1
 
-  '@amplitude/analytics-node@1.4.2':
+  '@amplitude/analytics-node@1.5.1':
     dependencies:
-      '@amplitude/analytics-core': 2.19.0
+      '@amplitude/analytics-core': 2.20.1
       tslib: 2.8.1
 
   '@ampproject/remapping@2.3.0':
@@ -4111,6 +4105,12 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
+  '@inquirer/external-editor@1.0.0(@types/node@22.15.21)':
+    dependencies:
+      '@types/node': 22.15.21
+      chardet: 2.1.0
+      iconv-lite: 0.6.3
+
   '@isaacs/balanced-match@4.0.1': {}
 
   '@isaacs/brace-expansion@5.0.0':
@@ -4163,9 +4163,9 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@motiadev/core@0.5.4-beta.112(@types/node@22.15.21)(typescript@5.8.3)':
+  '@motiadev/core@0.5.9-beta.117(@types/node@22.15.21)(typescript@5.8.3)':
     dependencies:
-      '@amplitude/analytics-node': 1.4.2
+      '@amplitude/analytics-node': 1.5.1
       body-parser: 1.20.3
       colors: 1.4.0
       cors: 2.8.5
@@ -4192,9 +4192,9 @@ snapshots:
     dependencies:
       uuid: 11.1.0
 
-  '@motiadev/stream-client-browser@0.5.4-beta.112':
+  '@motiadev/stream-client-browser@0.5.9-beta.117':
     dependencies:
-      '@motiadev/stream-client': 0.5.4-beta.112
+      '@motiadev/stream-client': 0.5.9-beta.117
       uuid: 11.1.0
 
   '@motiadev/stream-client-react@0.2.1-beta.73(react@19.1.0)':
@@ -4202,16 +4202,16 @@ snapshots:
       '@motiadev/stream-client-browser': 0.2.1-beta.73
       react: 19.1.0
 
-  '@motiadev/stream-client-react@0.5.4-beta.112(react@19.1.0)':
+  '@motiadev/stream-client-react@0.5.9-beta.117(react@19.1.0)':
     dependencies:
-      '@motiadev/stream-client-browser': 0.5.4-beta.112
+      '@motiadev/stream-client-browser': 0.5.9-beta.117
       react: 19.1.0
 
-  '@motiadev/stream-client@0.5.4-beta.112':
+  '@motiadev/stream-client@0.5.9-beta.117':
     dependencies:
       uuid: 11.1.0
 
-  '@motiadev/ui@0.5.4-beta.112(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@motiadev/ui@0.5.9-beta.117(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@radix-ui/react-dropdown-menu': 2.1.15(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-label': 2.1.7(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -4229,11 +4229,11 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@motiadev/workbench@0.5.4-beta.112(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(use-sync-external-store@1.5.0(react@19.1.0))':
+  '@motiadev/workbench@0.5.9-beta.117(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(use-sync-external-store@1.5.0(react@19.1.0))':
     dependencies:
       '@monaco-editor/react': 4.7.0(monaco-editor@0.52.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@motiadev/stream-client-react': 0.5.4-beta.112(react@19.1.0)
-      '@motiadev/ui': 0.5.4-beta.112(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@motiadev/stream-client-react': 0.5.9-beta.117(react@19.1.0)
+      '@motiadev/ui': 0.5.9-beta.117(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-collapsible': 1.1.11(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-dialog': 1.1.14(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-dropdown-menu': 2.1.15(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -5320,7 +5320,7 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
-  bare-events@2.6.0:
+  bare-events@2.6.1:
     optional: true
 
   base64-js@1.5.1: {}
@@ -5435,7 +5435,7 @@ snapshots:
 
   character-reference-invalid@2.0.1: {}
 
-  chardet@0.7.0: {}
+  chardet@2.1.0: {}
 
   chess.js@1.3.1: {}
 
@@ -5864,12 +5864,6 @@ snapshots:
 
   extend@3.0.2: {}
 
-  external-editor@3.1.0:
-    dependencies:
-      chardet: 0.7.0
-      iconv-lite: 0.4.24
-      tmp: 0.0.33
-
   fast-deep-equal@3.1.3: {}
 
   fast-fifo@1.3.2: {}
@@ -6193,13 +6187,13 @@ snapshots:
 
   inline-style-parser@0.2.4: {}
 
-  inquirer@8.2.6:
+  inquirer@8.2.7(@types/node@22.15.21):
     dependencies:
+      '@inquirer/external-editor': 1.0.0(@types/node@22.15.21)
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-width: 3.0.0
-      external-editor: 3.1.0
       figures: 3.2.0
       lodash: 4.17.21
       mute-stream: 0.0.8
@@ -6210,6 +6204,8 @@ snapshots:
       strip-ansi: 6.0.1
       through: 2.3.8
       wrap-ansi: 6.2.0
+    transitivePeerDependencies:
+      - '@types/node'
 
   ipaddr.js@1.9.1: {}
 
@@ -6701,11 +6697,11 @@ snapshots:
 
   monaco-editor@0.52.2: {}
 
-  motia@0.5.4-beta.112(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0)):
+  motia@0.5.9-beta.117(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0)):
     dependencies:
-      '@amplitude/analytics-node': 1.4.2
-      '@motiadev/core': 0.5.4-beta.112(@types/node@22.15.21)(typescript@5.8.3)
-      '@motiadev/workbench': 0.5.4-beta.112(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(use-sync-external-store@1.5.0(react@19.1.0))
+      '@amplitude/analytics-node': 1.5.1
+      '@motiadev/core': 0.5.9-beta.117(@types/node@22.15.21)(typescript@5.8.3)
+      '@motiadev/workbench': 0.5.9-beta.117(@types/node@22.15.21)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(eslint@9.27.0(jiti@2.4.2))(jiti@2.4.2)(lightningcss@1.30.1)(monaco-editor@0.52.2)(use-sync-external-store@1.5.0(react@19.1.0))
       archiver: 7.0.1
       axios: 1.11.0
       chokidar: 4.0.3
@@ -6716,7 +6712,7 @@ snapshots:
       esbuild: 0.25.5
       express: 4.21.2
       glob: 11.0.3
-      inquirer: 8.2.6
+      inquirer: 8.2.7(@types/node@22.15.21)
       table: 6.9.0
       ts-node: 10.9.2(@types/node@22.15.21)(typescript@5.8.3)
     transitivePeerDependencies:
@@ -6835,8 +6831,6 @@ snapshots:
       log-symbols: 4.1.0
       strip-ansi: 6.0.1
       wcwidth: 1.0.1
-
-  os-tmpdir@1.0.2: {}
 
   p-limit@3.1.0:
     dependencies:
@@ -7286,7 +7280,7 @@ snapshots:
       fast-fifo: 1.3.2
       text-decoder: 1.2.3
     optionalDependencies:
-      bare-events: 2.6.0
+      bare-events: 2.6.1
 
   string-width@4.2.3:
     dependencies:
@@ -7378,10 +7372,6 @@ snapshots:
     dependencies:
       fdir: 6.4.4(picomatch@4.0.2)
       picomatch: 4.0.2
-
-  tmp@0.0.33:
-    dependencies:
-      os-tmpdir: 1.0.2
 
   to-regex-range@5.0.1:
     dependencies:

@@ -1,10 +1,9 @@
-import type { Key } from 'chessground/types'
 import { ArrowRight } from 'lucide-react'
 import type React from 'react'
 import { cn } from '@/lib/utils'
 
 type Props = {
-  move: Key[]
+  move: string[]
   color: 'white' | 'black'
 }
 

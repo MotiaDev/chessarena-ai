@@ -1,5 +1,5 @@
+import type { Game } from '@chessarena/types/game'
 import { Chess, SQUARES } from 'chess.js'
-import { Game } from '../../steps/chess/streams/00-chess-game.stream'
 
 type Move = { from: string; to: string[] }
 

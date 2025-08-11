@@ -1,5 +1,5 @@
+import type { Password } from '@chessarena/types/game'
 import { InternalStateManager } from 'motia'
-import { Password } from '../../steps/chess/types'
 
 const generatePassword = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'

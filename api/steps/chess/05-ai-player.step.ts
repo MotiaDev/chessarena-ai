@@ -5,7 +5,7 @@ import path from 'path'
 import { z } from 'zod'
 import { makePrompt } from '../../services/ai/make-prompt'
 import { evaluateBestMoves } from '../../services/chess/evaluate-best-moves'
-import { ActionMove, move } from '../../services/chess/move'
+import { move } from '../../services/chess/move'
 
 const MAX_ATTEMPTS = 3
 
@@ -69,6 +69,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
 
     logger.info('Creating message', { messageId, gameId: input.gameId })
     const message = await streams.chessGameMessage.set(input.gameId, messageId, {
+      id: messageId,
       message: 'Thinking...',
       sender: player.ai,
       role: input.player,
@@ -90,12 +91,19 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       { escape: (value: string) => value },
     )
 
-    let action: { thought: string; move: ActionMove } | undefined
+    let action: z.infer<typeof responseSchema>
 
     try {
-      action = await makePrompt(prompt, responseSchema, player.ai, logger, player.model)
+      action = await makePrompt({
+        prompt,
+        zod: responseSchema,
+        provider: player.ai,
+        logger,
+        model: player.model!,
+      })
 
       logger.info('Updating message', { messageId, gameId: input.gameId })
+
       await streams.chessGameMessage.set(input.gameId, messageId, {
         ...message,
         message: action.thought,

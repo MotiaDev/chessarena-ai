@@ -1,51 +1,56 @@
+import { AiModelProviderSchema } from '@chessarena/types/ai-models'
+import { GameSchema, Player } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
-import { z } from 'zod'
-import { gameSchema } from './streams/00-chess-game.stream'
-import { createPasswords } from '../../services/chess/create-passwords'
-import { createGame } from '../../services/chess/create-game'
+import { RefinementCtx, z } from 'zod'
 import { supportedModelsByProvider } from '../../services/ai/models'
+import { createGame } from '../../services/chess/create-game'
+import { createPasswords } from '../../services/chess/create-passwords'
+
+const refine = (data: Player, ctx: RefinementCtx) => {
+  if (data.ai && !data.model) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['model'],
+      message: 'Model is required when AI is enabled',
+    })
+  }
+
+  if (data.ai) {
+    const isValidAiProvider = data.ai in supportedModelsByProvider
+    const isValidModel = data.model && supportedModelsByProvider[data.ai]?.includes(data.model)
+
+    if (!isValidAiProvider) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['ai'],
+        message: 'Invalid AI provider',
+      })
+    }
+
+    if (!isValidModel) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['model'],
+        message: 'Invalid AI model',
+      })
+    }
+  }
+}
+
+const playerSchema = () => {
+  return z
+    .object({
+      name: z.string({ description: 'The name of the player' }),
+      ai: AiModelProviderSchema().optional(),
+      model: z.string().optional(),
+    })
+    .superRefine(refine)
+}
 
 const bodySchema = z.object({
   players: z.object({
-    white: z.object({
-      name: z.string({ description: 'The name of the player' }),
-    }),
-    black: z
-      .object({
-        name: z.string({ description: 'The name of the player' }),
-        ai: z.enum(['openai', 'gemini', 'claude']).optional(),
-        model: z.string().optional(),
-      })
-      .superRefine((data, ctx) => {
-        if (data.ai && !data.model) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['model'],
-            message: 'Model is required when AI is enabled',
-          })
-        }
-
-        if (data.ai) {
-          const isValidAiProvider = data.ai in supportedModelsByProvider
-          const isValidModel = data.model && supportedModelsByProvider[data.ai].includes(data.model)
-
-          if (!isValidAiProvider) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              path: ['ai'],
-              message: 'Invalid AI provider',
-            })
-          }
-
-          if (!isValidModel) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              path: ['model'],
-              message: 'Invalid AI model',
-            })
-          }
-        }
-      }),
+    white: playerSchema(),
+    black: playerSchema(),
   }),
 })
 
@@ -59,7 +64,7 @@ export const config: ApiRouteConfig = {
   flows: ['chess'],
   bodySchema,
   responseSchema: {
-    200: gameSchema,
+    200: GameSchema,
     400: z.object({ message: z.string(), errors: z.array(z.object({ message: z.string() })) }),
   },
 }

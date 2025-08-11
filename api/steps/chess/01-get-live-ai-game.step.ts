@@ -1,6 +1,6 @@
+import { GameSchema } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
-import { gameSchema } from './streams/00-chess-game.stream'
 import { createGame } from '../../services/chess/create-game'
 
 const aiEnum = z.enum(['openai', 'gemini', 'claude'])
@@ -18,7 +18,7 @@ export const config: ApiRouteConfig = {
   flows: ['chess'],
   bodySchema,
   responseSchema: {
-    200: gameSchema,
+    200: GameSchema,
     400: z.object({ message: z.string(), errors: z.array(z.object({ message: z.string() })).optional() }),
     404: z.object({ message: z.string() }),
   },

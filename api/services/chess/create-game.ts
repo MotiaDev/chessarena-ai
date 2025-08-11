@@ -1,6 +1,6 @@
 import { FlowContextStateStreams, Logger } from 'motia'
 import { createGameId } from './create-game-id'
-import { Game } from '../../steps/chess/streams/00-chess-game.stream'
+import { Game } from '@chessarena/types/game'
 
 export const createGame = async (
   players: Game['players'],

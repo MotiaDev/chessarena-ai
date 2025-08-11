@@ -1,8 +1,8 @@
+import { GameSchema } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { move } from '../../services/chess/move'
 import { validateMoveAccess } from '../../services/chess/validate-move-access'
-import { gameSchema } from './streams/00-chess-game.stream'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -19,7 +19,7 @@ export const config: ApiRouteConfig = {
     to: z.string({ description: 'The square to move to' }),
   }),
   responseSchema: {
-    200: gameSchema,
+    200: GameSchema,
     404: z.object({ message: z.string() }),
     400: z.object({ message: z.string() }),
   },

@@ -1,5 +1,5 @@
+import type { Game } from '@chessarena/types/game'
 import { adjectives, animals, uniqueNamesGenerator } from 'unique-names-generator'
-import { Game } from '../../steps/chess/streams/00-chess-game.stream'
 import { Role } from './get-game-role'
 
 type Args = {

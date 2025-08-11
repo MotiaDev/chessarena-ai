@@ -1,8 +1,9 @@
 import { ChessGame } from '@/components/chess/chess-game'
 import { Page } from '@/components/page'
-import { useGetLiveAiGame, type AiModel } from '@/lib/use-get-live-ai-game'
+import { useGetLiveAiGame } from '@/lib/use-get-live-ai-game'
 import { usePageTitle } from '@/lib/use-page-title'
 import { useTrackEvent } from '@/lib/use-track-event'
+import type { AiModelProvider } from '@chessarena/types/ai-models'
 import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
@@ -23,7 +24,7 @@ export const AiGamePage = () => {
       return
     }
 
-    const [white, black] = id.split('-vs-') as [AiModel, AiModel]
+    const [white, black] = id.split('-vs-') as [AiModelProvider, AiModelProvider]
 
     getLiveAiGame(white, black) //
       .then((game) => {

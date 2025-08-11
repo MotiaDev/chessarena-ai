@@ -20,9 +20,15 @@ importers:
 
   api:
     dependencies:
+      '@ai-sdk/xai':
+        specifier: ^2.0.3
+        version: 2.0.3(zod@3.25.30)
       '@anthropic-ai/sdk':
         specifier: ^0.54.0
         version: 0.54.0
+      '@chessarena/types':
+        specifier: workspace:*
+        version: link:../types
       '@google/genai':
         specifier: ^1.6.0
         version: 1.6.0
@@ -63,6 +69,9 @@ importers:
 
   app:
     dependencies:
+      '@chessarena/types':
+        specifier: workspace:*
+        version: link:../types
       '@motiadev/stream-client-react':
         specifier: 0.2.1-beta.73
         version: 0.2.1-beta.73(react@19.1.0)
@@ -176,7 +185,39 @@ importers:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.21)(jiti@2.4.2)(lightningcss@1.30.1)
 
+  types:
+    dependencies:
+      zod:
+        specifier: ^3.25.20
+        version: 3.25.30
+    devDependencies:
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
 packages:
+
+  '@ai-sdk/openai-compatible@1.0.3':
+    resolution: {integrity: sha512-SE49TeOGppPtP4GTOXAl7WOhXXx42/VKpei3pNozjrD8NTkLX29Mib5t06VB5leaMjHNmyJMLECiWbWQV5W1ug==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4
+
+  '@ai-sdk/provider-utils@3.0.1':
+    resolution: {integrity: sha512-/iP1sKc6UdJgGH98OCly7sWJKv+J9G47PnTjIj40IJMUQKwDrUMyf7zOOfRtPwSuNifYhSoJQ4s1WltI65gJ/g==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4
+
+  '@ai-sdk/provider@2.0.0':
+    resolution: {integrity: sha512-6o7Y2SeO9vFKB8lArHXehNuusnpddKPk7xqL7T2/b+OvXMRIXUO1rR4wcv1hAFUAT9avGZshty3Wlua/XA7TvA==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/xai@2.0.3':
+    resolution: {integrity: sha512-9Hsim5y4KJa+6DQBvoKcCp6ooWvfdbn1quOCEgSAnni6OJBL6QuImOcDmRr/YE6hrYo2RgLF56MtI2OyQqbh5w==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -1171,6 +1212,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@standard-schema/spec@1.0.0':
+    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
+
   '@tailwindcss/node@4.1.11':
     resolution: {integrity: sha512-yzhzuGRmv5QyU9qLNg4GTlYI6STedBWRE7NjxP45CsFYYq9taI0zJXZBMqIC/c8fViNLhmrbpSFS57EoxUmD6Q==}
 
@@ -2096,6 +2140,10 @@ packages:
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
+
+  eventsource-parser@3.0.3:
+    resolution: {integrity: sha512-nVpZkTMM9rF6AQ9gPJpFsNAMt48wIzB5TQgiTLdHiuO8XEDhUgZEhqKlZWXbIzo9VmJ/HvysHqEaVeD5v9TPvA==}
+    engines: {node: '>=20.0.0'}
 
   express@4.21.2:
     resolution: {integrity: sha512-28HqgMZAmih1Czt9ny7qr6ek2qddF4FclbMzwhCREB6OFfH+rXAnuNCwo1/wFvrtbgsQDb4kSbX9de9lFbrXnA==}
@@ -3740,6 +3788,31 @@ packages:
 
 snapshots:
 
+  '@ai-sdk/openai-compatible@1.0.3(zod@3.25.30)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@ai-sdk/provider-utils': 3.0.1(zod@3.25.30)
+      zod: 3.25.30
+
+  '@ai-sdk/provider-utils@3.0.1(zod@3.25.30)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@standard-schema/spec': 1.0.0
+      eventsource-parser: 3.0.3
+      zod: 3.25.30
+      zod-to-json-schema: 3.24.5(zod@3.25.30)
+
+  '@ai-sdk/provider@2.0.0':
+    dependencies:
+      json-schema: 0.4.0
+
+  '@ai-sdk/xai@2.0.3(zod@3.25.30)':
+    dependencies:
+      '@ai-sdk/openai-compatible': 1.0.3(zod@3.25.30)
+      '@ai-sdk/provider': 2.0.0
+      '@ai-sdk/provider-utils': 3.0.1(zod@3.25.30)
+      zod: 3.25.30
+
   '@alloc/quick-lru@5.2.0': {}
 
   '@amplitude/analytics-connector@1.6.4': {}
@@ -4761,6 +4834,8 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.41.1':
     optional: true
 
+  '@standard-schema/spec@1.0.0': {}
+
   '@tailwindcss/node@4.1.11':
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -5716,6 +5791,8 @@ snapshots:
   event-target-shim@5.0.1: {}
 
   events@3.3.0: {}
+
+  eventsource-parser@3.0.3: {}
 
   express@4.21.2:
     dependencies:

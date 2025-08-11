@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card'
-import type { Game } from '@/lib/types'
+import type { Game } from '@chessarena/types/game'
 import { useScrollIntoView } from '@/lib/use-scroll-into-view'
 import { Info, Loader2 } from 'lucide-react'
 import React from 'react'

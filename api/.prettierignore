@@ -2,3 +2,7 @@ dist
 node_modules
 .motia
 python_modules
+types.d.ts
+package.json
+.motia/*
+motia-workbench.json

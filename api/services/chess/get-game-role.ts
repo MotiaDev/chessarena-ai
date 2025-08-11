@@ -1,5 +1,4 @@
-import { Game } from '../../steps/chess/streams/00-chess-game.stream'
-import { Password } from '../../steps/chess/types'
+import type { Game, Password } from '@chessarena/types/game'
 
 type Args = {
   game: Game

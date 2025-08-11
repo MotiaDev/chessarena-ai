@@ -1,9 +1,9 @@
-import type { Message } from '@/lib/types'
+import type { GameMessage } from '@chessarena/types/game-message'
 import { cn } from '@/lib/utils'
 import React, { memo, useEffect, useRef } from 'react'
 
 type Props = {
-  message: Message
+  message: GameMessage
   isLast?: boolean
 }
 

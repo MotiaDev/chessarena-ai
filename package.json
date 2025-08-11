@@ -5,12 +5,12 @@
   "license": "GPL-3.0-or-later",
   "version": "1.0.0",
   "scripts": {
-    "api": "pnpm --filter chessarena-ai-api dev",
-    "install-stockfish": "pnpm --filter chessarena-ai-api install-stockfish $1",
-    "app": "pnpm --filter chessarena-ai-app dev",
-    "dev": "pnpm --filter chessarena-ai-app dev & pnpm --filter chessarena-ai-api dev",
-    "lint": "pnpm --filter chessarena-ai-app run lint & pnpm --filter chessarena-ai-api run lint",
-    "build": "pnpm --filter chessarena-ai-app run build & pnpm --filter chessarena-ai-api run build"
+    "api": "pnpm --filter @chessarena/api dev",
+    "install-stockfish": "pnpm --filter @chessarena/api install-stockfish $1",
+    "app": "pnpm --filter @chessarena/app dev",
+    "dev": "pnpm --filter @chessarena/app dev & pnpm --filter @chessarena/api dev",
+    "lint": "pnpm --filter @chessarena/app run lint & pnpm --filter @chessarena/api run lint",
+    "build": "pnpm --filter @chessarena/app run build & pnpm --filter @chessarena/api run build"
   },
   "keywords": [
     "motia"

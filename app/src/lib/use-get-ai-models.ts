@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { apiUrl } from './env'
+import type { AiModels } from '@chessarena/types/ai-models'
 
 export const useGetAiModels = () => {
-  const [models, setModels] = useState<{ openai: string[]; gemini: string[]; claude: string[] }>({ openai: [], gemini: [], claude: [] })
+  const [models, setModels] = useState<AiModels>({
+    openai: [],
+    gemini: [],
+    claude: [],
+    grok: [],
+  })
   const getAiModels = useCallback(async (): Promise<void> => {
     const res = await fetch(`${apiUrl}/chess/models`)
 
@@ -18,5 +24,5 @@ export const useGetAiModels = () => {
     getAiModels().catch(() => console.error('Failed to get AI models'))
   }, [getAiModels])
 
-  return {models}
+  return { models }
 }

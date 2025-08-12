@@ -191,3 +191,10 @@ strong {
   stroke-linecap: round; /* round the dash ends */
   animation: flowDash 1s linear infinite;
 }
+
+.ellipsis-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+}

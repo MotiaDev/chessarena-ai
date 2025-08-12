@@ -4,6 +4,7 @@ import { models } from '../../services/ai/models'
 import { generateGameScore } from '../../services/chess/generate-game-score'
 import { Scoreboard } from '@chessarena/types/game'
 import { Leaderboard } from '@chessarena/types/leaderboard'
+import { isAiGame } from '../../services/chess/utils'
 
 /*
  * Warning: This can lead to race conditions if two games end at the same time.
@@ -40,10 +41,12 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
 
   await streams.chessGame.set('game', game.id, { ...game, scoreboard })
 
-  const isAiVsAiGame = game.players.white.ai && game.players.black.ai
-  if (!isAiVsAiGame) {
+  if (!isAiGame(game)) {
     return
   }
+
+  // let's delete the live AI game session
+  await streams.chessLiveAiGames.delete('game', game.id)
 
   /*
    * Initially, we're going to have only a global leaderboard
@@ -51,8 +54,8 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
    */
   const groupId = 'global'
   // NOTE: I am leaving the default to be the models object reference to have backwards compatibility for active games previous to this change
-  const whiteModel = game.players.white.model ?? models[game.players.white.ai!] ?? ''
-  const blackModel = game.players.black.model ?? models[game.players.black.ai!] ?? ''
+  const whiteModel = game.players.white.model ?? models[game.players.white.ai!]
+  const blackModel = game.players.black.model ?? models[game.players.black.ai!]
   const whiteLeaderboard = await streams.chessLeaderboard.get(groupId, whiteModel)
   const blackLeaderboard = await streams.chessLeaderboard.get(groupId, blackModel)
 

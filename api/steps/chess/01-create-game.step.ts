@@ -61,6 +61,7 @@ export const config: ApiRouteConfig = {
   path: '/chess/create-game',
   method: 'POST',
   emits: ['chess-game-created'],
+  virtualSubscribes: ['api:create-game'],
   flows: ['chess'],
   bodySchema,
   responseSchema: {

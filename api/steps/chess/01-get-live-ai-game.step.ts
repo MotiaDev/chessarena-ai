@@ -1,12 +1,11 @@
-import { GameSchema } from '@chessarena/types/game'
+import { AiModelProvider, AiModelProviderSchema } from '@chessarena/types/ai-models'
+import { Game, GameSchema } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { createGame } from '../../services/chess/create-game'
+import { models } from '../../services/ai/models'
 
-const aiEnum = z.enum(['openai', 'gemini', 'claude'])
-const bodySchema = z.object({ players: z.array(aiEnum).length(2) })
-
-type AiEnum = z.infer<typeof aiEnum>
+const bodySchema = z.object({ players: z.array(AiModelProviderSchema()).length(2) })
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -22,12 +21,6 @@ export const config: ApiRouteConfig = {
     400: z.object({ message: z.string(), errors: z.array(z.object({ message: z.string() })).optional() }),
     404: z.object({ message: z.string() }),
   },
-}
-
-const aiNames: Record<AiEnum, string> = {
-  openai: 'OpenAI',
-  gemini: 'Gemini',
-  claude: 'Claude',
 }
 
 const isOlderThan10Minutes = (createdAt?: string) => {
@@ -49,8 +42,8 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
     return { status: 400, body: { message: 'Invalid request body', errors: validationResult.error.errors } }
   }
 
-  const white = req.body.players[0] as AiEnum
-  const black = req.body.players[1] as AiEnum
+  const white = req.body.players[0] as AiModelProvider
+  const black = req.body.players[1] as AiModelProvider
 
   if (white === black) {
     logger.error('AI agents cannot play against themselves')
@@ -71,14 +64,20 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
 
   logger.info('Creating new game', { white, black })
 
-  const players = { white: { name: aiNames[white], ai: white }, black: { name: aiNames[black], ai: black } }
+  const players: Game['players'] = {
+    white: { name: white, ai: white, model: models[white] },
+    black: { name: black, ai: black, model: models[black] },
+  }
   const newGame = await createGame(players, streams, logger)
 
   await streams.chessLiveAiGames.set('game', id, {
     id,
     gameId: newGame.id,
     createdAt: new Date().toISOString(),
-    players: { white, black },
+    players: {
+      white: { provider: white, model: models[white] },
+      black: { provider: black, model: models[black] },
+    },
   })
 
   await emit({

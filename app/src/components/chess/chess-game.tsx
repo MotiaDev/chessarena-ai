@@ -52,7 +52,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           <Button variant="default" className="h-8 w-8 md:h-12 md:w-12" onClick={onClose}>
             <ArrowLeft className="size-4" />
           </Button>
-          <MotiaPowered size="sm" />
+          <MotiaPowered size="sm" githubLogo />
           <div className="flex flex-row gap-2 items-center justify-end">
             <ChessShare game={gameWithRole ?? game} />
           </div>
@@ -70,7 +70,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
                 <ArrowLeft className="size-5" />
               </Button>
 
-              <MotiaPowered size="sm" />
+              <MotiaPowered size="sm" githubLogo />
 
               <ChessShare game={gameWithRole ?? game} />
             </header>

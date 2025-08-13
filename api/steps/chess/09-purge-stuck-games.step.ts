@@ -2,8 +2,9 @@ import { LiveAiGames } from '@chessarena/types/live-ai-games'
 import { CronConfig, Handlers } from 'motia'
 
 export const config: CronConfig = {
-  cron: '0 0 * * * *', // every hour
+  cron: '0 0 * * ? *', // every hour
   name: 'PurgeStuckGames',
+  description: 'Removes all games that have been stuck for more than 10 minutes',
   type: 'cron',
   emits: [],
   flows: ['chess'],

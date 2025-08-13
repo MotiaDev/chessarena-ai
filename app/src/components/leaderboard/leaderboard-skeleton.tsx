@@ -1,5 +1,5 @@
+import { Card } from '@/components/ui/card'
 import type React from 'react'
-import { Card } from './ui/card'
 
 export const LeaderboardSkeleton: React.FC = () => {
   return (

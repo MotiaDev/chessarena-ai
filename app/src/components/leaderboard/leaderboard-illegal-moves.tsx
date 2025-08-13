@@ -1,8 +1,8 @@
+import { AiIcon } from '@/components/chess/ai-icon'
+import { Card } from '@/components/ui/card'
+import { formatNumber } from '@/lib/utils'
 import type { Player } from '@chessarena/types/game'
 import type React from 'react'
-import { AiIcon } from './chess/ai-icon'
-import { Card } from './ui/card'
-import { formatNumber } from '../lib/utils'
 
 type Props = {
   name: string

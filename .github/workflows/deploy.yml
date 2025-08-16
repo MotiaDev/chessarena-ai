@@ -49,6 +49,7 @@ jobs:
           echo "STOCKFISH_BIN_PATH=/var/task/lib/stockfish" >> .env
           echo "XAI_API_KEY=${{ secrets.XAI_API_KEY }}" >> .env
           echo "JWT_EXPIRATION=${{ env.JWT_EXPIRATION }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
           echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env

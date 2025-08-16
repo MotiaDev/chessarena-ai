@@ -1,12 +1,12 @@
 import { LiveMatch } from '@/components/live-match'
 import { MotiaPowered } from '@/components/motia-powered'
 import { Page } from '@/components/page'
+import { BaseButton } from '@/components/ui/base-button'
 import { usePageTitle } from '@/lib/use-page-title'
 import type { LiveAiGames } from '@chessarena/types/live-ai-games'
 import { useStreamGroup } from '@motiadev/stream-client-react'
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router'
-import { CreateGameButtonAlt } from '../components/chess/create-game/create-game-button'
 
 export const LiveMatchesPage = () => {
   const navigate = useNavigate()
@@ -38,7 +38,7 @@ export const LiveMatchesPage = () => {
             <div className="text-white/50 text-center">
               Currently there are no live matches going on. Click the button below to create a new game.
             </div>
-            <CreateGameButtonAlt onClick={() => navigate('/new')}>Create Game</CreateGameButtonAlt>
+            <BaseButton onClick={() => navigate('/new')}>Create Game</BaseButton>
           </>
         )}
         <div className="flex-1" />

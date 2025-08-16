@@ -30,7 +30,10 @@ export const Leaderboard: React.FC = () => {
         <div className="flex flex-row w-full h-full items-center justify-center h-full">
           <div className="border-r border-white/10 flex flex-col gap-6 pt-[80px] h-full pb-4">
             {leaderboard.map((leaderboard, position) => (
-              <div className="flex flex-row gap-2 items-center flex-1 w-[250px] min-w-[250px] max-w-[250px] max-h-[52px] h-[52px]">
+              <div
+                key={position}
+                className="flex flex-row gap-2 items-center flex-1 w-[250px] min-w-[250px] max-w-[250px] max-h-[52px] h-[52px]"
+              >
                 <div className="font-bold text-white w-[40px] min-w-[40px] max-w-[40px] text-center">
                   {position + 1}
                 </div>

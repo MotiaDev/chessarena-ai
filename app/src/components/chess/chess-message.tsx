@@ -38,7 +38,7 @@ export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
   }
 
   const role = message.role === 'root' ? 'white' : message.role
-  const image = avatarImages[role]?.[message.sender as keyof (typeof avatarImages)[typeof role]]
+  const image = message.profilePic ?? avatarImages[role]?.[message.sender as keyof (typeof avatarImages)[typeof role]]
 
   return (
     <ChatBubble variant={role} ref={ref}>

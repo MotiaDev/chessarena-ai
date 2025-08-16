@@ -1,5 +1,9 @@
+import { roleSchema } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
+import { getGameRole } from '../../services/chess/get-game-role'
+import { auth } from '../middlewares/auth.middleware'
+import { UserState } from '../states/user-state'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -10,10 +14,12 @@ export const config: ApiRouteConfig = {
   method: 'POST',
   path: '/chess/game/:id/send-message',
 
+  middleware: [auth({ required: false })],
+
   bodySchema: z.object({
     message: z.string({ description: 'The message to send' }),
     name: z.string({ description: 'The name of the player sending the message' }),
-    role: z.enum(['white', 'black', 'spectator', 'root'], { description: 'The role of the sender' }),
+    role: roleSchema,
   }),
 
   responseSchema: {
@@ -26,9 +32,10 @@ export const config: ApiRouteConfig = {
   },
 }
 
-export const handler: Handlers['SendMessage'] = async (req, { logger, streams }) => {
+export const handler: Handlers['SendMessage'] = async (req, { logger, streams, state }) => {
   logger.info('Received SendMessage event', { gameId: req.pathParams.id })
 
+  const userState = new UserState(state)
   const messageId = crypto.randomUUID()
   const game = await streams.chessGame.get('game', req.pathParams.id)
 
@@ -36,18 +43,22 @@ export const handler: Handlers['SendMessage'] = async (req, { logger, streams })
     return { status: 404, body: { message: 'Game not found' } }
   }
 
+  const userId = req.tokenInfo?.sub
+  const role = getGameRole(game, userId)
+  const user = userId ? await userState.getUser(userId) : undefined
+
   const message = {
     id: messageId,
     message: req.body.message,
-    role: req.body.role,
-    sender: req.body.name,
     timestamp: Date.now(),
+    sender: user?.name ?? req.body.name,
+    role,
+    profilePic: user?.profilePic,
   }
 
-  const isSpectator = req.body.role === 'spectator'
   const isAiGame = !!game.players.black.ai && !!game.players.white.ai
   const result =
-    isAiGame || isSpectator
+    isAiGame || role === 'spectator'
       ? await streams.chessSidechatMessage.set(game.id, messageId, message)
       : await streams.chessGameMessage.set(game.id, messageId, message)
 

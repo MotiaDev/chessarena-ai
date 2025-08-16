@@ -20,14 +20,13 @@ import Scoreboard from './scoreboard/game-scoreboard'
 
 type Props = {
   gameId: string
-  password?: string
   onClose: () => void
 }
 
-export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
+export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
   const isMobile = useDeviceWidth() < 768
   const [isSidechatOpen, setIsSidechatOpen] = useState(!isMobile)
-  const gameWithRole = useGetGame(gameId, password)
+  const gameWithRole = useGetGame(gameId)
   const { data: game } = useStreamItem<Game>({
     streamName: 'chessGame',
     groupId: 'game',
@@ -54,7 +53,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           </Button>
           <MotiaPowered size="sm" githubLogo />
           <div className="flex flex-row gap-2 items-center justify-end">
-            <ChessShare game={gameWithRole ?? game} />
+            <ChessShare />
           </div>
         </header>
 
@@ -71,8 +70,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
               </Button>
 
               <MotiaPowered size="sm" githubLogo />
-
-              <ChessShare game={gameWithRole ?? game} />
+              <ChessShare />
             </header>
 
             {game.status === 'pending' && (
@@ -97,7 +95,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, password, onClose }) => {
           <div
             className={cn('w-full h-full flex items-center justify-center', isSidechatOpen && 'md:w-[calc(100%-20px)]')}
           >
-            <ChessBoard game={game} password={password} role={role} />
+            <ChessBoard game={game} role={role} />
           </div>
         </div>
 

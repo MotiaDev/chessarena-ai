@@ -1,30 +1,17 @@
+import { BaseButton } from '@/components/ui/base-button'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import type { GameWithRole } from '@/lib/types'
-import type { Game } from '@chessarena/types/game'
 import { Share } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { CreateGameButton, CreateGameButtonAlt } from './create-game/create-game-button'
 
-type Props = {
-  game: Game | GameWithRole
-}
-
-export const ChessShare: React.FC<Props> = ({ game }) => {
+export const ChessShare: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const passwords = 'passwords' in game ? game.passwords : undefined
 
-  const onClick = (color?: 'white' | 'black') => {
+  const onClick = () => {
     setIsOpen(false)
 
-    const password = color ? passwords?.[color] : undefined
-
-    if (password) {
-      navigator.clipboard.writeText(window.location.href + `?pw=${password}`)
-    } else {
-      navigator.clipboard.writeText(window.location.href)
-    }
+    navigator.clipboard.writeText(window.location.href)
 
     toast('Link copied to clipboard', {
       description: 'Share this link with your friends',
@@ -44,19 +31,9 @@ export const ChessShare: React.FC<Props> = ({ game }) => {
           <DialogTitle className="text-md font-semibold text-center">Share match</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-2 w-full">
-          {passwords?.white && (
-            <CreateGameButton className="flex-1" onClick={() => onClick('white')}>
-              Invite to play as white
-            </CreateGameButton>
-          )}
-          {passwords?.black && (
-            <CreateGameButton className="flex-1" onClick={() => onClick('black')}>
-              Invite to play as black
-            </CreateGameButton>
-          )}
-          <CreateGameButtonAlt className="w-full" onClick={() => onClick()}>
+          <BaseButton className="w-full" onClick={() => onClick()}>
             Invite to watch
-          </CreateGameButtonAlt>
+          </BaseButton>
         </div>
       </DialogContent>
     </Dialog>

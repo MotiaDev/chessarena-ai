@@ -1,31 +1,10 @@
-import type { Game, Password } from '@chessarena/types/game'
+import { Game, GameRole } from '@chessarena/types/game'
 
-type Args = {
-  game: Game
-  password: string
-  passwords: Password | undefined
-}
-
-export type Role = 'root' | 'white' | 'black' | 'spectator'
-
-export const getGameRole = async ({ game, password, passwords }: Args): Promise<Role> => {
-  let role: Role = 'spectator'
-
-  if (!passwords || password === passwords.root) {
-    if (game.players.white.ai && game.players.black.ai) {
-      role = 'spectator'
-    } else if (game.players.white.ai) {
-      role = 'black'
-    } else if (game.players.black.ai) {
-      role = 'white'
-    } else {
-      role = 'root'
-    }
-  } else if (password === passwords.white) {
-    role = 'white'
-  } else if (password === passwords.black) {
-    role = 'black'
+export const getGameRole = (game: Game, userId: string): GameRole => {
+  if (!!userId && game.players.white.userId === userId) {
+    return 'white'
+  } else if (!!userId && game.players.black.userId === userId) {
+    return 'black'
   }
-
-  return role
+  return 'spectator'
 }

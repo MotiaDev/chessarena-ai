@@ -1,27 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
-import { apiUrl } from './env'
+import { apiClient } from './auth/api-client'
 import type { GameWithRole } from './types'
 
-export const useGetGame = (gameId: string, password?: string) => {
+export const useGetGame = (gameId: string) => {
   const [game, setGame] = useState<GameWithRole | undefined>()
 
-  const getGame = useCallback(async (gameId: string, password?: string) => {
-    const res = await fetch(`${apiUrl}/chess/game/${gameId}?password=${password ?? ''}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
-
-    if (!res.ok) {
-      return undefined
-    }
-
-    const game = await res.json()
-    setGame(game)
+  const getGame = useCallback(async (gameId: string) => {
+    const data = await apiClient.get<GameWithRole>(`/chess/game/${gameId}`)
+    setGame(data)
   }, [])
 
   useEffect(() => {
-    getGame(gameId, password).catch(() => void 0)
-  }, [gameId, password, getGame])
+    getGame(gameId).catch(() => void 0)
+  }, [gameId, getGame])
 
   return game
 }

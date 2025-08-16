@@ -30,7 +30,7 @@ export const ScoreboardSchema = z.object({
 
 export const PlayerSchema = () =>
   z.object({
-    name: z.string({ description: 'The name of the player' }),
+    userId: z.string({ description: 'The ID of the user' }).optional(),
     ai: AiModelProviderSchema().optional(),
     model: z.string().optional(),
     illegalMoveAttempts: z.number({ description: 'The number of illegal move attempts' }).optional(),
@@ -63,14 +63,11 @@ export const GameSchema = z.object({
   scoreboard: ScoreboardSchema.optional(),
 })
 
+export const roleSchema = z.enum(['white', 'black', 'spectator', 'root'])
+
 export type Game = z.infer<typeof GameSchema>
 
 export type Player = z.infer<ReturnType<typeof PlayerSchema>>
 export type PlayerScore = z.infer<ReturnType<typeof playerScore>>
 export type Scoreboard = z.infer<typeof ScoreboardSchema>
-
-export type Password = {
-  white: string
-  black: string
-  root: string
-}
+export type GameRole = z.infer<typeof roleSchema>

@@ -1,8 +1,9 @@
 import { GameSchema } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
+import { getGameRole } from '../../services/chess/get-game-role'
 import { move } from '../../services/chess/move'
-import { validateMoveAccess } from '../../services/chess/validate-move-access'
+import { auth } from '../middlewares/auth.middleware'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -12,8 +13,8 @@ export const config: ApiRouteConfig = {
   method: 'POST',
   emits: ['chess-game-moved', 'chess-game-ended', 'evaluate-player-move'],
   flows: ['chess'],
+  middleware: [auth({ required: true })],
   bodySchema: z.object({
-    password: z.string({ description: 'The password for the game' }),
     promote: z.enum(['queen', 'rook', 'bishop', 'knight']).optional(),
     from: z.string({ description: 'The square to move from' }),
     to: z.string({ description: 'The square to move to' }),
@@ -39,10 +40,12 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
     return { status: 400, body: { message: 'Cannot move as AI' } }
   }
 
-  const isValid = await validateMoveAccess({ state, gameId, game, password: req.body.password })
+  const role = getGameRole(game, req.tokenInfo?.sub)
 
-  if (!isValid) {
-    return { status: 400, body: { message: 'Invalid password' } }
+  if (role === 'spectator') {
+    return { status: 400, body: { message: 'Spectators cannot move' } }
+  } else if (role !== game.turn) {
+    return { status: 400, body: { message: 'It is not your turn' } }
   }
 
   try {

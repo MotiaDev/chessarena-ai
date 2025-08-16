@@ -13,6 +13,7 @@ env:
   MOTIA_API_KEY: ${{ secrets.MOTIA_API_KEY }}
   MOTIA_PROJECT_ID: 95ec1c16-91e5-4e5f-bcad-87c4c4ba0d42
   MOTIA_ENV_ID: abc37e6f-1095-4446-bc28-f70a93eceb83
+  JWT_EXPIRATION: 30d
 
 jobs:
   deploy:
@@ -47,6 +48,10 @@ jobs:
           echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env
           echo "STOCKFISH_BIN_PATH=/var/task/lib/stockfish" >> .env
           echo "XAI_API_KEY=${{ secrets.XAI_API_KEY }}" >> .env
+          echo "JWT_EXPIRATION=${{ env.JWT_EXPIRATION }}" >> .env
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env
 
       - name: Download Stockfish Binary
         working-directory: api

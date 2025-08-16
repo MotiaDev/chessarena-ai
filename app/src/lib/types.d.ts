@@ -1,4 +1,4 @@
-import type { Password, Player } from '@chessarena/types/game'
+import type { Player } from '@chessarena/types/game'
 
 export type Players = {
   white: Player
@@ -7,8 +7,4 @@ export type Players = {
 
 export type GameRole = 'white' | 'black' | 'spectator' | 'root'
 
-export type GameWithRole = Game & {
-  role: GameRole
-  username: string
-  passwords?: Password
-}
+export type GameWithRole = Game & { role: GameRole }

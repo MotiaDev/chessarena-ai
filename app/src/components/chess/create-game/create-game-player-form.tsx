@@ -1,6 +1,5 @@
 import { AiIcon } from '@/components/chess/ai-icon'
 import { ChessIcon } from '@/components/chess/chess-icon'
-import { Input } from '@/components/ui/input'
 import { Selector } from '@/components/ui/selector'
 import type { Player } from '@chessarena/types/game'
 import { useGetAiModels } from '@/lib/use-get-ai-models'
@@ -21,7 +20,6 @@ type Props = {
 export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit, isAiEnabled, isLoading }) => {
   const [ai, setAi] = useState<Player['ai']>(player.ai)
   const [model, setModel] = useState<string>(player.model ?? '')
-  const [name, setName] = useState(player.name)
 
   const { models } = useGetAiModels()
 
@@ -31,7 +29,6 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
   }
 
   useEffect(() => {
-    setName(player.name)
     setAi(player.ai)
     setModel(player.model ?? '')
   }, [player])
@@ -40,13 +37,7 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
     <div className="flex flex-col gap-4 items-center justify-center w-full h-full">
       <div className="flex-1" />
       <ChessIcon color={color} size={80} />
-      <Input
-        type="text"
-        placeholder="Enter your name"
-        className="w-full"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      <h2 className="text-2xl font-bold capitalize">{color}</h2>
       <div className="flex-1" />
       <Selector isSelected={!ai} className="w-full" onClick={() => setAi(undefined)}>
         Play as {color}
@@ -85,7 +76,7 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
           <Loader2 className="size-4 animate-spin" /> Your match is loading...
         </div>
       ) : (
-        <CreateGameButton disabled={!name} onClick={() => onSubmit({ ...player, name, ai, model }, color)}>
+        <CreateGameButton onClick={() => onSubmit({ ...player, ai, model }, color)}>
           {color === 'white' ? 'Continue' : 'Start match'}
         </CreateGameButton>
       )}

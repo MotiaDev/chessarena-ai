@@ -4,7 +4,8 @@ import { ApiRouteConfig, Handlers } from 'motia'
 import { RefinementCtx, z } from 'zod'
 import { supportedModelsByProvider } from '../../services/ai/models'
 import { createGame } from '../../services/chess/create-game'
-import { createPasswords } from '../../services/chess/create-passwords'
+import { auth } from '../middlewares/auth.middleware'
+import { UserState } from '../states/user-state'
 
 const refine = (data: Player, ctx: RefinementCtx) => {
   if (data.ai && !data.model) {
@@ -40,7 +41,6 @@ const refine = (data: Player, ctx: RefinementCtx) => {
 const playerSchema = () => {
   return z
     .object({
-      name: z.string({ description: 'The name of the player' }),
       ai: AiModelProviderSchema().optional(),
       model: z.string().optional(),
     })
@@ -64,24 +64,35 @@ export const config: ApiRouteConfig = {
   virtualSubscribes: ['api:create-game'],
   flows: ['chess'],
   bodySchema,
+  middleware: [auth({ required: true })],
   responseSchema: {
     200: GameSchema,
-    400: z.object({ message: z.string(), errors: z.array(z.object({ message: z.string() })) }),
+    400: z.object(
+      { message: z.string(), errors: z.array(z.object({ message: z.string() })) },
+      { description: 'Validation issue' },
+    ),
+    401: z.object({ message: z.string() }, { description: 'User is not found' }),
   },
 }
 
 export const handler: Handlers['CreateGame'] = async (req, { logger, emit, state, streams }) => {
   logger.info('[CreateGame] Received createGame event')
 
+  const userState = new UserState(state)
+  const user = await userState.getUser(req.tokenInfo.sub)
   const validationResult = bodySchema.safeParse(req.body)
+
+  if (!user) {
+    logger.error('[CreateGame] User not found', { userId: req.tokenInfo.sub })
+    return { status: 401, body: { message: 'User not found' } }
+  }
 
   if (!validationResult.success) {
     logger.error('[CreateGame] Invalid request body', { errors: validationResult.error.errors })
     return { status: 400, body: { message: 'Invalid request body', errors: validationResult.error.errors } }
   }
 
-  const game = await createGame(req.body.players, streams, logger)
-  const passwords = await createPasswords(state, game.id)
+  const game = await createGame(req.body.players, user, streams, logger)
 
   logger.info('[CreateGame] Game created', { gameId: game.id })
 
@@ -90,8 +101,5 @@ export const handler: Handlers['CreateGame'] = async (req, { logger, emit, state
     data: { gameId: game.id, fenBefore: game.fen },
   })
 
-  return {
-    status: 200,
-    body: { ...game, passwords },
-  }
+  return { status: 200, body: game }
 }

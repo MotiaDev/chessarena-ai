@@ -1,8 +1,10 @@
-import { GameSchema, Password } from '@chessarena/types/game'
+import { GameSchema } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { getGameRole } from '../../services/chess/get-game-role'
-import { getUserName } from '../../services/chess/get-user-name'
+import { randomUserName } from '../../services/chess/random-user-name'
+import { UserState } from '../states/user-state'
+import { auth } from '../middlewares/auth.middleware'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -12,6 +14,7 @@ export const config: ApiRouteConfig = {
   method: 'GET',
   emits: [],
   flows: ['chess'],
+  middleware: [auth({ required: false })],
   bodySchema: z.object({}),
   queryParams: [{ name: 'password', description: 'The password to get the game' }],
   responseSchema: {
@@ -35,20 +38,20 @@ export const handler: Handlers['GetGame'] = async (req, { logger, state, streams
     return { status: 404, body: { message: 'Game not found' } }
   }
 
-  const passwords = (await state.get<Password>(gameId, 'passwords')) ?? undefined
-  const role = await getGameRole({
-    game,
-    password: req.queryParams.password as string,
-    passwords,
-  })
+  const userState = new UserState(state)
+  const userId = req.tokenInfo?.sub
+  const user = userId ? await userState.getUser(userId) : undefined
+  const role = getGameRole(game, userId)
+  const username = user?.name ?? randomUserName()
+
+  logger.info('User found', { userId, role, username })
 
   return {
     status: 200,
     body: {
       ...game,
       role,
-      username: getUserName({ game, role }),
-      passwords: role === 'root' ? passwords : undefined,
+      username,
     },
   }
 }

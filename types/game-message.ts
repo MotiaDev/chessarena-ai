@@ -4,6 +4,7 @@ export const GameMessageSchema = z.object({
   id: z.string({ description: 'The ID of the message' }),
   message: z.string({ description: 'The message to be sent' }),
   sender: z.string({ description: 'The name of the sender' }),
+  profilePic: z.string({ description: 'The profile picture of the sender' }).optional(),
   role: z.enum(['white', 'black', 'spectator', 'root'], { description: 'The role of the sender' }),
   timestamp: z.number({ description: 'The timestamp of the message' }),
   move: z

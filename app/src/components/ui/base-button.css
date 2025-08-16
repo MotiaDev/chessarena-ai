@@ -1,0 +1,63 @@
+
+.chess-arena-button {
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background: radial-gradient(circle, 
+    rgba(255,255,255,0.3) 0%, 
+    rgba(255,255,255,0.4) 70%, 
+    rgba(200,200,200,0.4) 100%);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  padding: 8px 16px;
+  height: 64px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.chess-arena-button:hover {
+  background: radial-gradient(circle, 
+    rgba(255,255,255,0.5) 0%, 
+    rgba(255,255,255,0.4) 70%, 
+    rgba(200,200,200,0.4) 100%);
+}
+
+.chess-arena-button:active {
+  background: radial-gradient(circle, 
+    rgba(255,255,255,0.4) 0%, 
+    rgba(255,255,255,0.3) 70%, 
+    rgba(200,200,200,0.4) 100%);
+}
+
+.chess-arena-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(circle, 
+    rgba(255,255,255,0.5) 0%, 
+    rgba(255,255,255,0.5) 70%, 
+    rgba(200,200,200,0.4) 100%);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}

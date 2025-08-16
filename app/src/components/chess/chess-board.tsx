@@ -26,14 +26,13 @@ export function toDests(chess: Chess): Map<Key, Key[]> {
 }
 
 type Props = {
-  password?: string
   role: GameRole
   game: Game
 }
 
 type Promote = { from: Key; to: Key; color: 'white' | 'black' }
 
-export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
+export const ChessBoard: React.FC<Props> = ({ role, game }) => {
   const { getInstance } = useChessInstance()
 
   const move = useMove({ gameId: game.id })
@@ -54,9 +53,9 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
   }
 
   const onPromote = (piece: Role) => {
-    if (!promote || !password) return
+    if (!promote) return
 
-    move(promote.from, promote.to, password, piece)
+    move(promote.from, promote.to, piece)
     setPromote(undefined)
   }
 
@@ -72,8 +71,6 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
     movable: { color, free: false, showDests: true, dests: moves },
     events: {
       move: (from, to) => {
-        if (!password) return
-
         const chess = getInstance()
         const piece = chess.get(from as Square)
         const color = piece?.color === 'w' ? 'white' : 'black'
@@ -83,7 +80,7 @@ export const ChessBoard: React.FC<Props> = ({ password, role, game }) => {
         if ((isPawn && color === 'white' && line === '8') || (color === 'black' && line === '1')) {
           setPromote({ from, to, color })
         } else {
-          move(from, to, password)
+          move(from, to)
         }
       },
     },

@@ -1,60 +1,68 @@
 [
   {
+    "id": "Auth",
+    "config": {
+      "steps/chess/00-auth-api.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
     "id": "chess",
     "config": {
       "steps/chess/09-purge-stuck-games.step.ts": {
-        "x": 348,
-        "y": 292
+        "x": -282,
+        "y": 376
       },
       "steps/chess/08-game-ended.step.ts": {
-        "x": 1230,
-        "y": 403,
+        "x": 1226,
+        "y": 399,
         "targetHandlePosition": "left"
       },
       "steps/chess/07-evaluate-player-move.step.py": {
-        "x": 1484,
-        "y": 321,
+        "x": 1483,
+        "y": 333,
         "targetHandlePosition": "left"
       },
       "steps/chess/06-send-message.step.ts": {
-        "x": 1388,
-        "y": 94
+        "x": 1304,
+        "y": 104
       },
       "steps/chess/05-ai-player.step.ts": {
-        "x": 963,
-        "y": 458,
+        "x": 1000,
+        "y": 507,
         "sourceHandlePosition": "bottom",
         "targetHandlePosition": "top"
       },
       "steps/chess/04-chess-game-moved.step.ts": {
-        "x": 603,
-        "y": 458,
+        "x": 589,
+        "y": 507,
         "sourceHandlePosition": "bottom",
         "targetHandlePosition": "top"
       },
       "steps/chess/03-move-api.step.ts": {
-        "x": 1065,
-        "y": 96
-      },
-      "steps/chess/02-get-game.step.ts": {
-        "x": 806,
-        "y": 98
+        "x": 724,
+        "y": 112
       },
       "steps/chess/01-get-live-ai-game.step.ts": {
-        "x": 33,
-        "y": 375,
-        "sourceHandlePosition": "bottom"
+        "x": 92,
+        "y": 393,
+        "sourceHandlePosition": "right"
       },
       "steps/chess/01-create-game.step.ts": {
-        "x": 526,
-        "y": 100,
-        "sourceHandlePosition": "bottom",
+        "x": 432,
+        "y": 111,
         "targetHandlePosition": "left"
       },
       "steps/chess/00-available-models-api.step.ts": {
-        "x": -35,
-        "y": 139,
+        "x": -209,
+        "y": 86,
         "sourceHandlePosition": "right"
+      },
+      "steps/chess/02-get-game.step.ts": {
+        "x": 1045,
+        "y": 114
       }
     }
   }

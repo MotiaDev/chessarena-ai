@@ -3,9 +3,11 @@ import { createGameId } from './create-game-id'
 import { Game } from '@chessarena/types/game'
 import { models } from '../ai/models'
 import { isAiGame } from './utils'
+import { User } from '@chessarena/types/user'
 
 export const createGame = async (
   players: Game['players'],
+  user: User,
   streams: FlowContextStateStreams,
   logger: Logger,
 ): Promise<Game> => {
@@ -16,7 +18,10 @@ export const createGame = async (
     fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
     turn: 'white',
     status: 'pending',
-    players,
+    players: {
+      white: { ...players.white, userId: players.white.ai ? undefined : user.id },
+      black: { ...players.black, userId: players.black.ai ? undefined : user.id },
+    },
     check: false,
   })
 

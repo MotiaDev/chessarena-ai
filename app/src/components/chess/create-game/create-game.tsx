@@ -7,14 +7,14 @@ import { CreateGamePlayerForm } from './create-game-player-form'
 import { toast } from 'sonner'
 
 type Props = {
-  onGameCreated: (gameId: string, password: string) => void
+  onGameCreated: (gameId: string) => void
   onCancel: () => void
 }
 
 export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
   const createGame = useCreateGame()
-  const [whitePlayer, setWhitePlayer] = useState<Player>({ name: 'White' })
-  const [blackPlayer, setBlackPlayer] = useState<Player>({ name: 'Black' })
+  const [whitePlayer, setWhitePlayer] = useState<Player>({})
+  const [blackPlayer, setBlackPlayer] = useState<Player>({})
   const [isLoading, setIsLoading] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<Player>(whitePlayer)
   const selectedPlayerColor = selectedPlayer === whitePlayer ? 'white' : 'black'
@@ -24,11 +24,11 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
 
     try {
       const game = await createGame({
-        white: { name: whitePlayer.name, ai: whitePlayer.ai, model: whitePlayer.model },
-        black: { name: blackPlayer.name, ai: blackPlayer.ai, model: blackPlayer.model },
+        white: { ai: whitePlayer.ai, model: whitePlayer.model },
+        black: { ai: blackPlayer.ai, model: blackPlayer.model },
       })
 
-      onGameCreated(game.id, game.passwords.root)
+      onGameCreated(game.id)
     } finally {
       setIsLoading(false)
     }
@@ -40,10 +40,6 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
         description: 'You must select an ai model to continue',
         position: 'bottom-center',
       })
-      return
-    }
-
-    if (!player.name) {
       return
     }
 

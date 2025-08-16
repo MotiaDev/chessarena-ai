@@ -19,7 +19,7 @@ export const ChessChatInput: React.FC<Props> = ({ game }) => {
       setIsSending(true)
 
       try {
-        await sendMessage({ message, name: game.username, role: game.role })
+        await sendMessage({ message, name: game.username })
         setMessage('')
       } finally {
         setIsSending(false)

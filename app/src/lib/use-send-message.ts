@@ -1,26 +1,22 @@
 import { useCallback } from 'react'
-import { apiUrl } from './env'
-import type { GameRole } from './types'
+import { apiClient } from './auth/api-client'
+import { useAuth } from './auth/use-auth'
 import { useTrackEvent } from './use-track-event'
 
 export const useSendMessage = (gameId: string) => {
   const trackEvent = useTrackEvent()
+  const auth = useAuth()
   const sendMessage = useCallback(
-    async (message: { message: string; name: string; role: GameRole }): Promise<void> => {
-      await fetch(`${apiUrl}/chess/game/${gameId}/send-message`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(message),
-      })
+    async (message: { message: string; name?: string }): Promise<void> => {
+      await apiClient.post(`/chess/game/${gameId}/send-message`, message)
 
       trackEvent('send_message', {
         game_id: gameId,
         message: message.message,
-        name: message.name,
-        role: message.role,
+        name: auth.user?.name ?? message.name ?? '',
       })
     },
-    [trackEvent, gameId],
+    [trackEvent, gameId, auth],
   )
 
   return sendMessage

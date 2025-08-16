@@ -9,21 +9,28 @@ import { LandingPage } from './pages/landing-page'
 import { LeaderboardPage } from './pages/leaderboard-page'
 import { LiveMatchesPage } from './pages/live-matches-page'
 import { AboutPage } from './pages/about-page'
+import { LoginPage } from './pages/login-page'
+import { AuthProvider } from './components/auth/auth-provider'
+import { PrivacyPage } from './pages/privacy-page'
 
 function App() {
   return (
     <MotiaStreamProvider address={socketUrl}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/live-matches" element={<LiveMatchesPage />} />
-          <Route path="/new" element={<CreateGamePage />} />
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
-          <Route path="/game/:gameId" element={<ChessGamePage />} />
-          <Route path="/ai-game/:id" element={<AiGamePage />} />
-          <Route path="/about" element={<AboutPage />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/live-matches" element={<LiveMatchesPage />} />
+            <Route path="/new" element={<CreateGamePage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
+            <Route path="/game/:gameId" element={<ChessGamePage />} />
+            <Route path="/ai-game/:id" element={<AiGamePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPage />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
       <Toaster />
     </MotiaStreamProvider>
   )

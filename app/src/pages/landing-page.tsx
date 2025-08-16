@@ -1,9 +1,11 @@
-import { CreateGameButton, CreateGameButtonAlt } from '@/components/chess/create-game/create-game-button'
+import { AuthContainer } from '@/components/auth/auth-container'
+import { CreateGameButton } from '@/components/chess/create-game/create-game-button'
+import { Leaderboard } from '@/components/leaderboard/leaderboard'
 import { MotiaPowered } from '@/components/motia-powered'
+import { BaseButton } from '@/components/ui/base-button'
 import { usePageTitle } from '@/lib/use-page-title'
 import { Trophy } from 'lucide-react'
 import { useNavigate } from 'react-router'
-import { Leaderboard } from '../components/leaderboard/leaderboard'
 
 export const LandingPage = () => {
   const navigate = useNavigate()
@@ -15,7 +17,7 @@ export const LandingPage = () => {
   usePageTitle('Powered by Motia')
 
   return (
-    <div className="flex flex-1 gap-4 items-center justify-center w-screen h-dvh bg-image-landing">
+    <div className="flex flex-1 gap-4 items-center justify-center w-screen h-dvh bg-image-landing overflow-y-auto">
       <div className="hidden lg:block w-3/5 ml-auto md:border-l-2 rounded-lg border border-white/5 backdrop-blur-lg">
         <div className="p-4 text-white text-center">
           <h1 className="text-lg font-semibold text-white">Leaderboard</h1>
@@ -37,15 +39,17 @@ export const LandingPage = () => {
             </p>
           </div>
 
+          <AuthContainer />
+
           <div className="flex flex-col gap-6 items-center justify-center w-full">
             <CreateGameButton onClick={() => navigate('/new')}>Create Game</CreateGameButton>
             <div className="flex flex-row gap-2 items-center justify-center w-full">
-              <CreateGameButtonAlt className="w-full flex-1" onClick={() => navigate('/live-matches')}>
+              <BaseButton className="w-full flex-1" onClick={() => navigate('/live-matches')}>
                 View live matches
-              </CreateGameButtonAlt>
-              <CreateGameButtonAlt onClick={() => navigate('/leaderboard')}>
+              </BaseButton>
+              <BaseButton onClick={() => navigate('/leaderboard')}>
                 <Trophy /> Leaderboard
-              </CreateGameButtonAlt>
+              </BaseButton>
             </div>
 
             <p className="font-medium text-sm text-center text-muted-foreground">

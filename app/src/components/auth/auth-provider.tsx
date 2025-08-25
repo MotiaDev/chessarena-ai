@@ -5,6 +5,7 @@ import { getAuthParamsFromUrl, handleAuthError } from '@/lib/auth/auth-utils'
 import type { AuthError, SupabaseError } from '@/lib/auth/types'
 import type { User } from '@chessarena/types/user'
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { AuthContext } from './auth-context'
 
 const useUserState = () => {
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useUserState()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [authError, setAuthError] = useState<AuthError | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const params = getAuthParamsFromUrl()
@@ -39,7 +41,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (session) {
           const result = await authApi.auth(session.access_token)
+          const redirect = localStorage.getItem('chessarena-redirect')
           setUser(result.user)
+
+          if (redirect) {
+            navigate(redirect)
+            localStorage.removeItem('chessarena-redirect')
+          }
         }
       } catch (error: unknown) {
         console.error('Auth state change error:', error)

@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@chessarena/types": "workspace:*",
-    "@motiadev/stream-client-react": "0.2.1-beta.73",
+    "@motiadev/stream-client-browser": "0.6.1-beta.124",
+    "@motiadev/stream-client-react": "0.6.1-beta.124",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-checkbox": "^1.3.2",
     "@radix-ui/react-dialog": "^1.1.14",

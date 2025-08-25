@@ -1,28 +1,14 @@
 [
   {
-    "id": "Auth",
-    "config": {
-      "steps/chess/00-auth-api.step.ts": {
-        "x": 0,
-        "y": 0
-      }
-    }
-  },
-  {
     "id": "chess",
     "config": {
       "steps/chess/09-purge-stuck-games.step.ts": {
-        "x": -282,
-        "y": 376
+        "x": -237,
+        "y": 580
       },
       "steps/chess/08-game-ended.step.ts": {
-        "x": 1226,
-        "y": 399,
-        "targetHandlePosition": "left"
-      },
-      "steps/chess/07-evaluate-player-move.step.py": {
-        "x": 1483,
-        "y": 333,
+        "x": 1441,
+        "y": 342,
         "targetHandlePosition": "left"
       },
       "steps/chess/06-send-message.step.ts": {
@@ -30,8 +16,8 @@
         "y": 104
       },
       "steps/chess/05-ai-player.step.ts": {
-        "x": 1000,
-        "y": 507,
+        "x": 1074,
+        "y": 506,
         "sourceHandlePosition": "bottom",
         "targetHandlePosition": "top"
       },
@@ -45,9 +31,13 @@
         "x": 724,
         "y": 112
       },
+      "steps/chess/02-get-game.step.ts": {
+        "x": 1045,
+        "y": 114
+      },
       "steps/chess/01-get-live-ai-game.step.ts": {
-        "x": 92,
-        "y": 393,
+        "x": -222,
+        "y": 344,
         "sourceHandlePosition": "right"
       },
       "steps/chess/01-create-game.step.ts": {
@@ -60,9 +50,35 @@
         "y": 86,
         "sourceHandlePosition": "right"
       },
-      "steps/chess/02-get-game.step.ts": {
-        "x": 1045,
-        "y": 114
+      "steps/chess/access/request-access.step.ts": {
+        "x": 574,
+        "y": 690
+      },
+      "steps/chess/access/accept-request-access.step.ts": {
+        "x": 889,
+        "y": 681
+      },
+      "steps/chess/evaluate_player_move_step.py": {
+        "x": 157,
+        "y": 680
+      }
+    }
+  },
+  {
+    "id": "auth",
+    "config": {
+      "steps/auth/01-get-user-api.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "Auth",
+    "config": {
+      "steps/auth/00-auth-api.step.ts": {
+        "x": 0,
+        "y": 0
       }
     }
   }

@@ -20,7 +20,7 @@ export const createGame = async (
     status: 'pending',
     players: {
       white: { ...players.white, userId: players.white.ai ? undefined : user.id },
-      black: { ...players.black, userId: players.black.ai ? undefined : user.id },
+      black: { ...players.black, userId: players.black.ai },
     },
     check: false,
   })

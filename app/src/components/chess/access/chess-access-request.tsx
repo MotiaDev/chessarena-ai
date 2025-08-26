@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { ChatBubbleAvatar } from '@/components/ui/chat/chat-bubble'
 import type { PublicUser } from '@chessarena/types/user'
-import { ChatBubbleAvatar } from '../../ui/chat/chat-bubble'
 import { useAcceptRequestAccess } from './hooks/use-accept-request-access'
 
 type Props = {

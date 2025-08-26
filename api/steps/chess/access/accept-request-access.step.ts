@@ -22,13 +22,17 @@ export const config: ApiRouteConfig = {
 }
 
 export const handler: Handlers['AcceptRequestAccess'] = async (req, { logger, streams, state }) => {
-  logger.info('Received available models request')
   const gameId = req.pathParams.gameId
+
+  logger.info('Received accept request access', { gameId, request: req.body })
+
   const userState = new UserState(state)
   const user = await userState.getUser(req.tokenInfo.sub)
   const game = await streams.chessGame.get('game', gameId)
 
   if (!game) {
+    logger.error('Game not found', { gameId })
+
     return {
       status: 404,
       body: { message: 'Game not found' },
@@ -36,6 +40,8 @@ export const handler: Handlers['AcceptRequestAccess'] = async (req, { logger, st
   }
 
   if (game.players.black.userId || game.players.black.ai) {
+    logger.error('Game is already in progress', { gameId })
+
     return {
       status: 400,
       body: { message: 'Game is already in progress' },
@@ -43,6 +49,8 @@ export const handler: Handlers['AcceptRequestAccess'] = async (req, { logger, st
   }
 
   if (game.players.white.userId !== user?.id) {
+    logger.error('You are not the owner of the game', { gameId, userId: user?.id })
+
     return {
       status: 400,
       body: { message: 'You are not the owner of the game' },

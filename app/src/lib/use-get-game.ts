@@ -30,6 +30,7 @@ export const useGetGame = (gameId: string, event: StreamSubscription<unknown, un
 
   useEffect(refetch, [refetch])
 
+  // capture on-access-requested event
   useStreamEventHandler(
     {
       event,
@@ -39,6 +40,8 @@ export const useGetGame = (gameId: string, event: StreamSubscription<unknown, un
     [],
   )
 
+  // capture on-access-accepted event
+  // if the user is the owner, refetch the game to update the game role
   useStreamEventHandler(
     {
       event,

@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { AiModelProviderSchema } from './ai-models'
 
 export const LeaderboardSchema = z.object({
+  id: z.string({ description: 'The id of the leaderboard' }),
   provider: AiModelProviderSchema(),
   model: z.string({ description: 'The model name, like: gemini-2.5-pro' }),
   gamesPlayed: z.number({ description: 'The number of games played' }),

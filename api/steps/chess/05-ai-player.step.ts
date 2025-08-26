@@ -61,8 +61,9 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
   }
 
   let attempts = 0
-  const validMoves = evaluateBestMoves(game)
   let lastInvalidMove = undefined
+
+  const validMoves = evaluateBestMoves(game)
 
   while (true) {
     const messageId = crypto.randomUUID()
@@ -91,7 +92,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       { escape: (value: string) => value },
     )
 
-    let action: z.infer<typeof responseSchema>
+    let action: z.infer<typeof responseSchema> | undefined
 
     try {
       action = await makePrompt({
@@ -104,48 +105,49 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
 
       logger.info('Updating message', { messageId, gameId: input.gameId })
 
-      await streams.chessGameMessage.set(input.gameId, messageId, {
-        ...message,
-        message: action.thought,
-        move: action.move,
-      })
-    } catch (err) {
-      await streams.chessGameMessage.set(input.gameId, messageId, {
-        ...message,
-        message: 'Error making prompt, I will need to try again soon',
-      })
+      if (action) {
+        await streams.chessGameMessage.set(input.gameId, messageId, {
+          ...message,
+          message: action.thought,
+          move: action.move,
+        })
 
-      logger.error('Error making prompt', { err })
-      throw err
-    }
+        logger.info('AI response', { action })
 
-    try {
-      logger.info('AI response', { action })
+        await move({
+          logger,
+          streams,
+          gameId: input.gameId,
+          player: input.player,
+          game,
+          action: action.move,
+          emit,
+          illegalMoveAttempts: attempts,
+        })
 
-      await move({
-        logger,
-        streams,
-        gameId: input.gameId,
-        player: input.player,
-        game,
-        action: action.move,
-        emit,
-        illegalMoveAttempts: attempts,
-      })
-
-      logger.info('Move successful', { action })
+        logger.info('Move successful', { action })
+      }
 
       return
     } catch (err) {
-      await streams.chessGameMessage.set(input.gameId, messageId, {
-        ...message,
-        message: action.thought,
-        isIllegalMove: true,
-        move: action.move,
-      })
+      logger.error('Error making prompt', { err })
 
-      logger.error('Invalid move', { move: action.move })
-      lastInvalidMove = action.move
+      if (action) {
+        await streams.chessGameMessage.set(input.gameId, messageId, {
+          ...message,
+          message: action.thought,
+          isIllegalMove: true,
+          move: action.move,
+        })
+
+        logger.error('Invalid move', { move: action.move })
+        lastInvalidMove = action.move
+      } else {
+        await streams.chessGameMessage.set(input.gameId, messageId, {
+          ...message,
+          message: 'Error making prompt, I will need to try again soon',
+        })
+      }
 
       /**
        * Player loses the game if they make too many illegal moves

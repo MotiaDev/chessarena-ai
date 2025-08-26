@@ -2,6 +2,7 @@ import { MotiaPowered } from '@/components/motia-powered'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Panel } from '@/components/ui/panel'
+import { useAuth } from '@/lib/auth/use-auth'
 import { useDeviceWidth } from '@/lib/use-device-width'
 import { useGetGame } from '@/lib/use-get-game'
 import { cn } from '@/lib/utils'
@@ -10,6 +11,8 @@ import { useStreamItem } from '@motiadev/stream-client-react'
 import { ArrowLeft, ChevronRight, Loader2, MessageCircle, MessagesSquare, Workflow } from 'lucide-react'
 import { useState } from 'react'
 import { Tab } from '../ui/tab'
+import { ChessAccessRequest } from './access/chess-access-request'
+import { ChessRequestAccess } from './access/chess-request-access'
 import { ChessBoard } from './chess-board'
 import { ChessChatInput } from './chess-chat-input'
 import { ChessLastGameMove } from './chess-last-game-move'
@@ -26,12 +29,13 @@ type Props = {
 export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
   const isMobile = useDeviceWidth() < 768
   const [isSidechatOpen, setIsSidechatOpen] = useState(!isMobile)
-  const gameWithRole = useGetGame(gameId)
-  const { data: game } = useStreamItem<Game>({
+  const { user } = useAuth()
+  const { data: game, event } = useStreamItem<Game>({
     streamName: 'chessGame',
     groupId: 'game',
     id: gameId,
   })
+  const { game: gameWithRole, accessRequest, onCancel } = useGetGame(gameId, event)
 
   if (!game) {
     return (
@@ -43,6 +47,26 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
 
   const role = gameWithRole?.role ?? 'spectator'
   const isSpectator = role === 'spectator'
+
+  const isBlackAssigned = !!game.players.black.userId || !!game.players.black.ai
+  const isUserOwner = game.players.white.userId === user?.id
+
+  const messagesComponent = (
+    <>
+      <ChessMessages gameId={gameId} />
+      {['completed', 'draw'].includes(game.status) && <Scoreboard game={game} />}
+      {!isBlackAssigned && !isUserOwner && <ChessRequestAccess gameId={gameId} />}
+      {isUserOwner &&
+        accessRequest.map((accessRequest, index) => (
+          <ChessAccessRequest
+            key={index}
+            user={accessRequest.user}
+            gameId={gameId}
+            onCancel={() => onCancel(accessRequest.user.id)}
+          />
+        ))}
+    </>
+  )
 
   return (
     <div className="flex flex-col items-center mx-auto w-screen h-dvh justify-between">
@@ -80,8 +104,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
             )}
 
             <div className={cn('px-4 flex flex-col flex-1 w-full overflow-y-auto', isSpectator && 'pb-4')}>
-              <ChessMessages gameId={gameId} />
-              {['completed', 'draw'].includes(game.status) && <Scoreboard game={game} />}
+              {messagesComponent}
             </div>
             {!isSpectator && gameWithRole && (
               <div className="pb-4 px-4 w-full">
@@ -122,14 +145,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
               overflow-y-auto p-4
             "
             >
-              {isSidechatOpen ? (
-                <ChessSidechat gameId={gameId} />
-              ) : (
-                <>
-                  <ChessMessages gameId={gameId} />
-                  {['completed', 'draw'].includes(game.status) && <Scoreboard game={game} />}
-                </>
-              )}
+              {isSidechatOpen ? <ChessSidechat gameId={gameId} /> : messagesComponent}
             </Panel>
             {(isSidechatOpen || !isSpectator) && gameWithRole && (
               <Panel className="p-2 w-full">

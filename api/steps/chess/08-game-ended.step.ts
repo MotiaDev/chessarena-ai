@@ -86,6 +86,7 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
     }
 
     return {
+      id: model,
       provider,
       model,
       ...(leaderboard ?? {}),

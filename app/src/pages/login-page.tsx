@@ -4,15 +4,17 @@ import { BaseButton } from '@/components/ui/base-button'
 import { Input } from '@/components/ui/input'
 import { usePageTitle } from '@/lib/use-page-title'
 import { ArrowLeft } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useLogin } from '../lib/auth/use-login'
 import { OtpInput } from '../components/ui/otp-input'
+import { useQueryParam } from '../lib/use-query-param'
 
 export const LoginPage = () => {
   const [isOtpEnabled, setIsOtpEnabled] = useState(false)
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
+  const [redirect] = useQueryParam('redirect')
 
   const { handleLogin, verifyOtp, isAuthenticating, error, successMessage } = useLogin()
 
@@ -20,6 +22,10 @@ export const LoginPage = () => {
     setIsOtpEnabled(true)
     return handleLogin('email', { email })
   }
+
+  useEffect(() => {
+    localStorage.setItem('chessarena-redirect', redirect ?? '')
+  }, [redirect])
 
   const navigate = useNavigate()
   const onBack = () => navigate('/')

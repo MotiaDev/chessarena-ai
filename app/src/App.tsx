@@ -16,8 +16,8 @@ import { PrivacyPage } from './pages/privacy-page'
 function App() {
   return (
     <MotiaStreamProvider address={socketUrl}>
-      <AuthProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -29,8 +29,8 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy-policy" element={<PrivacyPage />} />
           </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+        </AuthProvider>
+      </BrowserRouter>
       <Toaster />
     </MotiaStreamProvider>
   )

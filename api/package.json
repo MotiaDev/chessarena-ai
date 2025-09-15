@@ -24,7 +24,7 @@
     "chess.js": "^1.3.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "motia": "0.6.1-beta.124",
+    "motia": "0.6.4-beta.131-876960",
     "mustache": "^4.2.0",
     "no-profanity": "^1.5.1",
     "openai": "^4.102.0",

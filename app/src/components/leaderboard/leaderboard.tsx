@@ -19,7 +19,7 @@ export const Leaderboard: React.FC = () => {
   })
 
   return (
-    <div className="border-t border-white/10 flex flex-col gap-6 items-center justify-center max-w-screen w-full overflow-x-auto h-full">
+    <div className="border-t border-white/10 flex flex-col gap-6 items-center justify-center max-w-screen w-full overflow-x-auto">
       {!leaderboard || leaderboard.length === 0 ? (
         <>
           <LeaderboardSkeleton />

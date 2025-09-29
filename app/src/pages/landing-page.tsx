@@ -17,14 +17,16 @@ export const LandingPage = () => {
   usePageTitle('Powered by Motia')
 
   return (
-    <div className="flex flex-1 gap-4 items-center justify-center w-screen h-dvh bg-image-landing overflow-y-auto">
-      <div className="hidden lg:block w-3/5 ml-auto md:border-l-2 rounded-lg border border-white/5 backdrop-blur-lg">
-        <div className="p-4 text-white text-center">
-          <h1 className="text-lg font-semibold text-white">Leaderboard</h1>
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_minmax(min-content,200px)] w-screen md:h-dvh bg-image-landing">
+      <div className="hidden lg:flex lg:flex-col md:items-center md:justify-center p-4">
+        <div className="w-full md:border-l-2 rounded-lg border border-white/5 backdrop-blur-lg">
+          <div className="p-4 text-white text-center">
+            <h1 className="text-lg font-semibold text-white">Leaderboard</h1>
+          </div>
+          <Leaderboard />
         </div>
-        <Leaderboard />
       </div>
-      <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full h-dvh p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg">
+      <div className="col-start-2 flex flex-col gap-4 items-center justify-between w-full h-dvh p-6 md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">
         <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full h-full">
           <MotiaPowered />
           <div className="flex flex-col gap-2 items-center justify-center">

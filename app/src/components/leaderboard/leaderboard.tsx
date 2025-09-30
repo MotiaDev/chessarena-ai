@@ -28,12 +28,12 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false }) => {
   })
 
   return (
-    <div className="flex flex-col grow bg-white/5 backdrop-blur-lg md:rounded-lg md:border-2 md:border-white/5">
+    <div className="flex flex-col grow max-h-full bg-white/5 backdrop-blur-lg md:rounded-lg md:border-2 md:border-white/5">
       <div className="flex flex-row items-center w-full p-4 border-b border-white/10">
         {showBackButton && <ArrowLeft className="shrink-0 size-6 cursor-pointer" onClick={onBack} />}
         <h1 className="grow mr-6 text-center text-lg font-semibold text-white">Leaderboard</h1>
       </div>
-      <div className="flex flex-col grow gap-6 items-center justify-center max-w-screen w-full">
+      <div className="flex flex-col grow gap-6 w-full overflow-y-auto">
         {!leaderboard || leaderboard.length === 0 ? (
           <>
             <LeaderboardSkeleton />
@@ -41,7 +41,7 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false }) => {
             <LeaderboardSkeleton />
           </>
         ) : (
-          <div className="flex flex-row w-full h-full">
+          <div className="flex flex-row grow">
             <div className="border-r border-white/10 flex flex-col gap-6 pt-20 h-full pb-4">
               {leaderboard.map((leaderboard, position) => (
                 <div

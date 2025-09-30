@@ -17,7 +17,7 @@ export const LandingPage = () => {
   usePageTitle('Powered by Motia')
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[minmax(200px,1fr)_minmax(min-content,200px)] w-screen h-dvh bg-image-landing">
+    <div className="grid grid-cols-1 md:grid-cols-[minmax(200px,1fr)_minmax(min-content,480px)] w-screen h-dvh bg-image-landing">
       <div className="hidden lg:flex lg:flex-col md:items-center md:justify-center p-4">
         <div className="w-full md:border-l-2 rounded-lg border border-white/5 backdrop-blur-lg">
           <Leaderboard />

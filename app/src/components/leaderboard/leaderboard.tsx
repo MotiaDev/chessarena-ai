@@ -19,7 +19,7 @@ export const Leaderboard: React.FC = () => {
   })
 
   return (
-    <div className="border-t border-white/10 flex flex-col gap-6 items-center justify-center max-w-screen w-full overflow-x-auto">
+    <div className="border-t border-white/10 flex flex-col grow gap-6 items-center justify-center max-w-screen w-full overflow-x-auto">
       {!leaderboard || leaderboard.length === 0 ? (
         <>
           <LeaderboardSkeleton />
@@ -27,7 +27,7 @@ export const Leaderboard: React.FC = () => {
           <LeaderboardSkeleton />
         </>
       ) : (
-        <div className="flex flex-row w-full h-full items-center justify-center h-full">
+        <div className="flex flex-row w-full h-full">
           <div className="border-r border-white/10 flex flex-col gap-6 pt-[80px] h-full pb-4">
             {leaderboard.map((leaderboard, position) => (
               <div

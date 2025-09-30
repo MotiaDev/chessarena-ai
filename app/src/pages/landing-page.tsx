@@ -24,7 +24,7 @@ export const LandingPage = () => {
         </div>
       </div>
       <div className="flex flex-col w-full p-6 gap-4 items-center justify-between col-start-2 md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">
-        <MotiaPowered />
+        <MotiaPowered size="sm" />
         <div className="flex flex-col gap-2 items-center justify-center">
           <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
           <h1 className="text-6xl font-title text-white">Chessarena.ai</h1>

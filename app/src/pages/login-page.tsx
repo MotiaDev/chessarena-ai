@@ -33,18 +33,18 @@ export const LoginPage = () => {
   usePageTitle('Login')
 
   return (
-    <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 backdrop-blur-lg">
-      <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full h-full overflow-y-auto">
+    <Page className="p-6 md:max-w-[450px] md:ml-auto md:border-l-2 md:border-white/5 backdrop-blur-lg overflow-y-auto">
+      <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full">
         <div className="relative flex flex-row items-center justify-center w-full">
           <ArrowLeft className="absolute left-0 top-0 size-6 cursor-pointer" onClick={onBack} />
           <MotiaPowered size="sm" />
         </div>
-        <div className="flex-1" />
-        <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
-        <h1 className="text-6xl font-title text-white">ChessArena.ai</h1>
-        <div className="flex-1" />
+        <div className="flex flex-col grow gap-4 items-center justify-center">
+          <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
+          <h1 className="text-6xl font-title text-white">ChessArena.ai</h1>
+        </div>
         {successMessage ? (
-          <div className="flex flex-col flex-1 gap-4">
+          <div className="flex flex-col h-[348px] gap-4">
             <p className="text-center text-2xl font-semibold">{successMessage.title}</p>
             <p className="text-muted-foreground text-center">{successMessage.description}</p>
             {isOtpEnabled && (
@@ -57,7 +57,7 @@ export const LoginPage = () => {
             )}
           </div>
         ) : (
-          <div className="flex flex-col flex-1 gap-4">
+          <div className="flex flex-col gap-4">
             {error && <p className="text-red-500 text-center font-semibold">{error}</p>}
             {!isAuthenticating && (
               <>
@@ -96,8 +96,6 @@ export const LoginPage = () => {
             </p>
           </div>
         )}
-
-        <div className="flex-1" />
       </div>
     </Page>
   )

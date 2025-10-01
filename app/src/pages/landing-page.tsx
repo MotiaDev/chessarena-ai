@@ -17,7 +17,7 @@ export const LandingPage = () => {
   usePageTitle('Powered by Motia')
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[minmax(200px,1fr)_minmax(min-content,480px)] w-screen h-dvh bg-image-landing">
+    <div className="grid grid-cols-1 md:grid-cols-[minmax(50%,1fr)_minmax(auto,480px)] h-dvh bg-image-landing">
       <div className="hidden md:flex md:flex-col p-4">
         <Leaderboard />
       </div>
@@ -37,11 +37,11 @@ export const LandingPage = () => {
         <div className="flex flex-col gap-6 items-center justify-center w-full">
           <AuthContainer />
           <CreateGameButton onClick={() => navigate('/new')}>Create Game</CreateGameButton>
-          <div className="flex flex-row gap-2 items-center justify-center w-full">
-            <BaseButton className="w-full flex-1" onClick={() => navigate('/live-matches')}>
+          <div className="flex flex-row flex-wrap gap-2 items-center justify-center w-full">
+            <BaseButton className="flex-1" onClick={() => navigate('/live-matches')}>
               View live matches
             </BaseButton>
-            <BaseButton onClick={() => navigate('/leaderboard')}>
+            <BaseButton className="flex-1" onClick={() => navigate('/leaderboard')}>
               <Trophy /> Leaderboard
             </BaseButton>
           </div>

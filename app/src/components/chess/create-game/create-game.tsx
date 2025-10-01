@@ -65,7 +65,7 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
   }
 
   return (
-    <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full h-full">
+    <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full">
       <div className="flex flex-row items-center justify-center w-full">
         <ArrowLeft className="size-6 shrink-0 cursor-pointer" onClick={onBack} />
         <MotiaPowered size="sm" className="grow mr-6" />

@@ -4,7 +4,6 @@ import { Selector } from '@/components/ui/selector'
 import type { Player } from '@chessarena/types/game'
 import { useGetAiModels } from '@/lib/use-get-ai-models'
 import { useEffect, useState } from 'react'
-import { AiProviderModelsSelect } from './ai-provider-models-select'
 import { CreateGameButton } from './create-game-button'
 import { Loader2 } from 'lucide-react'
 import type { AiModelProvider } from '@chessarena/types/ai-models'
@@ -35,20 +34,22 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
   }, [player])
 
   return (
-    <div className="flex flex-col gap-4 items-center justify-center w-full h-full">
-      <ChessIcon color={color} size={80} />
+    <div className="flex flex-col flex-1 gap-4 items-center w-full">
+      <div className="shrink-0">
+        <ChessIcon color={color} size={80} />
+      </div>
       <h2 className="text-2xl font-bold capitalize">{color}</h2>
       <Selector isSelected={!ai} className="w-full" onClick={() => setAi(undefined)}>
         Play as {color}
       </Selector>
       {isAiEnabled && (
         <>
-          <div className="flex flex-row gap-2 items-center justify-center w-full text-muted-foreground text-md font-semibold">
+          <div className="flex flex-row gap-2 shrink-0 items-center justify-center w-full text-muted-foreground text-md font-semibold">
             <Separator className="shrink-1" />
             <span className="min-w-fit">Or set model</span>
             <Separator className="shrink-1" />
           </div>
-          <div className="flex flex-row gap-2 w-full overflow-x-auto">
+          <div className="flex shrink-0 flex-row gap-2 w-full overflow-x-auto">
             {Object.keys(models).map((key) => (
               <Selector
                 key={key}
@@ -61,25 +62,33 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
               </Selector>
             ))}
           </div>
-          {ai && (
-            <>
-              <Separator />
-              <AiProviderModelsSelect onModelSection={(model) => setModel(model)} models={models[ai]} value={model} />
-            </>
-          )}
         </>
       )}
-
-      <div className="flex flex-col justify-end grow w-full">
-        {isLoading ? (
-          <div className="flex flex-row gap-2 items-center justify-center w-full h-[64px] font-medium text-sm text-muted-foreground">
-            <Loader2 className="size-4 animate-spin" /> Your match is loading...
-          </div>
-        ) : (
-          <CreateGameButton className="w-full" onClick={() => onSubmit({ ...player, ai, model }, color)}>
-            {color === 'white' ? 'Continue' : 'Start match'}
-          </CreateGameButton>
+      <div className="flex flex-col flex-1 gap-4 w-full">
+        {ai && (
+          <>
+            <Separator />
+            <div className="flex-1 space-y-2 w-full min-h-[160px] max-h-[calc(100vh-613px)] overflow-y-auto">
+              {models[ai].map((item) => (
+                <Selector className="w-full" key={item} isSelected={item === model} onClick={() => setModel(item)}>
+                  {item}
+                </Selector>
+              ))}
+            </div>
+          </>
         )}
+
+        <div className="shrink-0 w-full mt-auto">
+          {isLoading ? (
+            <div className="flex flex-row gap-2 items-center justify-center w-full h-[64px] font-medium text-sm text-muted-foreground">
+              <Loader2 className="size-4 animate-spin" /> Your match is loading...
+            </div>
+          ) : (
+            <CreateGameButton className="w-full" onClick={() => onSubmit({ ...player, ai, model }, color)}>
+              {color === 'white' ? 'Continue' : 'Start match'}
+            </CreateGameButton>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -9,7 +9,7 @@ export const PageGrid: React.FC<Props> = ({ children, className }) => {
   return (
     <div
       className={cn(
-        'grid grid-cols-1 md:grid-cols-[minmax(50%,1fr)_minmax(auto,480px)] h-dvh bg-image-landing',
+        'grid grid-cols-1 md:grid-cols-[minmax(50%,1fr)_minmax(auto,500px)] h-dvh bg-image-landing',
         className,
       )}
     >

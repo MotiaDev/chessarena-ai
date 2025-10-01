@@ -3,14 +3,15 @@ import { cn } from '@/lib/utils'
 type Props = {
   size?: 'sm' | 'md'
   githubLogo?: boolean
+  className?: string
 }
 
-export const MotiaPowered: React.FC<Props> = ({ size = 'md', githubLogo }) => {
+export const MotiaPowered: React.FC<Props> = ({ size = 'md', githubLogo, className }) => {
   return (
     <a
       href="https://github.com/MotiaDev/chessarena-ai"
       target="_blank"
-      className="flex flex-row md:flex-col gap-2 items-center justify-center"
+      className={cn('flex flex-row md:flex-col gap-2 items-center justify-center', className)}
     >
       <img
         src={githubLogo ? '/github-white.svg' : '/icon-white.svg'}

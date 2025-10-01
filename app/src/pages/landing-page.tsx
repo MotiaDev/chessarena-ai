@@ -2,6 +2,7 @@ import { AuthContainer } from '@/components/auth/auth-container'
 import { CreateGameButton } from '@/components/chess/create-game/create-game-button'
 import { Leaderboard } from '@/components/leaderboard/leaderboard'
 import { MotiaPowered } from '@/components/motia-powered'
+import { PageGrid, PageGridRightColumn } from '@/components/page-grid'
 import { BaseButton } from '@/components/ui/base-button'
 import { usePageTitle } from '@/lib/use-page-title'
 import { Trophy } from 'lucide-react'
@@ -17,11 +18,11 @@ export const LandingPage = () => {
   usePageTitle('Powered by Motia')
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[minmax(50%,1fr)_minmax(auto,480px)] h-dvh bg-image-landing">
+    <PageGrid>
       <div className="hidden md:flex md:flex-col p-4">
         <Leaderboard />
       </div>
-      <div className="flex flex-col w-full p-6 gap-10 col-start-2 md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">
+      <PageGridRightColumn>
         <MotiaPowered size="sm" />
         <div className="flex flex-col justify-center grow gap-2 text-center">
           <img src="/horse.png" alt="Chessarena.ai" className="max-w-[160px] mx-auto ratio-1/1" />
@@ -54,7 +55,7 @@ export const LandingPage = () => {
             to read more about the project.
           </p>
         </div>
-      </div>
-    </div>
+      </PageGridRightColumn>
+    </PageGrid>
   )
 }

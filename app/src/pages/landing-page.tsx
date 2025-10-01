@@ -34,10 +34,8 @@ export const LandingPage = () => {
             </a>
           </p>
         </div>
-
-        <AuthContainer />
-
         <div className="flex flex-col gap-6 items-center justify-center w-full">
+          <AuthContainer />
           <CreateGameButton onClick={() => navigate('/new')}>Create Game</CreateGameButton>
           <div className="flex flex-row gap-2 items-center justify-center w-full">
             <BaseButton className="w-full flex-1" onClick={() => navigate('/live-matches')}>

@@ -22,7 +22,7 @@ export const PageGridRightColumn: React.FC<Props> = ({ children, className }) =>
   return (
     <div
       className={cn(
-        'flex flex-col w-full p-6 gap-10 col-start-2 md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto',
+        'flex flex-col w-full p-6 gap-10 md:col-start-2 md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto',
         className,
       )}
     >

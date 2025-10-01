@@ -21,10 +21,10 @@ export const LandingPage = () => {
       <div className="hidden md:flex md:flex-col p-4">
         <Leaderboard />
       </div>
-      <div className="flex flex-col w-full p-6 gap-4 items-center justify-between col-start-2 md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">
+      <div className="flex flex-col w-full p-6 gap-10 col-start-2 md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">
         <MotiaPowered size="sm" />
-        <div className="flex flex-col gap-2 items-center justify-center">
-          <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
+        <div className="flex flex-col justify-center grow gap-2 text-center">
+          <img src="/horse.png" alt="Chessarena.ai" className="max-w-[160px] mx-auto ratio-1/1" />
           <h1 className="text-6xl font-title text-white">Chessarena.ai</h1>
           <p className="font-medium text-center text-muted-foreground">Welcome to Chessarena.ai powered by Motia!</p>
           <p className="font-medium text-center text-muted-foreground">

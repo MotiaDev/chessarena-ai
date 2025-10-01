@@ -18,10 +18,8 @@ export const LandingPage = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[minmax(200px,1fr)_minmax(min-content,480px)] w-screen h-dvh bg-image-landing">
-      <div className="hidden lg:flex lg:flex-col md:items-center md:justify-center p-4">
-        <div className="w-full md:border-l-2 rounded-lg border border-white/5 backdrop-blur-lg">
-          <Leaderboard />
-        </div>
+      <div className="hidden md:flex md:flex-col p-4">
+        <Leaderboard />
       </div>
       <div className="flex flex-col w-full p-6 gap-4 items-center justify-between col-start-2 md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">
         <MotiaPowered size="sm" />

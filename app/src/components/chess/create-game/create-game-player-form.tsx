@@ -20,7 +20,6 @@ type Props = {
 export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit, isAiEnabled, isLoading }) => {
   const [ai, setAi] = useState<Player['ai']>(player.ai)
   const [model, setModel] = useState<string>(player.model ?? '')
-
   const { models } = useGetAiModels()
 
   const onSelectAiProvider = (ai: Player['ai']) => {
@@ -65,20 +64,21 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
         </>
       )}
       <div className="flex flex-col flex-1 gap-4 w-full">
-        {ai && (
-          <>
-            <Separator />
-            <div className="flex-1 space-y-2 w-full min-h-[160px] max-h-[calc(100vh-613px)] overflow-y-auto">
-              {models[ai].map((item) => (
-                <Selector className="w-full" key={item} isSelected={item === model} onClick={() => setModel(item)}>
-                  {item}
-                </Selector>
-              ))}
-            </div>
-          </>
-        )}
-
-        <div className="shrink-0 w-full mt-auto">
+        <div className="flex flex-col flex-1 gap-4">
+          {ai && (
+            <>
+              <Separator />
+              <div className="flex-1 min-h-[130px] max-h-[calc(100dvh-625px)] md:max-h-[calc(100dvh-653px)] space-y-2 overflow-y-auto">
+                {models[ai].map((item) => (
+                  <Selector className="w-full" key={item} isSelected={item === model} onClick={() => setModel(item)}>
+                    {item}
+                  </Selector>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+        <div className="shrink-0 w-full">
           {isLoading ? (
             <div className="flex flex-row gap-2 items-center justify-center w-full h-[64px] font-medium text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin" /> Your match is loading...

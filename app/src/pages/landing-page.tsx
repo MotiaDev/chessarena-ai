@@ -42,8 +42,8 @@ export const LandingPage = () => {
             <BaseButton className="flex-1" onClick={() => navigate('/live-matches')}>
               View live matches
             </BaseButton>
-            <BaseButton className="flex-1" onClick={() => navigate('/leaderboard')}>
-              <Trophy /> Leaderboard
+            <BaseButton className="min-w-[64px] shrink-0 md:flex-1" onClick={() => navigate('/leaderboard')}>
+              <Trophy /> <span className="hidden sm:block">Leaderboard</span>
             </BaseButton>
           </div>
 

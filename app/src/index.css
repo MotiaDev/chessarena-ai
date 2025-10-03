@@ -21,7 +21,7 @@
 
   .bg-error {
     @apply bg-[#EA1F69]/20;
-    @apply border-[#EA1F69]
+    @apply border-[#EA1F69];
   }
 }
 
@@ -30,7 +30,18 @@
   font-size: 16px;
 
   color-scheme: dark light;
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"), serif;
+  font-family:
+    var(
+      --default-font-family,
+      ui-sans-serif,
+      system-ui,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji'
+    ),
+    serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

@@ -44,13 +44,8 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false }) => {
           <div className="flex flex-row grow">
             <div className="border-r border-white/10 flex flex-col gap-6 pt-20 h-full pb-4">
               {leaderboard.map((leaderboard, position) => (
-                <div
-                  key={position}
-                  className="flex flex-row gap-2 items-center flex-1 w-[250px] min-w-[250px] max-w-[250px] max-h-[52px] h-[52px]"
-                >
-                  <div className="font-bold text-white w-[40px] min-w-[40px] max-w-[40px] text-center">
-                    {position + 1}
-                  </div>
+                <div key={position} className="flex flex-row gap-2 items-center w-[230px] h-[52px]">
+                  <div className="font-bold text-white w-[40px] text-center">{position + 1}</div>
                   <div className="bg-white rounded-full p-1">
                     <AiIcon ai={leaderboard.provider} color="black" />
                   </div>

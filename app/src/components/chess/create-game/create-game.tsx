@@ -1,10 +1,9 @@
-import { MotiaPowered } from '@/components/motia-powered'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { TopBar } from '@/components/ui/top-bar'
 import type { Player } from '@chessarena/types/game'
 import { useCreateGame } from '@/lib/use-create-game'
-import { ArrowLeft } from 'lucide-react'
-import { useState } from 'react'
 import { CreateGamePlayerForm } from './create-game-player-form'
-import { toast } from 'sonner'
 
 type Props = {
   onGameCreated: (gameId: string) => void
@@ -66,11 +65,7 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
 
   return (
     <div className="flex flex-col flex-1 gap-14 items-center justify-between w-full">
-      <div className="flex flex-row items-center justify-center w-full">
-        <ArrowLeft className="size-6 shrink-0 cursor-pointer mr-2" onClick={onBack} />
-        <MotiaPowered size="sm" className="grow mr-8" />
-      </div>
-
+      <TopBar onBack={onBack} />
       <CreateGamePlayerForm
         player={selectedPlayer}
         color={selectedPlayerColor}

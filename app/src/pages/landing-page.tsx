@@ -1,13 +1,13 @@
 import { Trophy } from 'lucide-react'
 import { useNavigate } from 'react-router'
+import { usePageTitle } from '@/lib/use-page-title'
 import { AuthContainer } from '@/components/auth/auth-container'
 import { CreateGameButton } from '@/components/chess/create-game/create-game-button'
 import { Leaderboard } from '@/components/leaderboard/leaderboard'
-import { MotiaPowered } from '@/components/motia-powered'
+import { TopBar } from '@/components/ui/top-bar'
 import { PageGrid, PageGridRightColumn } from '@/components/page-grid'
 import { BaseButton } from '@/components/ui/base-button'
 import { ChessArenaLogo } from '@/components/ui/chess-arena-logo'
-import { usePageTitle } from '@/lib/use-page-title'
 
 export const LandingPage = () => {
   const navigate = useNavigate()
@@ -24,7 +24,7 @@ export const LandingPage = () => {
         <Leaderboard />
       </div>
       <PageGridRightColumn>
-        <MotiaPowered size="sm" />
+        <TopBar />
         <div className="flex flex-col justify-center grow gap-2 text-center">
           <ChessArenaLogo />
           <p className="font-medium text-center text-muted-foreground">Welcome to Chessarena.ai powered by Motia!</p>

@@ -1,12 +1,13 @@
+import { Trophy } from 'lucide-react'
+import { useNavigate } from 'react-router'
 import { AuthContainer } from '@/components/auth/auth-container'
 import { CreateGameButton } from '@/components/chess/create-game/create-game-button'
 import { Leaderboard } from '@/components/leaderboard/leaderboard'
 import { MotiaPowered } from '@/components/motia-powered'
 import { PageGrid, PageGridRightColumn } from '@/components/page-grid'
 import { BaseButton } from '@/components/ui/base-button'
+import { ChessArenaLogo } from '@/components/ui/chess-arena-logo'
 import { usePageTitle } from '@/lib/use-page-title'
-import { Trophy } from 'lucide-react'
-import { useNavigate } from 'react-router'
 
 export const LandingPage = () => {
   const navigate = useNavigate()
@@ -25,8 +26,7 @@ export const LandingPage = () => {
       <PageGridRightColumn>
         <MotiaPowered size="sm" />
         <div className="flex flex-col justify-center grow gap-2 text-center">
-          <img src="/horse.png" alt="Chessarena.ai" className="max-w-[160px] mx-auto ratio-1/1" />
-          <h1 className="text-6xl font-title text-white">Chessarena.ai</h1>
+          <ChessArenaLogo />
           <p className="font-medium text-center text-muted-foreground">Welcome to Chessarena.ai powered by Motia!</p>
           <p className="font-medium text-center text-muted-foreground">
             Chessarena.ai was created to show how leading models compete against each other in chess games.{' '}

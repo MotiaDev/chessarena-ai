@@ -46,7 +46,7 @@ export const ChessBoard: React.FC<Props> = ({ role, game }) => {
       const dests = toDests(chess)
       setMoves(dests)
     }
-  }, [game?.fen])
+  }, [game?.fen, getInstance])
 
   if (!game) {
     return <Chessground />

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Chessground as ChessgroundApi } from 'chessground'
-import type { Api } from 'chessground/api'
-import type { Config } from 'chessground/config'
+import { Chessground as ChessgroundApi } from '@lichess-org/chessground'
+import type { Api } from '@lichess-org/chessground/api'
+import type { Config } from '@lichess-org/chessground/config'
 
 interface Props {
   config?: Config

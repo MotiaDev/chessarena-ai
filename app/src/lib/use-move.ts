@@ -1,4 +1,4 @@
-import type { Role } from 'chessground/types'
+import type { Role } from '@lichess-org/chessground/types'
 import { type Key } from 'react'
 import { apiClient } from './auth/api-client'
 

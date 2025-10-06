@@ -70,7 +70,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
 
   return (
     <div className="flex flex-col items-center mx-auto w-full flex-1 justify-between">
-      <div className="flex flex-col xl:flex-row items-center justify-between w-full h-dvh overflow-y-auto">
+      <div className="flex flex-col xl:flex-row items-center justify-between w-full h-dvh xl:max-h-dvh overflow-y-auto xl:overflow-y-hidden">
         <header className="xl:hidden flex flex-row gap-2 items-center justify-between p-2 xl:p-4 w-full xl:border-b-2 xl:border-white/5">
           <Button variant="default" className="h-8 w-8 xl:h-12 xl:w-12" onClick={onClose}>
             <ArrowLeft className="size-4" />
@@ -114,7 +114,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
           </Panel>
         )}
 
-        <div className="flex-1 w-full xl:p-4 2xl:p-8">
+        <div className="xl:flex-1 content-center w-full xl:p-4 2xl:p-8">
           <ChessBoard game={game} role={role} />
         </div>
 

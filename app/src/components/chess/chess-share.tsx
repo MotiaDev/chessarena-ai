@@ -26,7 +26,7 @@ export const ChessShare: React.FC = () => {
           <Share className="size-3 md:size-5" onClick={() => setIsOpen(true)} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] rounded-2xl bg-gradient-to-b from-gray-900/20 to-black/80 border-none backdrop-blur-lg border-1 border-white/10 border-solid">
+      <DialogContent className="sm:max-w-[425px] rounded-2xl bg-gradient-to-b from-gray-900/20 to-black/80 backdrop-blur-lg border-1 border-white/10 border-solid">
         <DialogHeader>
           <DialogTitle className="text-md font-semibold text-center">Share match</DialogTitle>
         </DialogHeader>

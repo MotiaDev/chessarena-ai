@@ -53,7 +53,7 @@ export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
         </div>
         <p className="text-md font-medium">{message.message}</p>
         {message.isIllegalMove && (
-          <div className="mt-3 bg-[#FDCFE0] border-2 rounded-md p-3 text-[#F40D62] font-medium flex flex-row gap-2 items-start font-semibold">
+          <div className="mt-3 bg-[#FDCFE0] border-2 rounded-md p-3 text-[#F40D62] flex flex-row gap-2 items-start font-semibold">
             <OctagonX className="size-5 mt-0.5" />
             This move is illegal
           </div>

@@ -11,7 +11,7 @@ export const ChessSidechat: React.FC<Props> = ({ gameId }) => {
   })
 
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col flex-1 gap-2 w-full">
       {sidechatMessages.map((message, index) => (
         <ChessSidechatMessage key={message.id} message={message} isLast={index === sidechatMessages.length - 1} />
       ))}

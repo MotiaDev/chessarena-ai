@@ -85,7 +85,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
           <Panel
             className={cn(
               'flex flex-col flex-1 gap-4 items-center justify-between w-full',
-              'h-dvh min-w-[300px] max-w-[400px] border-l-2 border-white/5',
+              'h-dvh min-h-[200px] min-w-[300px] max-w-[400px] border-l-2 border-white/5',
             )}
           >
             <header className="hidden xl:flex flex-row gap-2 items-center justify-between p-6 w-full xl:border-b-2 xl:border-white/5">

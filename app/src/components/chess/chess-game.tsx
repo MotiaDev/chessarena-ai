@@ -114,7 +114,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
           </Panel>
         )}
 
-        <div className="flex flex-col xl:flex-1 w-full xl:p-8">
+        <div className="flex flex-col xl:flex-1 xl:basis-2 w-full xl:p-4 2xl:p-8">
           <ChessBoard game={game} role={role} />
         </div>
 

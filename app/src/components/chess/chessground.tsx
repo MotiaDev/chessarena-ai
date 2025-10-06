@@ -30,7 +30,10 @@ export const Chessground: React.FC<Props> = ({ config = {} }) => {
 
   return (
     <div>
-      <div ref={ref} className="max-h-[600px] xl:max-h-[calc(100dvh-64px)] mx-auto aspect-square" />
+      <div
+        ref={ref}
+        className="max-h-[600px] xl:max-h-[calc(100dvh-32px)] 2xl:max-h-[calc(100dvh-64px)] mx-auto aspect-square"
+      />
     </div>
   )
 }

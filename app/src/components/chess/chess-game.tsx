@@ -27,7 +27,7 @@ type Props = {
 }
 
 export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
-  const isMobile = useDeviceWidth() < 768
+  const isMobile = useDeviceWidth() < 1280
   const [isSidechatOpen, setIsSidechatOpen] = useState(!isMobile)
   const { user } = useAuth()
   const { data: game, event } = useStreamItem<Game>({
@@ -69,10 +69,10 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
   )
 
   return (
-    <div className="flex flex-col items-center mx-auto w-screen h-dvh justify-between">
-      <div className="flex md:flex-row max-md:flex-col items-center justify-between w-full h-dvh max-h-dvh">
-        <header className="md:hidden flex flex-row gap-2 items-center justify-between p-2 md:p-4 w-full md:border-b-2 md:border-white/5">
-          <Button variant="default" className="h-8 w-8 md:h-12 md:w-12" onClick={onClose}>
+    <div className="flex flex-col items-center mx-auto w-screen flex-1 justify-between">
+      <div className="flex flex-col xl:flex-row items-center justify-between w-full h-dvh max-h-dvh">
+        <header className="xl:hidden flex flex-row gap-2 items-center justify-between p-2 xl:p-4 w-full xl:border-b-2 xl:border-white/5">
+          <Button variant="default" className="h-8 w-8 xl:h-12 xl:w-12" onClick={onClose}>
             <ArrowLeft className="size-4" />
           </Button>
           <MotiaPowered size="sm" githubLogo />
@@ -85,10 +85,10 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
           <Panel
             className="
             flex flex-col flex-1 gap-4 items-center justify-between w-screen
-            h-dvh min-w-[400px] max-w-[400px] border-l-2 border-white/5
+            h-dvh min-w-[300px] max-w-[400px] border-l-2 border-white/5
           "
           >
-            <header className="max-md:hidden flex flex-row gap-2 items-center justify-between p-6 w-full md:border-b-2 md:border-white/5">
+            <header className="hidden xl:flex flex-row gap-2 items-center justify-between p-6 w-full xl:border-b-2 xl:border-white/5">
               <Button variant="default" className="h-12 w-12" onClick={onClose}>
                 <ArrowLeft className="size-5" />
               </Button>
@@ -98,7 +98,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
             </header>
 
             {game.status === 'pending' && (
-              <div className="px-4 w-full border-b-2 border-white/5 pb-4 max-md:pt-4">
+              <div className="px-4 w-full border-b-2 border-white/5 pb-4 pt-4 xl:pt-0">
                 <ChessLastGameMove game={game} />
               </div>
             )}
@@ -114,18 +114,14 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
           </Panel>
         )}
 
-        <div className="flex-1 w-full h-full flex items-center justify-center md:p-4">
-          <div
-            className={cn('w-full h-full flex items-center justify-center', isSidechatOpen && 'md:w-[calc(100%-20px)]')}
-          >
-            <ChessBoard game={game} role={role} />
-          </div>
+        <div className="flex flex-col xl:flex-1 w-full xl:p-8">
+          <ChessBoard game={game} role={role} />
         </div>
 
         {isMobile ? (
           <>
             <Panel className="p-0">
-              <div className="flex flex-col gap-2 px-2 w-full border-b-2 border-white/5 max-md:pt-2">
+              <div className="flex flex-col gap-2 px-2 w-full border-b-2 border-white/5 pt-2 xl:pt-0">
                 {game.status === 'pending' && <ChessLastGameMove game={game} />}
                 <div className="flex flex-row gap-2 items-center justify-center">
                   <Tab isSelected={!isSidechatOpen} onClick={() => setIsSidechatOpen(false)}>
@@ -156,7 +152,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
         ) : isSidechatOpen ? (
           <Panel
             className="
-              flex flex-col flex-1 gap-4 items-center justify-between w-screen h-dvh
+              flex flex-col flex-1 gap-4 items-center justify-between w-screen
               h-dvh min-w-[300px] max-w-[400px] border-l-2 border-white/5
             "
           >

@@ -1,7 +1,7 @@
+import React, { useEffect, useRef, useState } from 'react'
 import { Chessground as ChessgroundApi } from 'chessground'
 import type { Api } from 'chessground/api'
 import type { Config } from 'chessground/config'
-import React, { useEffect, useRef, useState } from 'react'
 
 interface Props {
   config?: Config
@@ -9,29 +9,7 @@ interface Props {
 
 export const Chessground: React.FC<Props> = ({ config = {} }) => {
   const [api, setApi] = useState<Api | null>(null)
-  const rootRef = useRef<HTMLDivElement>(null)
   const ref = useRef<HTMLDivElement>(null)
-  const [size, setSize] = useState<number>()
-
-  useEffect(() => {
-    const parent = rootRef.current?.parentElement
-
-    if (parent) {
-      const handleResize = () => {
-        const width = parent.clientWidth
-        const height = parent.clientHeight
-
-        setSize(width > height ? height : width)
-      }
-
-      const resizeObserver = new ResizeObserver(handleResize)
-
-      resizeObserver.observe(parent)
-      handleResize()
-
-      return () => resizeObserver.disconnect()
-    }
-  }, [])
 
   useEffect(() => {
     if (ref && ref.current && !api) {
@@ -44,15 +22,15 @@ export const Chessground: React.FC<Props> = ({ config = {} }) => {
     } else if (ref && ref.current && api) {
       api.set(config)
     }
-  }, [ref])
+  }, [ref, api, config])
 
   useEffect(() => {
     api?.set(config)
   }, [api, config])
 
   return (
-    <div ref={rootRef} className="w-full h-full" style={{ width: size, height: size }}>
-      <div ref={ref} className="w-full h-full table" />
+    <div>
+      <div ref={ref} className="max-h-[600px] xl:max-h-[calc(100dvh-64px)] mx-auto aspect-square" />
     </div>
   )
 }

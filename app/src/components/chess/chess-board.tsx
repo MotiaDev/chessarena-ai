@@ -10,7 +10,7 @@ import { Chessground } from './chessground'
 import { ChessPromote } from './promote/chess-promote'
 import { ChessSound } from './chess-sound'
 
-export function toDests(chess: Chess): Map<Key, Key[]> {
+function toDests(chess: Chess): Map<Key, Key[]> {
   const dests = new Map()
 
   SQUARES.forEach((s) => {

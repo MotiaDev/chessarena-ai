@@ -83,10 +83,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
 
         {!isMobile && (
           <Panel
-            className={cn(
-              'flex flex-col flex-1 gap-4 items-center justify-between w-full',
-              'h-dvh min-h-[200px] min-w-[300px] max-w-[400px] border-l-2 border-white/5',
-            )}
+            className={'flex-1 gap-0 w-full h-dvh min-h-[200px] min-w-[300px] max-w-[400px] border-l-2 border-white/5'}
           >
             <header className="hidden xl:flex flex-row gap-2 items-center justify-between p-6 w-full xl:border-b-2 xl:border-white/5">
               <Button variant="default" className="h-12 w-12" onClick={onClose}>
@@ -98,16 +95,14 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
             </header>
 
             {game.status === 'pending' && (
-              <div className="px-4 w-full border-b-2 border-white/5 pb-4 pt-4 xl:pt-0">
+              <div className="p-4 w-full border-b-2 border-white/5 pb-4 pt-4">
                 <ChessLastGameMove game={game} />
               </div>
             )}
 
-            <div className={cn('px-4 flex flex-col flex-1 w-full overflow-y-auto', isSpectator && 'pb-4')}>
-              {messagesComponent}
-            </div>
+            <div className={'p-4 flex flex-col flex-1 w-full overflow-y-auto'}>{messagesComponent}</div>
             {!isSpectator && gameWithRole && (
-              <div className="pb-4 px-4 w-full">
+              <div className="p-4 w-full">
                 <ChessChatInput game={gameWithRole} />
               </div>
             )}
@@ -167,7 +162,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
               <ChessSidechat gameId={gameId} />
             </div>
             {isSpectator && gameWithRole && (
-              <div className="pb-4 px-4 w-full">
+              <div className="p-4 w-full">
                 <ChessChatInput game={gameWithRole} />
               </div>
             )}

@@ -121,7 +121,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
         {isMobile ? (
           <>
             <Panel className="p-0">
-              <div className="flex flex-col gap-2 px-2 w-full border-b-2 border-white/5 pt-2 xl:pt-0">
+              <div className="flex flex-col gap-2 px-2 w-full border-b-2 border-white/5">
                 {game.status === 'pending' && <ChessLastGameMove game={game} />}
                 <div className="flex flex-row gap-2 items-center justify-center">
                   <Tab isSelected={!isSidechatOpen} onClick={() => setIsSidechatOpen(false)}>

@@ -12,7 +12,7 @@ export const Tab: React.FC<Props> = ({ isSelected, className, children, onClick 
     <div
       onClick={onClick}
       className={cn(
-        'flex flex-row gap-2 items-center justify-center pt-1 pb-3 px-4 font-semibold text-sm transition-all duration-200 border-b-2 border-transparent whitespace-nowrap',
+        'flex flex-row gap-2 items-center justify-center py-3 px-4 font-semibold text-sm transition-all duration-200 border-b-2 border-transparent whitespace-nowrap',
         !isSelected && 'hover:border-white/50',
         isSelected && 'border-white',
         !!onClick && 'cursor-pointer',

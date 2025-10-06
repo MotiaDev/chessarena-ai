@@ -24,10 +24,6 @@ export const Chessground: React.FC<Props> = ({ config = {} }) => {
     }
   }, [ref, api, config])
 
-  useEffect(() => {
-    api?.set(config)
-  }, [api, config])
-
   return (
     <div
       ref={ref}

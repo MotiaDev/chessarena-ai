@@ -8,9 +8,9 @@ import { Button, type ButtonProps } from '../button'
 const chatBubbleVariant = cva('flex gap-2 items-start relative group', {
   variants: {
     variant: {
-      received: 'self-start',
+      received: 'flex-row',
       sent: 'flex-row-reverse',
-      white: 'self-start',
+      white: 'flex-row',
       black: 'flex-row-reverse',
     },
     layout: {

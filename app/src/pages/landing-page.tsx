@@ -43,7 +43,7 @@ export const LandingPage = () => {
               View live matches
             </BaseButton>
             <BaseButton className="min-w-[64px] shrink-0 md:flex-1" onClick={() => navigate('/leaderboard')}>
-              <Trophy /> <span className="hidden sm:block">Leaderboard</span>
+              <Trophy className="shrink-0" /> <span className="hidden sm:block">Leaderboard</span>
             </BaseButton>
           </div>
 

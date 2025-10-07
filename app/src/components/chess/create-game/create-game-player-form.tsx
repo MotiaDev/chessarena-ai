@@ -34,7 +34,7 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
 
   return (
     <div className="flex flex-col flex-1 gap-4 items-center w-full">
-      <div className="shrink-0 space-y-2 mb-2">
+      <div className="shrink-0 space-y-2">
         <ChessIcon color={color} size={80} />
         <h2 className="text-center text-2xl font-bold capitalize">{color}</h2>
       </div>
@@ -44,16 +44,16 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
       {isAiEnabled && (
         <>
           <div className="flex flex-row gap-2 shrink-0 items-center justify-center w-full text-muted-foreground text-md font-semibold">
-            <Separator className="shrink-1" />
+            <Separator className="shrink" />
             <span className="min-w-fit">Or set model</span>
-            <Separator className="shrink-1" />
+            <Separator className="shrink" />
           </div>
-          <div className="flex shrink-0 flex-row gap-2 w-full overflow-x-auto">
+          <div className="flex shrink grow max-h-[106px] flex-row gap-2 w-full overflow-x-auto">
             {Object.keys(models).map((key) => (
               <Selector
                 key={key}
                 isSelected={ai === key}
-                className="w-full flex flex-col capitalize"
+                className="w-full min-w-[106px] p-2 flex flex-col flex-1 capitalize"
                 onClick={() => onSelectAiProvider(key as AiModelProvider)}
               >
                 <AiIcon ai={key as AiModelProvider} color="white" />
@@ -68,7 +68,7 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
           {ai && (
             <>
               <Separator />
-              <div className="flex-1 min-h-[130px] max-h-[calc(100dvh-625px)] md:max-h-[calc(100dvh-653px)] space-y-2 overflow-y-auto">
+              <div className="flex-1 min-h-[130px] max-h-[calc(100dvh-615px)] md:max-h-[calc(100dvh-643px)] space-y-2 overflow-y-auto">
                 {models[ai].map((item) => (
                   <Selector className="w-full" key={item} isSelected={item === model} onClick={() => setModel(item)}>
                     {item}

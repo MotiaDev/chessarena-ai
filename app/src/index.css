@@ -63,6 +63,8 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --scrollbar-color: rgba(255, 255, 255, 0.3);
+  --scrollbar-background: rgba(255, 255, 255, 0.03);
 }
 
 .light {
@@ -140,6 +142,16 @@
 @layer base {
   * {
     @apply border-border;
+    scrollbar-color: var(--scrollbar-color) var(--scrollbar-background);
+
+    &::-webkit-scrollbar {
+      color: var(--scrollbar-color);
+      background: var(--scrollbar-background);
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--scrollbar-background);
+    }
   }
   body {
     @apply bg-background text-foreground;

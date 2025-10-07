@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import '@lichess-org/chessground/assets/chessground.base.css';
+@import '@lichess-org/chessground/assets/chessground.brown.css';
+@import '@lichess-org/chessground/assets/chessground.cburnett.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -159,6 +162,45 @@
 
   strong {
     font-weight: 800;
+  }
+}
+
+@layer components {
+  .cg-wrap piece.pawn.white {
+    background-image: url('/chess/pieces/wP.png') !important;
+  }
+  .cg-wrap piece.bishop.white {
+    background-image: url('/chess/pieces/wB.png') !important;
+  }
+  .cg-wrap piece.knight.white {
+    background-image: url('/chess/pieces/wN.png') !important;
+  }
+  .cg-wrap piece.rook.white {
+    background-image: url('/chess/pieces/wR.png') !important;
+  }
+  .cg-wrap piece.queen.white {
+    background-image: url('/chess/pieces/wQ.png') !important;
+  }
+  .cg-wrap piece.king.white {
+    background-image: url('/chess/pieces/wK.png') !important;
+  }
+  .cg-wrap piece.pawn.black {
+    background-image: url('/chess/pieces/bP.png') !important;
+  }
+  .cg-wrap piece.bishop.black {
+    background-image: url('/chess/pieces/bB.png') !important;
+  }
+  .cg-wrap piece.knight.black {
+    background-image: url('/chess/pieces/bN.png') !important;
+  }
+  .cg-wrap piece.rook.black {
+    background-image: url('/chess/pieces/bR.png') !important;
+  }
+  .cg-wrap piece.queen.black {
+    background-image: url('/chess/pieces/bQ.png') !important;
+  }
+  .cg-wrap piece.king.black {
+    background-image: url('/chess/pieces/bK.png') !important;
   }
 }
 

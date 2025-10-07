@@ -35,7 +35,11 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
   return (
     <div className="flex flex-col flex-1 gap-4 items-center w-full">
       <div className="shrink-0 space-y-2">
-        <ChessIcon color={color} size={80} />
+        <ChessIcon
+          color={color}
+          size={80}
+          style={color === 'black' ? { stroke: '#fff', strokeWidth: 0.5 } : undefined}
+        />
         <h2 className="text-center text-2xl font-bold capitalize">{color}</h2>
       </div>
       <Selector isSelected={!ai} className="w-full" onClick={() => setAi(undefined)}>

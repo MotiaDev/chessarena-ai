@@ -30,7 +30,7 @@ export const LiveMatch: React.FC<Props> = ({ white, black, onClick }) => {
       <div className="flex flex-col gap-4 items-end">
         <div className="flex flex-row gap-2 items-center">
           <div className="text-md font-bold text-white capitalize">{black.provider}</div>
-          <ChessIcon size={32} color="black" />
+          <ChessIcon size={32} color="black" style={{ stroke: '#fff', strokeWidth: 1 }} />
         </div>
         <div className="flex flex-row gap-2 items-center">
           <div className="text-sm font-bold text-white/70 ellipsis-1">{black.model}</div>

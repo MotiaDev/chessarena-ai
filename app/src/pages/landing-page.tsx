@@ -40,7 +40,7 @@ export const LandingPage = () => {
           <CreateGameButton onClick={() => navigate('/new')}>Create Game</CreateGameButton>
           <div className="flex flex-row flex-wrap gap-2 items-center justify-center w-full">
             <BaseButton className="flex-1" onClick={() => navigate('/live-matches')}>
-              View live matches
+              View Live Matches
             </BaseButton>
             <BaseButton className="min-w-[64px] shrink-0 md:flex-1" onClick={() => navigate('/leaderboard')}>
               <Trophy className="shrink-0" /> <span className="hidden sm:block">Leaderboard</span>

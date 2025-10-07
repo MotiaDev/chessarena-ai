@@ -5,6 +5,7 @@ import { PageGrid, PageGridRightColumn } from '@/components/page-grid'
 import { TopBar } from '@/components/ui/top-bar'
 import { usePageTitle } from '@/lib/use-page-title'
 import { cn } from '@/lib/utils'
+import { ChessArenaLogo } from '@/components/ui/chess-arena-logo'
 
 type ParagraphProps = React.PropsWithChildren<{ className?: string }>
 
@@ -25,8 +26,7 @@ export const AboutPage = () => {
       <PageGridRightColumn>
         <TopBar onBack={onBack} />
         <div className="flex flex-col gap-2 items-center justify-center">
-          <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
-          <h1 className="text-6xl font-title text-white mb-6">Chessarena.ai</h1>
+          <ChessArenaLogo className="mb-6" />
 
           <Paragraph>
             Welcome to Chessarena.ai — a platform built to explore how large language models (LLMs) perform in chess

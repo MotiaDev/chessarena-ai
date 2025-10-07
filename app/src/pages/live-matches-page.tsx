@@ -1,11 +1,10 @@
 import { LiveMatch } from '@/components/live-match'
-import { MotiaPowered } from '@/components/motia-powered'
 import { PageGrid, PageGridRightColumn } from '@/components/page-grid'
 import { BaseButton } from '@/components/ui/base-button'
+import { TopBar } from '@/components/ui/top-bar'
 import { usePageTitle } from '@/lib/use-page-title'
 import type { LiveAiGames } from '@chessarena/types/live-ai-games'
 import { useStreamGroup } from '@motiadev/stream-client-react'
-import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router'
 
 export const LiveMatchesPage = () => {
@@ -18,10 +17,7 @@ export const LiveMatchesPage = () => {
   return (
     <PageGrid>
       <PageGridRightColumn>
-        <div className="relative flex flex-row items-center justify-center w-full">
-          <ArrowLeft className="absolute left-0 top-1 size-6 cursor-pointer" onClick={onBack} />
-          <MotiaPowered size="sm" />
-        </div>
+        <TopBar onBack={onBack} />
         <div className="overflow-y-auto flex flex-col gap-4 w-full h-full">
           <div className="flex-1" />
           <div className="text-lg font-bold text-white text-center">Live Matches</div>

@@ -3,28 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-.bg-image-landing {
-  background-image: url('/landing-bg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-@layer utilities {
-  .font-title {
-    font-family: 'Special Gothic Condensed One', sans-serif;
-  }
-
-  .text-error {
-    @apply text-[#EA1F69];
-  }
-
-  .bg-error {
-    @apply bg-[#EA1F69]/20;
-    @apply border-[#EA1F69];
-  }
-}
-
 :root {
   line-height: 1.5;
   font-size: 16px;
@@ -156,29 +134,6 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-body {
-  margin: 0;
-  place-items: center;
-  min-height: 100dvh;
-  width: 100%;
-}
-
-body,
-#root {
-  width: 100dvw;
-  height: 100dvh;
-  padding: 0;
-  overflow: hidden;
-}
-
-strong {
-  font-weight: 800;
-}
-
-.react-flow__attribution {
-  display: none;
-}
-
 @layer base {
   * {
     @apply border-border;
@@ -186,26 +141,73 @@ strong {
   body {
     @apply bg-background text-foreground;
   }
-}
 
-@keyframes flowDash {
-  0% {
-    stroke-dashoffset: 0;
+  body {
+    margin: 0;
+    place-items: center;
+    min-height: 100dvh;
+    width: 100%;
   }
-  100% {
-    stroke-dashoffset: -20;
+
+  body,
+  #root {
+    width: 100dvw;
+    height: 100dvh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  strong {
+    font-weight: 800;
   }
 }
 
-.edge-animated {
-  stroke-dasharray: 5; /* length of dash pattern */
-  stroke-linecap: round; /* round the dash ends */
-  animation: flowDash 1s linear infinite;
+@utility font-title {
+  font-family: 'Special Gothic Condensed One', sans-serif;
 }
 
-.ellipsis-1 {
+@utility text-error {
+  @apply text-[#EA1F69];
+}
+
+@utility bg-error {
+  @apply bg-[#EA1F69]/20;
+  @apply border-[#EA1F69];
+}
+
+@utility ellipsis-1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 120px;
+}
+
+@utility bg-image-landing {
+  background-image: url('/landing-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@utility base-button {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background:
+    radial-gradient(circle, #656d8c 0%, #4c546d 50%, #2a2f3f 100%) padding-box,
+    linear-gradient(90deg, #4c546d 0%, #7c86ac 50%, #656d8c 100%) border-box;
+  mix-blend-mode: plus-lighter;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background:
+      radial-gradient(circle, #656d8c 0%, #4c546d 35%, #2a2f3f 100%) padding-box,
+      linear-gradient(90deg, #4c546d 0%, #7c86ac 50%, #656d8c 100%) border-box;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    pointer-events: none;
+  }
 }

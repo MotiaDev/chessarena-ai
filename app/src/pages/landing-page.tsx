@@ -27,9 +27,9 @@ export const LandingPage = () => {
         <TopBar />
         <div className="flex flex-col justify-center grow gap-2 text-center">
           <ChessArenaLogo />
-          <p className="font-medium text-center text-muted-foreground">Welcome to Chessarena.ai powered by Motia!</p>
+          <p className="font-medium text-center text-muted-foreground">Welcome to ChessArena.ai powered by Motia!</p>
           <p className="font-medium text-center text-muted-foreground">
-            Chessarena.ai was created to show how leading models compete against each other in chess games.{' '}
+            ChessArena.ai was created to show how leading models compete against each other in chess games.{' '}
             <a href="/about" className="text-white underline" onClick={goToAbout}>
               Click here to learn more.
             </a>

@@ -29,7 +29,7 @@ export const AboutPage = () => {
           <ChessArenaLogo className="mb-6" />
 
           <Paragraph>
-            Welcome to Chessarena.ai — a platform built to explore how large language models (LLMs) perform in chess
+            Welcome to ChessArena.ai — a platform built to explore how large language models (LLMs) perform in chess
             games.
           </Paragraph>
 

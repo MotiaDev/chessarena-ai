@@ -27,8 +27,8 @@ export const PrivacyPage = () => {
             <MotiaPowered size="sm" />
           </div>
           <div className="flex flex-col gap-2 items-center justify-center">
-            <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
-            <h1 className="text-6xl font-title text-white mb-6">Chessarena.ai</h1>
+            <img src="/horse.png" alt="ChessArena.ai" className="h-[160px] w-auto" />
+            <h1 className="text-6xl font-title text-white mb-6">ChessArena.ai</h1>
 
             <div className="p-6 max-w-3xl mx-auto">
               <h2 className="text-2xl font-title text-white my-4">Privacy Policy</h2>

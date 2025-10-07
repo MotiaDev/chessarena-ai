@@ -57,7 +57,7 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
               <Selector
                 key={key}
                 isSelected={ai === key}
-                className="w-full min-w-[106px] p-2 flex flex-col flex-1 capitalize"
+                className="flex flex-col flex-1 w-full min-w-[102px] min-h-[102px] p-2 capitalize"
                 onClick={() => onSelectAiProvider(key as AiModelProvider)}
               >
                 <AiIcon ai={key as AiModelProvider} color="white" />
@@ -68,7 +68,7 @@ export const CreateGamePlayerForm: React.FC<Props> = ({ player, color, onSubmit,
         </>
       )}
       <div className="flex flex-col flex-1 gap-4 w-full">
-        <div className="flex flex-col flex-1 gap-4">
+        <div className="flex flex-col flex-1 min-h-[147px] gap-4">
           {ai && (
             <>
               <Separator />

@@ -20,8 +20,8 @@ export const LandingPage = () => {
 
   return (
     <PageGrid>
-      <div className="hidden md:flex md:flex-col 2xl:justify-center 2xl:items-center p-4 overflow-y-auto">
-        <Leaderboard className="max-h-[min(calc(100dvh-32px),1280px)]" />
+      <div className="hidden md:flex md:flex-col p-4 overflow-y-auto">
+        <Leaderboard className="max-h-[min(calc(100dvh-32px),1280px)] my-auto mx-auto" />
       </div>
       <PageGridRightColumn className="backdrop-blur-none md:backdrop-blur-lg">
         <TopBar />

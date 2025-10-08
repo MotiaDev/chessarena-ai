@@ -32,7 +32,8 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className
   return (
     <div
       className={cn(
-        'flex flex-col grow max-w-fit min-h-[288px] bg-white/5 backdrop-blur-lg md:rounded-lg md:border-2 md:border-white/5',
+        'flex flex-col grow min-h-[288px] bg-white/5 backdrop-blur-lg md:rounded-lg md:border-2 md:border-white/5',
+        leaderboard.length > 0 ? 'max-w-full' : 'w-full max-w-[1215px]',
         className,
       )}
     >

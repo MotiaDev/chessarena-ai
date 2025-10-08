@@ -7,6 +7,7 @@ import { Handler } from './types'
 export const claude: Handler = async ({ prompt, zod, logger, model }) => {
   const client = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
+    timeout: 30000, // 30 second timeout
   })
 
   logger.debug('Claude tool choice input schema', { schema: zodToJsonSchema(zod) })

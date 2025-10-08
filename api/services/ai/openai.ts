@@ -4,7 +4,10 @@ import { models } from './models'
 import { Handler } from './types'
 
 export const openai: Handler = async ({ zod, model, logger, prompt }) => {
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    timeout: 30000, // 30 second timeout
+  })
 
   const completion = await openai.chat.completions.create({
     model: model ?? models.openai,

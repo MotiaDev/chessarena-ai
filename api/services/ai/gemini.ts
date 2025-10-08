@@ -4,7 +4,12 @@ import { models } from './models'
 import { Handler } from './types'
 
 export const gemini: Handler = async ({ prompt, zod, logger, model }) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
+  const ai = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY,
+    httpOptions: {
+      timeout: 30000, // 30 second timeout
+    },
+  })
 
   const completion = await ai.models.generateContent({
     model: model ?? models.gemini,

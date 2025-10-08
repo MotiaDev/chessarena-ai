@@ -10,39 +10,38 @@ export const AuthContainer = () => {
 
   if (user) {
     return (
-      <div className="flex items-center justify-between w-[400px] max-w-full rounded-xl backdrop-blur-lg bg-white/10 px-4 py-4 shadow-lg">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-black/50 flex items-center justify-center">
-            <ChatBubbleAvatar color={'white'} fallback={user.name?.slice(0, 2).toUpperCase()} src={user.profilePic} />
+      <div className="flex items-center justify-between w-full gap-2 rounded-xl backdrop-blur-lg bg-white/10 px-4 py-4 shadow-lg">
+        <div className="flex items-center min-w-0 gap-3">
+          <div className="w-10 h-10 shrink-0 rounded-full bg-black/50 flex items-center justify-center">
+            <ChatBubbleAvatar color="white" fallback={user.name?.slice(0, 2).toUpperCase()} src={user.profilePic} />
           </div>
-          <div>
-            <div className="text-white font-medium text-lg ellipsis-1">{user.name}</div>
-            <div className="text-gray-400 text-sm ellipsis-1">{user.email}</div>
+          <div className="min-w-0">
+            <span className="block text-white font-medium text-lg truncate">{user.name}</span>
+            <span className="block text-gray-400 text-sm truncate">{user.email}</span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" onClick={logout}>
-            Sign Out
-          </Button>
-        </div>
+        <Button variant="outline" onClick={logout}>
+          Sign Out
+        </Button>
       </div>
     )
   }
 
   return (
-    <div className="flex items-center justify-between w-[400px] rounded-xl backdrop-blur-lg bg-white/10 px-4 py-2 shadow-lg">
-      <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
+    <div className="flex items-center justify-between w-full gap-2 rounded-xl backdrop-blur-lg bg-white/10 px-4 py-4 shadow-lg">
+      <div className="flex items-center min-w-0 gap-3">
+        <div className="p-3 rounded-full bg-white">
           <LogIn className="size-4 text-black" />
         </div>
-        <div>
-          <div className="text-white font-medium text-lg">Sign In</div>
-          <div className="text-gray-400 text-sm">You need an account to play</div>
+        <div className="min-w-0">
+          <span className="block text-white font-medium text-lg truncate">Sign In</span>
+          <span className="block sm:hidden text-gray-400 text-sm truncate">Sign In to play</span>
+          <span className="hidden sm:block text-gray-400 text-sm truncate">You need an account to play</span>
         </div>
       </div>
 
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center gap-2">
         {isLoading ? (
           <Button variant="outline">
             <Loader2 className="size-4 animate-spin" />

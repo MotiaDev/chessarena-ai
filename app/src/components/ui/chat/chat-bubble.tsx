@@ -8,10 +8,10 @@ import { Button, type ButtonProps } from '../button'
 const chatBubbleVariant = cva('flex gap-2 items-start relative group', {
   variants: {
     variant: {
-      received: 'self-start',
-      sent: 'self-end flex-row-reverse',
-      white: 'self-start',
-      black: 'self-end flex-row-reverse',
+      received: 'flex-row',
+      sent: 'flex-row-reverse',
+      white: 'flex-row',
+      black: 'flex-row-reverse',
     },
     layout: {
       default: '',
@@ -28,7 +28,7 @@ interface ChatBubbleProps extends React.HTMLAttributes<HTMLDivElement>, VariantP
 
 const ChatBubble = React.forwardRef<HTMLDivElement, ChatBubbleProps>(
   ({ className, variant, layout, children, ...props }, ref) => (
-    <div className={cn(chatBubbleVariant({ variant, layout, className }), 'relative group')} ref={ref} {...props}>
+    <div className={chatBubbleVariant({ variant, layout, className })} ref={ref} {...props}>
       {React.Children.map(children, (child) =>
         React.isValidElement(child) && typeof child.type !== 'string'
           ? React.cloneElement(child, {
@@ -56,13 +56,13 @@ const ChatBubbleAvatar: React.FC<ChatBubbleAvatarProps> = ({ src, fallback, clas
   </Avatar>
 )
 
-const chatBubbleMessageVariants = cva('p-4', {
+const chatBubbleMessageVariants = cva('w-full break-words p-4', {
   variants: {
     variant: {
-      received: 'backdrop-blur-lg bg-white/5 rounded-r-2xl rounded-bl-sm rounded-bl-2xl',
+      received: 'backdrop-blur-lg bg-white/5 rounded-r-2xl rounded-bl-2xl',
       sent: 'backdrop-blur-lg bg-white/5 rounded-r-2xl rounded-l-lg rounded-br-lg',
 
-      white: 'backdrop-blur-lg bg-white/60 text-black rounded-r-2xl rounded-bl-sm rounded-bl-2xl',
+      white: 'backdrop-blur-lg bg-white/60 text-black rounded-r-2xl rounded-bl-2xl',
       black: 'backdrop-blur-lg bg-black/40 text-white rounded-l-2xl rounded-br-2xl',
     },
     layout: {
@@ -84,14 +84,7 @@ interface ChatBubbleMessageProps
 
 const ChatBubbleMessage = React.forwardRef<HTMLDivElement, ChatBubbleMessageProps>(
   ({ className, variant, layout, isLoading = false, children, ...props }, ref) => (
-    <div
-      className={cn(
-        chatBubbleMessageVariants({ variant, layout, className }),
-        'break-words max-w-full whitespace-pre-wrap',
-      )}
-      ref={ref}
-      {...props}
-    >
+    <div className={chatBubbleMessageVariants({ variant, layout, className })} ref={ref} {...props}>
       {isLoading ? (
         <div className="flex items-center space-x-2">
           <MessageLoading />
@@ -158,8 +151,6 @@ export {
   ChatBubbleAvatar,
   ChatBubbleMessage,
   ChatBubbleTimestamp,
-  chatBubbleVariant,
-  chatBubbleMessageVariants,
   ChatBubbleAction,
   ChatBubbleActionWrapper,
 }

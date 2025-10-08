@@ -47,13 +47,13 @@ export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
         fallback={message.sender.slice(0, 1).toUpperCase()}
         src={image}
       />
-      <ChatBubbleMessage>
+      <ChatBubbleMessage className="max-w-[calc(100%-40px)]">
         <div className="flex flex-row text-md font-semibold mb-3 capitalize">
           <div className="capitalize">{message.sender}</div>
         </div>
-        <p className="text-md font-medium whitespace-pre-wrap">{message.message}</p>
+        <p className="text-md font-medium">{message.message}</p>
         {message.isIllegalMove && (
-          <div className="mt-3 bg-[#FDCFE0] border-2 rounded-md p-3 text-[#F40D62] font-medium flex flex-row gap-2 items-start font-semibold">
+          <div className="mt-3 bg-[#FDCFE0] border-2 rounded-md p-3 text-[#F40D62] flex flex-row gap-2 items-start font-semibold">
             <OctagonX className="size-5 mt-0.5" />
             This move is illegal
           </div>
@@ -61,7 +61,7 @@ export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
         {message.move && (
           <div
             className={cn(
-              'flex flex-row justify-between font-medium w-full p-4 rounded-sm font-medium items-center mt-3',
+              'flex flex-row justify-between w-full p-4 rounded-sm font-medium items-center mt-3',
               message.role === 'white' ? 'bg-white' : 'bg-black',
             )}
           >

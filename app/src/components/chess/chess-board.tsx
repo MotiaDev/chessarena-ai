@@ -3,14 +3,14 @@ import type { GameRole } from '@/lib/types'
 import { useChessInstance } from '@/lib/use-chess-instance'
 import { useMove } from '@/lib/use-move'
 import { Chess, SQUARES, type Square } from 'chess.js'
-import type { Config } from 'chessground/config'
-import type { Key, Role } from 'chessground/types'
+import type { Config } from '@lichess-org/chessground/config'
+import type { Key, Role } from '@lichess-org/chessground/types'
 import { useEffect, useState } from 'react'
 import { Chessground } from './chessground'
 import { ChessPromote } from './promote/chess-promote'
 import { ChessSound } from './chess-sound'
 
-export function toDests(chess: Chess): Map<Key, Key[]> {
+function toDests(chess: Chess): Map<Key, Key[]> {
   const dests = new Map()
 
   SQUARES.forEach((s) => {
@@ -46,7 +46,7 @@ export const ChessBoard: React.FC<Props> = ({ role, game }) => {
       const dests = toDests(chess)
       setMoves(dests)
     }
-  }, [game?.fen])
+  }, [game?.fen, getInstance])
 
   if (!game) {
     return <Chessground />

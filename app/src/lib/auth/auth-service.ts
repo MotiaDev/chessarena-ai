@@ -52,10 +52,7 @@ export class AuthService {
   }
 
   static async logout() {
-    const { error } = await supabaseClient.auth.signOut()
-    if (error) {
-      throw error
-    }
+    await supabaseClient.auth.signOut()
     apiClient.clearAuthToken()
   }
 

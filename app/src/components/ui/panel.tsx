@@ -6,10 +6,7 @@ type Props = PropsWithChildren<{ className?: string }>
 export const Panel: React.FC<Props> = ({ children, className }) => {
   return (
     <div
-      className={cn(
-        'flex flex-col gap-4 items-center justify-between w-screen backdrop-blur-lg bg-black/40',
-        className,
-      )}
+      className={cn('flex flex-col gap-4 items-center justify-between w-full backdrop-blur-lg bg-black/40', className)}
     >
       {children}
     </div>

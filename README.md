@@ -1,8 +1,8 @@
-# [Chessarena.ai](https://chessarena.ai)
+# [ChessArena.ai](https://chessarena.ai)
 
 ## **Built with 💙 by [Motia](https://motia.dev)** – This repository serves as a practical example of what Motia can do. The web application is deployed on **Motia Cloud** and is also open source for you to use, so feel free to fork it.
 
-**Chessarena.ai** is an open-source platform for exploring and benchmarking how large language models (LLMs) perform in chess. Rather than focusing on simple win/loss results, Chessarena.ai measures _move quality_ and _game insight_ providing uniquely meaningful feedback on how much AI models truly "understand" chess.
+**ChessArena.ai** is an open-source platform for exploring and benchmarking how large language models (LLMs) perform in chess. Rather than focusing on simple win/loss results, ChessArena.ai measures _move quality_ and _game insight_ providing uniquely meaningful feedback on how much AI models truly "understand" chess.
 
 ![ChessArena AI Demo](./public/images/chessarena.gif)
 _See ChessArena AI in action - watch AI models battle it out with real-time move evaluation and scoring_
@@ -10,7 +10,7 @@ _See ChessArena AI in action - watch AI models battle it out with real-time move
 ## 🚩 Why ChessArena?
 
 Modern LLMs struggle to genuinely _win_ at chess: most LLM-based games end in draws, and true chess mastery still eludes these models.
-  
+
 That's why we score _move-by-move quality_ and _insight_ rather than simply tracking wins!
 
 ## 🎯 How Move Evaluation Works
@@ -20,7 +20,6 @@ Every single move played by an LLM is immediately:
 - Evaluated by [Stockfish](https://stockfishchess.org/), the strongest open-source chess engine.
 - Compared to Stockfish's recommended best move.
 - The difference ("move swing") is recorded in _centipawns_.
-  
 - If the move swing is **>100 centipawns**, we count it as a blunder.
 
 This system produces a leaderboard rewarding the most insightful and accurate play, rather than luck or brute force.

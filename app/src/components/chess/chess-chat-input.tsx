@@ -48,7 +48,7 @@ export const ChessChatInput: React.FC<Props> = ({ game }) => {
         variant="default"
         className="h-12 w-12"
         onClick={handleSendMessage}
-        disabled={isSending}
+        disabled={message.trim().length === 0 || isSending}
       >
         {isSending ? <Loader2 className="size-5 animate-spin" /> : <ArrowRight className="size-5" />}
       </Button>

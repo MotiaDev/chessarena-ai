@@ -1,13 +1,13 @@
-import { MotiaPowered } from '@/components/motia-powered'
-import { Page } from '@/components/page'
-import { BaseButton } from '@/components/ui/base-button'
-import { Input } from '@/components/ui/input'
-import { usePageTitle } from '@/lib/use-page-title'
-import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { useLogin } from '../lib/auth/use-login'
+import { PageGrid, PageGridRightColumn } from '@/components/page-grid'
+import { BaseButton } from '@/components/ui/base-button'
+import { Input } from '@/components/ui/input'
+import { ChessArenaLogo } from '@/components/ui/chess-arena-logo'
+import { usePageTitle } from '@/lib/use-page-title'
+import { TopBar } from '@/components/ui/top-bar'
 import { OtpInput } from '../components/ui/otp-input'
+import { useLogin } from '../lib/auth/use-login'
 import { useQueryParam } from '../lib/use-query-param'
 
 export const LoginPage = () => {
@@ -33,31 +33,29 @@ export const LoginPage = () => {
   usePageTitle('Login')
 
   return (
-    <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 backdrop-blur-lg">
-      <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full h-full overflow-y-auto">
-        <div className="relative flex flex-row items-center justify-center w-full">
-          <ArrowLeft className="absolute left-0 top-0 size-6 cursor-pointer" onClick={onBack} />
-          <MotiaPowered size="sm" />
+    <PageGrid>
+      <PageGridRightColumn>
+        <TopBar onBack={onBack} />
+        <div className="flex flex-col gap-4 items-center justify-center grow">
+          <ChessArenaLogo />
         </div>
-        <div className="flex-1" />
-        <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
-        <h1 className="text-6xl font-title text-white">ChessArena.ai</h1>
-        <div className="flex-1" />
         {successMessage ? (
-          <div className="flex flex-col flex-1 gap-4">
-            <p className="text-center text-2xl font-semibold">{successMessage.title}</p>
-            <p className="text-muted-foreground text-center">{successMessage.description}</p>
+          <div className="flex flex-col justify-center h-[348px] gap-6">
+            <div className="space-y-1">
+              <p className="text-center text-2xl font-semibold">{successMessage.title}</p>
+              <p className="text-muted-foreground text-center">{successMessage.description}</p>
+            </div>
             {isOtpEnabled && (
-              <>
+              <div className="space-y-4">
                 <OtpInput value={otp} onChange={setOtp} />
                 <BaseButton className="w-full" onClick={() => verifyOtp(email, otp)} isLoading={isAuthenticating}>
                   Verify
                 </BaseButton>
-              </>
+              </div>
             )}
           </div>
         ) : (
-          <div className="flex flex-col flex-1 gap-4">
+          <div className="flex flex-col gap-4">
             {error && <p className="text-red-500 text-center font-semibold">{error}</p>}
             {!isAuthenticating && (
               <>
@@ -87,7 +85,7 @@ export const LoginPage = () => {
               Continue
             </BaseButton>
             <p className="text-muted-foreground text-center">
-              If no accounts are found under this email, we’ll create an account for you. By creating an account you
+              If no accounts are found under this email, we'll create an account for you. By creating an account you
               agree with the{' '}
               <a href="/privacy-policy" target="_blank" className="font-semibold underline">
                 Privacy Policy
@@ -96,9 +94,7 @@ export const LoginPage = () => {
             </p>
           </div>
         )}
-
-        <div className="flex-1" />
-      </div>
-    </Page>
+      </PageGridRightColumn>
+    </PageGrid>
   )
 }

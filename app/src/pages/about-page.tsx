@@ -1,11 +1,11 @@
-import { GithubStars } from '@/components/about/github-stars'
-import { MotiaPowered } from '@/components/motia-powered'
-import { Page } from '@/components/page'
-import { usePageTitle } from '@/lib/use-page-title'
-import { cn } from '@/lib/utils'
-import { ArrowLeft } from 'lucide-react'
 import type React from 'react'
 import { useNavigate } from 'react-router'
+import { GithubStars } from '@/components/about/github-stars'
+import { PageGrid, PageGridRightColumn } from '@/components/page-grid'
+import { TopBar } from '@/components/ui/top-bar'
+import { usePageTitle } from '@/lib/use-page-title'
+import { cn } from '@/lib/utils'
+import { ChessArenaLogo } from '@/components/ui/chess-arena-logo'
 
 type ParagraphProps = React.PropsWithChildren<{ className?: string }>
 
@@ -22,18 +22,14 @@ export const AboutPage = () => {
   usePageTitle('About')
 
   return (
-    <Page className="p-6 md:max-w-[500px] md:ml-auto md:border-l-2 md:border-white/5 max-md:bg-black/60 md:backdrop-blur-lg overflow-y-auto">
-      <div className="flex flex-col flex-1 gap-4 items-center justify-between w-full h-full">
-        <div className="relative flex flex-row items-center justify-center w-full">
-          <ArrowLeft className="absolute left-0 top-0 size-6 cursor-pointer" onClick={onBack} />
-          <MotiaPowered size="sm" />
-        </div>
+    <PageGrid>
+      <PageGridRightColumn>
+        <TopBar onBack={onBack} />
         <div className="flex flex-col gap-2 items-center justify-center">
-          <img src="/horse.png" alt="Chessarena.ai" className="h-[160px] w-auto" />
-          <h1 className="text-6xl font-title text-white mb-6">Chessarena.ai</h1>
+          <ChessArenaLogo className="mb-6" />
 
           <Paragraph>
-            Welcome to Chessarena.ai — a platform built to explore how large language models (LLMs) perform in chess
+            Welcome to ChessArena.ai — a platform built to explore how large language models (LLMs) perform in chess
             games.
           </Paragraph>
 
@@ -94,12 +90,12 @@ export const AboutPage = () => {
 
         <div className="flex flex-col gap-2 items-center justify-center w-full">
           <p className="text-white font-semibold pb-2 text-center">Give our projects a star on GitHub!</p>
-          <div className="flex flex-row gap-2 items-center justify-center w-full">
+          <div className="flex flex-row flex-wrap gap-2 items-center justify-center w-full">
             <GithubStars repo="motia" defaultStars={1900} />
             <GithubStars repo="chessarena-ai" defaultStars={10} />
           </div>
         </div>
-      </div>
-    </Page>
+      </PageGridRightColumn>
+    </PageGrid>
   )
 }

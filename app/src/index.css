@@ -1,36 +1,28 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import '@lichess-org/chessground/assets/chessground.base.css';
+@import '@lichess-org/chessground/assets/chessground.brown.css';
+@import '@lichess-org/chessground/assets/chessground.cburnett.css';
 
 @custom-variant dark (&:is(.dark *));
-
-.bg-image-landing {
-  background-image: url('/landing-bg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-@layer utilities {
-  .font-title {
-    font-family: 'Special Gothic Condensed One', sans-serif;
-  }
-
-  .text-error {
-    @apply text-[#EA1F69];
-  }
-
-  .bg-error {
-    @apply bg-[#EA1F69]/20;
-    @apply border-[#EA1F69]
-  }
-}
 
 :root {
   line-height: 1.5;
   font-size: 16px;
 
   color-scheme: dark light;
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"), serif;
+  font-family:
+    var(
+      --default-font-family,
+      ui-sans-serif,
+      system-ui,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji'
+    ),
+    serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -71,6 +63,8 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --scrollbar-color: rgba(255, 255, 255, 0.3);
+  --scrollbar-background: rgba(255, 255, 255, 0.03);
 }
 
 .light {
@@ -145,56 +139,128 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-body {
-  margin: 0;
-  place-items: center;
-  min-height: 100dvh;
-  width: 100%;
-}
-
-body,
-#root {
-  width: 100dvw;
-  height: 100dvh;
-  padding: 0;
-  overflow: hidden;
-}
-
-strong {
-  font-weight: 800;
-}
-
-.react-flow__attribution {
-  display: none;
-}
-
 @layer base {
   * {
     @apply border-border;
+    scrollbar-color: var(--scrollbar-color) var(--scrollbar-background);
+
+    &::-webkit-scrollbar {
+      color: var(--scrollbar-color);
+      background: var(--scrollbar-background);
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--scrollbar-background);
+    }
   }
   body {
     @apply bg-background text-foreground;
   }
-}
 
-@keyframes flowDash {
-  0% {
-    stroke-dashoffset: 0;
+  body {
+    margin: 0;
+    place-items: center;
+    min-height: 100dvh;
+    width: 100%;
   }
-  100% {
-    stroke-dashoffset: -20;
+
+  body,
+  #root {
+    width: 100dvw;
+    height: 100dvh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  strong {
+    font-weight: 800;
   }
 }
 
-.edge-animated {
-  stroke-dasharray: 5; /* length of dash pattern */
-  stroke-linecap: round; /* round the dash ends */
-  animation: flowDash 1s linear infinite;
+@layer components {
+  .cg-wrap piece.pawn.white {
+    background-image: url('/chess/pieces/wP.png') !important;
+  }
+  .cg-wrap piece.bishop.white {
+    background-image: url('/chess/pieces/wB.png') !important;
+  }
+  .cg-wrap piece.knight.white {
+    background-image: url('/chess/pieces/wN.png') !important;
+  }
+  .cg-wrap piece.rook.white {
+    background-image: url('/chess/pieces/wR.png') !important;
+  }
+  .cg-wrap piece.queen.white {
+    background-image: url('/chess/pieces/wQ.png') !important;
+  }
+  .cg-wrap piece.king.white {
+    background-image: url('/chess/pieces/wK.png') !important;
+  }
+  .cg-wrap piece.pawn.black {
+    background-image: url('/chess/pieces/bP.png') !important;
+  }
+  .cg-wrap piece.bishop.black {
+    background-image: url('/chess/pieces/bB.png') !important;
+  }
+  .cg-wrap piece.knight.black {
+    background-image: url('/chess/pieces/bN.png') !important;
+  }
+  .cg-wrap piece.rook.black {
+    background-image: url('/chess/pieces/bR.png') !important;
+  }
+  .cg-wrap piece.queen.black {
+    background-image: url('/chess/pieces/bQ.png') !important;
+  }
+  .cg-wrap piece.king.black {
+    background-image: url('/chess/pieces/bK.png') !important;
+  }
 }
 
-.ellipsis-1 {
+@utility font-title {
+  font-family: 'Special Gothic Condensed One', sans-serif;
+}
+
+@utility text-error {
+  @apply text-[#EA1F69];
+}
+
+@utility bg-error {
+  @apply bg-[#EA1F69]/20;
+  @apply border-[#EA1F69];
+}
+
+@utility ellipsis-1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 120px;
+}
+
+@utility bg-image-landing {
+  background-image: url('/landing-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@utility base-button {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background:
+    radial-gradient(circle, #656d8c 0%, #4c546d 50%, #2a2f3f 100%) padding-box,
+    linear-gradient(90deg, #4c546d 0%, #7c86ac 50%, #656d8c 100%) border-box;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background:
+      radial-gradient(circle, #656d8c 0%, #4c546d 35%, #2a2f3f 100%) padding-box,
+      linear-gradient(90deg, #4c546d 0%, #7c86ac 50%, #656d8c 100%) border-box;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    pointer-events: none;
+  }
 }

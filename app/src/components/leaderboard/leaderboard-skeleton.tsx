@@ -4,7 +4,7 @@ import type React from 'react'
 export const LeaderboardSkeleton: React.FC = () => {
   return (
     <div className="flex flex-col gap-2 w-full text-sm">
-      <Card className="flex flex-row gap-2 items-center justify-between w-full p-4">
+      <Card className="flex flex-row gap-2 items-center justify-between w-full p-4 rounded-none">
         <div className="font-bold text-white/20 animate-pulse">1</div>
         <div className="flex flex-row gap-2 items-center flex-1">
           <div className="w-5 h-5 rounded-full bg-white/20 animate-pulse" />

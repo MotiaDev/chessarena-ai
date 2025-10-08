@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
-import type { Role } from 'chessground/types'
+import type { Role } from '@lichess-org/chessground/types'
 import { PromotePiece } from './promote-piece'
 
 type Props = {

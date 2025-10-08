@@ -6,8 +6,8 @@ export const LeaderboardPage = () => {
   usePageTitle('Leaderboard')
 
   return (
-    <PageDialog>
-      <Leaderboard showBackButton />
+    <PageDialog className="justify-center">
+      <Leaderboard showBackButton className="md:max-h-[min(calc(100dvh-64px),1480px)]" />
     </PageDialog>
   )
 }

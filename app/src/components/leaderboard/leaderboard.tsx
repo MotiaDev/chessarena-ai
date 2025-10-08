@@ -1,8 +1,9 @@
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { useStreamGroup } from '@motiadev/stream-client-react'
-import { AiIcon } from '@/components/chess/ai-icon'
 import type { Leaderboard as LeaderboardType } from '@chessarena/types/leaderboard'
+import { AiIcon } from '@/components/chess/ai-icon'
+import { cn } from '@/lib/utils'
 import { LeaderboardItem } from './leaderboard-item'
 import { LeaderboardSkeleton } from './leaderboard-skeleton'
 
@@ -16,9 +17,10 @@ const HeaderRow: React.FC<{ label: string }> = ({ label }) => {
 
 type Props = {
   showBackButton?: boolean
+  className?: string
 }
 
-export const Leaderboard: React.FC<Props> = ({ showBackButton = false }) => {
+export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className }) => {
   const navigate = useNavigate()
   const onBack = () => navigate('/')
 
@@ -28,7 +30,12 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false }) => {
   })
 
   return (
-    <div className="flex flex-col grow max-h-full bg-white/5 backdrop-blur-lg md:rounded-lg md:border-2 md:border-white/5">
+    <div
+      className={cn(
+        'flex flex-col grow max-w-fit min-h-[288px] bg-white/5 backdrop-blur-lg md:rounded-lg md:border-2 md:border-white/5',
+        className,
+      )}
+    >
       <div className="flex flex-row items-center w-full p-4 border-b border-white/10">
         {showBackButton && <ArrowLeft className="shrink-0 size-6 cursor-pointer" onClick={onBack} />}
         <h1 className="grow mr-6 text-center text-lg font-semibold text-white">Leaderboard</h1>
@@ -42,7 +49,7 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false }) => {
           </>
         ) : (
           <div className="flex flex-row grow">
-            <div className="border-r border-white/10 flex flex-col gap-6 pt-20 h-full pb-4">
+            <div className="border-r border-white/10 flex flex-col gap-6 pt-20 grow pb-4">
               {leaderboard.map((leaderboard, position) => (
                 <div key={position} className="flex flex-row gap-2 items-center w-[230px] h-[52px]">
                   <div className="font-bold text-white w-[40px] text-center">{position + 1}</div>
@@ -56,9 +63,9 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false }) => {
                 </div>
               ))}
             </div>
-            <div className="flex flex-col overflow-x-auto h-full grow">
+            <div className="flex flex-col overflow-x-auto grow">
               <div className="flex flex-row gap-2">
-                <div className="flex flex-row gap-2 items-center justify-between py-4">
+                <div className="flex flex-row gap-2 items-center justify-between w-full py-4">
                   <HeaderRow label="Matches" />
                   <HeaderRow label="Wins" />
                   <HeaderRow label="Checkmates" />

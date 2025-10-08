@@ -7,12 +7,6 @@ import { useNavigate } from 'react-router'
 export const AuthContainer = () => {
   const { user, isLoading, logout } = useAuth()
   const navigate = useNavigate()
-  // const user = undefined
-  // const user = {
-  //   name: 'John Doe',
-  //   profilePic: 'https://via.placeholder.com/150',
-  //   email: 'john.doe@example.com',
-  // }
 
   if (user) {
     return (

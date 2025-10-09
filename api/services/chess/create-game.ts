@@ -7,9 +7,9 @@ import { User } from '@chessarena/types/user'
 
 export const createGame = async (
   players: Game['players'],
-  user: User,
   streams: FlowContextStateStreams,
   logger: Logger,
+  user?: User,
 ): Promise<Game> => {
   const gameId = await createGameId({ streams, logger })
 
@@ -19,7 +19,7 @@ export const createGame = async (
     turn: 'white',
     status: 'pending',
     players: {
-      white: { ...players.white, userId: players.white.ai ? undefined : user.id },
+      white: { ...players.white, userId: players.white.ai ? undefined : user?.id },
       black: { ...players.black, userId: players.black.ai },
     },
     check: false,

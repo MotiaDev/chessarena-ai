@@ -65,8 +65,8 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
   logger.info('Creating new game', { white, black })
 
   const players: Game['players'] = {
-    white: { name: white, ai: white, model: models[white] },
-    black: { name: black, ai: black, model: models[black] },
+    white: { ai: white, model: models[white] },
+    black: { ai: black, model: models[black] },
   }
   const newGame = await createGame(players, streams, logger)
 

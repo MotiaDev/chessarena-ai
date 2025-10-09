@@ -36,7 +36,11 @@ const responseSchema = z.object({
     {
       from: z.string({ description: 'The square to move from, example: e2, Make sure to move from a valid square' }),
       to: z.string({ description: 'The square to move to, example: e4. Make sure to move to a valid square' }),
-      promote: z.enum(['queen', 'rook', 'bishop', 'knight'], { description: 'The promotion piece, if any' }).optional(),
+      promote: z
+        .enum(['queen', 'rook', 'bishop', 'knight'], { description: 'The promotion piece, if any' })
+        .or(z.literal(''))
+        .optional()
+        .transform((val) => (val === '' ? undefined : val)),
     },
     { description: 'Your move, make sure to move from a valid square and to a valid square' },
   ),

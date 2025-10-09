@@ -92,7 +92,7 @@ export const handler: Handlers['CreateGame'] = async (req, { logger, emit, state
     return { status: 400, body: { message: 'Invalid request body', errors: validationResult.error.errors } }
   }
 
-  const game = await createGame(req.body.players, user, streams, logger)
+  const game = await createGame(req.body.players, streams, logger, user)
 
   logger.info('[CreateGame] Game created', { gameId: game.id })
 

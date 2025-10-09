@@ -12,6 +12,8 @@ export const grok: Handler = async ({ prompt, zod, logger, model }) => {
     model: xai(model ?? models.grok),
     prompt,
     schema: zod,
+    maxRetries: 2,
+    abortSignal: AbortSignal.timeout(30000), // Force 30 second timeout
     providerOptions: {
       reasoningEffort: 'low',
     } satisfies XaiProviderOptions,

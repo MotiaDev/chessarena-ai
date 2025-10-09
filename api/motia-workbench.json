@@ -1,5 +1,23 @@
 [
   {
+    "id": "auth",
+    "config": {
+      "steps/auth/01-get-user-api.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "Auth",
+    "config": {
+      "steps/auth/00-auth-api.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
     "id": "chess",
     "config": {
       "steps/chess/09-purge-stuck-games.step.ts": {
@@ -35,11 +53,6 @@
         "x": 1045,
         "y": 114
       },
-      "steps/chess/01-get-live-ai-game.step.ts": {
-        "x": -222,
-        "y": 344,
-        "sourceHandlePosition": "right"
-      },
       "steps/chess/01-create-game.step.ts": {
         "x": 432,
         "y": 111,
@@ -61,24 +74,6 @@
       "steps/chess/evaluate_player_move_step.py": {
         "x": 157,
         "y": 680
-      }
-    }
-  },
-  {
-    "id": "auth",
-    "config": {
-      "steps/auth/01-get-user-api.step.ts": {
-        "x": 0,
-        "y": 0
-      }
-    }
-  },
-  {
-    "id": "Auth",
-    "config": {
-      "steps/auth/00-auth-api.step.ts": {
-        "x": 0,
-        "y": 0
       }
     }
   }

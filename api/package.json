@@ -16,6 +16,7 @@
     "motia"
   ],
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.46",
     "@ai-sdk/xai": "^2.0.24",
     "@anthropic-ai/sdk": "^0.54.0",
     "@chessarena/types": "workspace:*",

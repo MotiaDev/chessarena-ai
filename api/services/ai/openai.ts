@@ -1,27 +1,25 @@
-import { OpenAI } from 'openai'
-import zodToJsonSchema from 'zod-to-json-schema'
+import { createOpenAI, OpenAIResponsesProviderOptions } from '@ai-sdk/openai'
+import { generateObject } from 'ai'
 import { models } from './models'
 import { Handler } from './types'
 
 export const openai: Handler = async ({ zod, model, logger, prompt }) => {
-  const openai = new OpenAI({
+  const openai = createOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    timeout: 30000, // 30 second timeout
   })
 
-  const completion = await openai.chat.completions.create({
-    model: model ?? models.openai,
-    messages: [{ role: 'user', content: prompt }],
-    reasoning_effort: 'low',
-    response_format: {
-      type: 'json_schema',
-      json_schema: { name: 'chess_move', schema: zodToJsonSchema(zod) },
-    },
+  const { object: completion } = await generateObject({
+    model: openai(model ?? models.openai),
+    prompt,
+    schema: zod,
+    maxRetries: 2,
+    abortSignal: AbortSignal.timeout(30000), // Force 30 second timeout
+    providerOptions: {
+      reasoningEffort: 'low',
+    } satisfies OpenAIResponsesProviderOptions,
   })
 
   logger.info('OpenAI response received', { model })
 
-  const content = JSON.parse(completion.choices[0].message.content ?? '{}')
-
-  return content
+  return completion
 }

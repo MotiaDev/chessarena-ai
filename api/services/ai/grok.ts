@@ -1,4 +1,4 @@
-import { createXai } from '@ai-sdk/xai'
+import { createXai, XaiProviderOptions } from '@ai-sdk/xai'
 import { generateObject } from 'ai'
 import { models } from './models'
 import { Handler } from './types'
@@ -12,6 +12,9 @@ export const grok: Handler = async ({ prompt, zod, logger, model }) => {
     model: xai(model ?? models.grok),
     prompt,
     schema: zod,
+    providerOptions: {
+      reasoningEffort: 'low',
+    } satisfies XaiProviderOptions,
   })
 
   if (!completion.move || !completion.thought) {

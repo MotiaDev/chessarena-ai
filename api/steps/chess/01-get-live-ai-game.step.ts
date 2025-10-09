@@ -4,7 +4,6 @@ import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { createGame } from '../../services/chess/create-game'
 import { models } from '../../services/ai/models'
-import { UserState } from '../states/user-state'
 
 const bodySchema = z.object({ players: z.array(AiModelProviderSchema()).length(2) })
 
@@ -20,7 +19,6 @@ export const config: ApiRouteConfig = {
   responseSchema: {
     200: GameSchema,
     400: z.object({ message: z.string(), errors: z.array(z.object({ message: z.string() })).optional() }),
-    401: z.object({ message: z.string() }, { description: 'User is not found' }),
     404: z.object({ message: z.string() }),
   },
 }
@@ -37,17 +35,10 @@ const isOlderThan10Minutes = (createdAt?: string) => {
 export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, state, streams }) => {
   logger.info('Received createGame event')
 
-  const userState = new UserState(state)
-  const user = await userState.getUser(req.tokenInfo.sub)
   const validationResult = bodySchema.safeParse(req.body)
 
-  if (!user) {
-    logger.error('[GetLiveAiGame] User not found', { userId: req.tokenInfo.sub })
-    return { status: 401, body: { message: 'User not found' } }
-  }
-
   if (!validationResult.success) {
-    logger.error('[GetLiveAiGame] Invalid request body', { errors: validationResult.error.errors })
+    logger.error('Invalid request body', { errors: validationResult.error.errors })
     return { status: 400, body: { message: 'Invalid request body', errors: validationResult.error.errors } }
   }
 
@@ -74,10 +65,10 @@ export const handler: Handlers['GetLiveAiGame'] = async (req, { logger, emit, st
   logger.info('Creating new game', { white, black })
 
   const players: Game['players'] = {
-    white: { ai: white, model: models[white] },
-    black: { ai: black, model: models[black] },
+    white: { name: white, ai: white, model: models[white] },
+    black: { name: black, ai: black, model: models[black] },
   }
-  const newGame = await createGame(players, user, streams, logger)
+  const newGame = await createGame(players, streams, logger)
 
   await streams.chessLiveAiGames.set('game', id, {
     id,

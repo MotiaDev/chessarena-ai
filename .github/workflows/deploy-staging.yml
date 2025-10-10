@@ -1,0 +1,149 @@
+name: Deploy Staging
+
+# This workflow can be triggered in two ways:
+# 1. Manual dispatch from GitHub Actions UI
+# 2. PR comment with "/deploy-staging" command (handled by pr-deploy-commands.yml)
+#
+# For PR deployments, the workflow automatically:
+# - Extracts the PR branch and commit info
+# - Creates version names like "PR-123-abc1234"
+# - Posts success/failure comments back to the PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+        type: string
+      versionName:
+        description: 'Version Name to deploy'
+        required: false
+      versionDescription:
+        description: 'Version Description to deploy'
+        required: false
+
+# Required permissions for PR comment functionality
+permissions:
+  issues: write # Create comments on issues/PRs
+  pull-requests: write # Access PR information
+  actions: write # Trigger other workflows
+  contents: read # Read repository contents
+  id-token: write
+
+env:
+  MOTIA_API_KEY: ${{ secrets.MOTIA_API_KEY }}
+  MOTIA_ENV_ID: fe0d1d4b-9728-4a09-a6dc-2e46d8b51376
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Get commit message
+        id: commit
+        run: echo "message=$(git log -1 --pretty=%s)" >> $GITHUB_OUTPUT
+
+      - name: Set VERSION_NAME and DESCRIPTION
+        id: meta
+        run: |
+          VERSION_NAME="${{ github.event.inputs.versionName }}"
+          if [ -z "$VERSION_NAME" ]; then
+            VERSION_NAME="${GITHUB_SHA:0:7}"
+          fi
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+          echo "VERSION_DESCRIPTION=${{ github.event.inputs.versionDescription || steps.commit.outputs.message }}" >> $GITHUB_ENV
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - uses: pnpm/action-setup@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.11.1'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Download Stockfish Binary
+        working-directory: api
+        run: |
+          mkdir -p lib
+          curl -L https://github.com/official-stockfish/Stockfish/releases/latest/download/stockfish-ubuntu-x86-64-avx2.tar -o stockfish-source.tar
+          tar -xvf stockfish-source.tar
+          chmod +x stockfish/stockfish-ubuntu-x86-64-avx2
+          mv stockfish/stockfish-ubuntu-x86-64-avx2 lib/stockfish
+          rm -rf stockfish-source.tar stockfish
+
+      - name: Create Env file
+        working-directory: api
+        run: |
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> .env
+          echo "STOCKFISH_BIN_PATH=/var/task/lib/stockfish" >> .env
+          echo "XAI_API_KEY=${{ secrets.XAI_API_KEY }}" >> .env
+          echo "JWT_EXPIRATION=${{ env.JWT_EXPIRATION }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env
+
+      - name: Motia Install
+        working-directory: api
+        run: npx motia install
+
+      - name: Deploy using Motia Cloud
+        id: deploy
+        working-directory: api
+        run: |
+          npx motia cloud deploy \
+            --api-key ${{ env.MOTIA_API_KEY }} \
+            --environment-id ${{ env.MOTIA_ENV_ID }} \
+            --version-name "${{ env.VERSION_NAME }}" \
+            --version-description "${{ env.VERSION_DESCRIPTION }}" \
+            --env-file .env
+
+      - name: Report deployment success to PR
+        if: success() && startsWith(env.VERSION_NAME, 'PR-')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const versionName = process.env.VERSION_NAME;
+            const prNumber = versionName.match(/^PR-(\d+)-/)?.[1];
+
+            if (prNumber) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: parseInt(prNumber),
+                body: `✅ **Staging Deployment Successful**\n\n**Version:** \`${versionName}\`\n\n**Branch:** \`${{ github.event.inputs.branch }}\`\n\n**Commit:** \`${{ github.sha }}\`\n\n🎉 Your changes have been successfully deployed to staging!`
+              });
+            }
+
+      - name: Report deployment failure to PR
+        if: failure() && startsWith(env.VERSION_NAME, 'PR-')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const versionName = process.env.VERSION_NAME;
+            const prNumber = versionName.match(/^PR-(\d+)-/)?.[1];
+
+            if (prNumber) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: parseInt(prNumber),
+                body: `❌ **Staging Deployment Failed**\n\n**Version:** \`${versionName}\`\n\n**Branch:** \`${{ github.event.inputs.branch }}\`\n\n**Commit:** \`${{ github.sha }}\`\n\nPlease check the [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.`
+              });
+            }

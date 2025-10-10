@@ -35,6 +35,7 @@ permissions:
 env:
   MOTIA_API_KEY: ${{ secrets.MOTIA_API_KEY }}
   MOTIA_ENV_ID: fe0d1d4b-9728-4a09-a6dc-2e46d8b51376
+  JWT_EXPIRATION: 30d
 
 jobs:
   deploy:

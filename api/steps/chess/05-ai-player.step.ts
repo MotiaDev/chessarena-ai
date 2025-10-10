@@ -136,7 +136,17 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
 
       return
     } catch (err) {
-      logger.error('Error making prompt', { err })
+      logger.error('Error making prompt', {
+        error:
+          err instanceof Error
+            ? {
+                name: err.name,
+                message: err.message,
+                stack: err.stack,
+                ...(err && typeof err === 'object' && 'cause' in err && { cause: err.cause }),
+              }
+            : err,
+      })
 
       if (action) {
         await streams.chessGameMessage.set(input.gameId, messageId, {

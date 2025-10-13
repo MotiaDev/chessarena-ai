@@ -13,7 +13,7 @@ export const openai: Handler = async ({ model, logger, prompt, onThoughtUpdate }
     model: openai(model ?? models.openai),
     prompt,
     schema: AiPlayerPromptSchema,
-    maxRetries: 1,
+    maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
   })
 

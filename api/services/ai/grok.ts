@@ -14,7 +14,6 @@ export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) 
     prompt,
     schema: AiPlayerPromptSchema,
     maxRetries: 0,
-    maxOutputTokens: 300,
     abortSignal: AbortSignal.timeout(180000),
   })
 

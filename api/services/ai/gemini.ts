@@ -25,10 +25,10 @@ export const gemini: Handler = async ({ prompt, logger, model, onThoughtUpdate }
   const completion = await object
 
   if (!completion.move || !completion.thought) {
-    logger.error('Invalid Grok response received', { model, completion })
+    logger.error('Invalid Gemini response received', { model, completion })
     return
   }
 
-  logger.info('Grok response received', { model, response: completion })
+  logger.info('Gemini response received', { model, response: completion })
   return completion
 }

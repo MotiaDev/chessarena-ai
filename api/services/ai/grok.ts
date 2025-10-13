@@ -1,27 +1,32 @@
 import { createXai, XaiProviderOptions } from '@ai-sdk/xai'
-import { generateObject } from 'ai'
+import { generateObject, streamObject } from 'ai'
 import { models } from './models'
 import { Handler } from './types'
+import { AiPlayerPrompt, AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 
-export const grok: Handler = async ({ prompt, zod, logger, model }) => {
+export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) => {
   const xai = createXai({
     apiKey: process.env.XAI_API_KEY,
   })
 
-  const { object: completion } = await generateObject({
+  const { partialObjectStream, object } = streamObject({
     model: xai(model ?? models.grok),
     prompt,
-    schema: zod,
-    maxRetries: 2,
-    abortSignal: AbortSignal.timeout(30000), // Force 30 second timeout
-    providerOptions: {
-      reasoningEffort: 'low',
-    } satisfies XaiProviderOptions,
+    schema: AiPlayerPromptSchema,
+    maxRetries: 0,
+    maxOutputTokens: 300,
+    abortSignal: AbortSignal.timeout(180000),
   })
+
+  for await (const partialObject of partialObjectStream) {
+    await onThoughtUpdate(partialObject.thought)
+  }
+
+  const completion = await object
 
   if (!completion.move || !completion.thought) {
     logger.error('Invalid Grok response received', { model, completion })
-    return {} as any
+    return
   }
 
   logger.info('Grok response received', { model, response: completion })

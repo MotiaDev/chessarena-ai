@@ -1,11 +1,9 @@
-import { ZodObject, ZodRawShape } from 'zod'
+import { AiModelProvider } from '@chessarena/types/ai-models'
 import { openai } from './openai'
-import { Handler } from './types'
-import { Logger } from 'motia'
+import { Handler, PromptInput } from './types'
 import { gemini } from './gemini'
 import { claude } from './claude'
 import { grok } from './grok'
-import { AiModelProvider } from '@chessarena/types/ai-models'
 
 const providers: Record<AiModelProvider, Handler> = {
   openai,
@@ -14,15 +12,7 @@ const providers: Record<AiModelProvider, Handler> = {
   grok,
 }
 
-type MakePromptInput<T extends ZodRawShape> = {
-  prompt: string
-  zod: ZodObject<T>
-  provider: AiModelProvider
-  logger: Logger
-  model: string
-}
-
-export const makePrompt = async <T extends ZodRawShape>(input: MakePromptInput<T>) => {
+export const makePrompt = async (input: PromptInput) => {
   const handler = providers[input.provider]
 
   return handler(input)

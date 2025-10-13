@@ -1,8 +1,8 @@
-import { createXai, XaiProviderOptions } from '@ai-sdk/xai'
-import { generateObject, streamObject } from 'ai'
+import { streamObject } from 'ai'
+import { createXai } from '@ai-sdk/xai'
+import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { models } from './models'
 import { Handler } from './types'
-import { AiPlayerPrompt, AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 
 export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) => {
   const xai = createXai({

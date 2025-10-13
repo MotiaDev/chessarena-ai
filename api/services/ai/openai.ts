@@ -11,10 +11,7 @@ export const openai: Handler = async ({ model, logger, prompt, onThoughtUpdate }
 
   const { partialObjectStream, object } = streamObject({
     model: openai(model ?? models.openai),
-    messages: [
-      { role: 'system', content: 'You are a chess grandmaster' },
-      { role: 'user', content: prompt },
-    ],
+    prompt,
     schema: AiPlayerPromptSchema,
     maxRetries: 1,
     abortSignal: AbortSignal.timeout(180000),

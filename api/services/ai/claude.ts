@@ -1,30 +1,34 @@
-import Anthropic from '@anthropic-ai/sdk'
-import { Tool } from '@anthropic-ai/sdk/resources/messages'
-import zodToJsonSchema from 'zod-to-json-schema'
+import { streamObject } from 'ai'
+import { createAnthropic } from '@ai-sdk/anthropic'
+import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { models } from './models'
 import { Handler } from './types'
 
-export const claude: Handler = async ({ prompt, zod, logger, model }) => {
-  const client = new Anthropic({
+export const claude: Handler = async ({ prompt, logger, model, onThoughtUpdate }) => {
+  const anthropic = createAnthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
-    timeout: 30000, // 30 second timeout
   })
 
-  logger.debug('Claude tool choice input schema', { schema: zodToJsonSchema(zod) })
-
-  const response = await client.messages.create({
-    model: model ?? models.claude,
-    messages: [{ role: 'user', content: prompt }],
-    max_tokens: 1000,
-    tools: [{ name: 'move_action', input_schema: zodToJsonSchema(zod) as Tool.InputSchema }],
-    tool_choice: { name: 'move_action', type: 'tool' },
+  const { partialObjectStream, object } = streamObject({
+    model: anthropic(model ?? models.claude),
+    prompt,
+    schema: AiPlayerPromptSchema,
+    maxRetries: 0,
+    maxOutputTokens: 300,
+    abortSignal: AbortSignal.timeout(180000),
   })
 
-  logger.info('Claude response received', { model })
+  for await (const partialObject of partialObjectStream) {
+    await onThoughtUpdate(partialObject.thought)
+  }
 
-  const toolUse = response.content.find((c) => c.type === 'tool_use')
+  const completion = await object
 
-  logger.debug('Claude tool used', { toolUse })
+  if (!completion.move || !completion.thought) {
+    logger.error('Invalid Claude response received', { model, completion })
+    return
+  }
 
-  return zod.parse(toolUse?.input)
+  logger.info('Claude response received', { model, response: completion })
+  return completion
 }

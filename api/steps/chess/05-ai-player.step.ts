@@ -48,10 +48,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
 
   let attempts = 1
   let lastInvalidMove = undefined
-
-  // Limit to top 15 best moves to reduce prompt size and AI thinking time
-  const allMoves = evaluateBestMoves(game)
-  const validMoves = allMoves.slice(0, 15)
+  const validMoves = evaluateBestMoves(game)
 
   while (true) {
     const messageId = crypto.randomUUID()

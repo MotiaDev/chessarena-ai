@@ -1,5 +1,5 @@
 import { GameSchema } from '@chessarena/types/game'
-import { ApiRouteConfig, Handlers } from 'motia'
+import { ApiRouteConfig, Handlers, ZodInput } from 'motia'
 import { z } from 'zod'
 import { getGameRole } from '../../services/chess/get-game-role'
 import { move } from '../../services/chess/move'
@@ -20,7 +20,7 @@ export const config: ApiRouteConfig = {
     to: z.string({ description: 'The square to move to' }),
   }),
   responseSchema: {
-    200: GameSchema,
+    200: GameSchema as unknown as ZodInput,
     404: z.object({ message: z.string() }),
     400: z.object({ message: z.string() }),
   },

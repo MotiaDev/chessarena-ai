@@ -35,8 +35,8 @@ export const supportedModelsByProvider: AiModels = {
   ],
   grok: [
     // https://docs.x.ai/docs/models
+    'grok-4-fast',
     'grok-4-fast-non-reasoning',
-    'grok-4',
     'grok-3',
   ],
 }

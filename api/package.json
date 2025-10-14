@@ -20,9 +20,7 @@
     "@ai-sdk/google": "^2.0.23",
     "@ai-sdk/openai": "^2.0.46",
     "@ai-sdk/xai": "^2.0.24",
-    "@anthropic-ai/sdk": "^0.54.0",
     "@chessarena/types": "workspace:*",
-    "@google/genai": "^1.6.0",
     "@supabase/supabase-js": "^2.55.0",
     "ai": "^5.0.63",
     "chess.js": "^1.4.0",
@@ -31,7 +29,6 @@
     "motia": "0.8.2-beta.139",
     "mustache": "^4.2.0",
     "no-profanity": "^1.5.1",
-    "openai": "^4.102.0",
     "unique-names-generator": "^4.7.1",
     "zod": "catalog:"
   },

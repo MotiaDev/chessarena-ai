@@ -59,7 +59,11 @@ export const move = async ({
   }
 
   const turns = game.turns ?? 0
-  const move = chess.move({ from: action.from, to: action.to, promotion: action.promote?.charAt(0) })
+  const move = chess.move({
+    from: action.from,
+    to: action.to,
+    ...(action.promote && { promotion: action.promote.charAt(0) }),
+  })
   const isAiGame = !!game.players.black.ai && !!game.players.white.ai
   const shouldBeDraw = turns >= 50 && isAiGame
   const status = shouldBeDraw || chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'

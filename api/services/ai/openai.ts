@@ -1,6 +1,6 @@
 import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
-import { createOpenAI, OpenAIResponsesProviderOptions } from '@ai-sdk/openai'
-import { generateObject, streamObject } from 'ai'
+import { createOpenAI } from '@ai-sdk/openai'
+import { streamObject } from 'ai'
 import { models } from './models'
 import { Handler } from './types'
 

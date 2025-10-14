@@ -19,7 +19,7 @@ export const gemini: Handler = async ({ prompt, logger, model, onThoughtUpdate }
   })
 
   for await (const partialObject of partialObjectStream) {
-    onThoughtUpdate(partialObject.thought)
+    await onThoughtUpdate(partialObject.thought)
   }
 
   const completion = await object

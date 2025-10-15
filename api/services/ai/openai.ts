@@ -1,24 +1,33 @@
-import { OpenAI } from 'openai'
-import zodToJsonSchema from 'zod-to-json-schema'
+import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
+import { createOpenAI } from '@ai-sdk/openai'
+import { streamObject } from 'ai'
 import { models } from './models'
 import { Handler } from './types'
 
-export const openai: Handler = async ({ zod, model, logger, prompt }) => {
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
-  const completion = await openai.chat.completions.create({
-    model: model ?? models.openai,
-    messages: [{ role: 'user', content: prompt }],
-    reasoning_effort: 'low',
-    response_format: {
-      type: 'json_schema',
-      json_schema: { name: 'chess_move', schema: zodToJsonSchema(zod) },
-    },
+export const openai: Handler = async ({ model, logger, prompt, onThoughtUpdate }) => {
+  const openai = createOpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
   })
 
-  logger.info('OpenAI response received', { model })
+  const { partialObjectStream, object } = streamObject({
+    model: openai(model ?? models.openai),
+    prompt,
+    schema: AiPlayerPromptSchema,
+    maxRetries: 0,
+    abortSignal: AbortSignal.timeout(180000),
+  })
 
-  const content = JSON.parse(completion.choices[0].message.content ?? '{}')
+  for await (const partialObject of partialObjectStream) {
+    await onThoughtUpdate(partialObject.thought)
+  }
 
-  return content
+  const completion = await object
+
+  if (!completion.move || !completion.thought) {
+    logger.error('Invalid OpenAI response received', { model, completion })
+    return
+  }
+
+  logger.info('OpenAI response received', { model, response: completion })
+  return completion
 }

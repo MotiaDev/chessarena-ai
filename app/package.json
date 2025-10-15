@@ -52,7 +52,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "tw-animate-css": "^1.3.0",
-    "typescript-eslint": "^8.30.1",
+    "typescript-eslint": "^8.46.0",
     "vite": "^6.3.5"
   }
 }

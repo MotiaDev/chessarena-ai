@@ -2,7 +2,6 @@ import { Toaster } from '@/components/ui/sonner'
 import { socketUrl } from '@/lib/env'
 import { MotiaStreamProvider } from '@motiadev/stream-client-react'
 import { BrowserRouter, Route, Routes } from 'react-router'
-import { AiGamePage } from './pages/ai-game-page'
 import { CreateGamePage } from './pages/create-game-page'
 import { ChessGamePage } from './pages/game-page'
 import { LandingPage } from './pages/landing-page'
@@ -25,7 +24,6 @@ function App() {
             <Route path="/new" element={<CreateGamePage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/game/:gameId" element={<ChessGamePage />} />
-            <Route path="/ai-game/:id" element={<AiGamePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy-policy" element={<PrivacyPage />} />
           </Routes>

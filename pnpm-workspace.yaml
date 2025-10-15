@@ -2,3 +2,7 @@ packages:
   - 'api'
   - 'app'
   - 'types'
+
+catalog:
+  zod: ^3.25.76
+  typescript: ~5.8.3

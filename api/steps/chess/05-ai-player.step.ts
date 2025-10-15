@@ -6,8 +6,9 @@ import { z } from 'zod'
 import { makePrompt } from '../../services/ai/make-prompt'
 import { evaluateBestMoves } from '../../services/chess/evaluate-best-moves'
 import { move } from '../../services/chess/move'
+import { AiPlayerPrompt } from '@chessarena/types/ai-models'
 
-const MAX_ATTEMPTS = 3
+const MAX_ATTEMPTS = 2
 
 export const config: EventConfig = {
   type: 'event',
@@ -27,21 +28,6 @@ export const config: EventConfig = {
   includeFiles: ['05-ai-player.mustache'],
 }
 
-const responseSchema = z.object({
-  thought: z.string({
-    description:
-      'The thought process of the move, make it look like you were just thinking for yourself, this is not an explanation to someone else',
-  }),
-  move: z.object(
-    {
-      from: z.string({ description: 'The square to move from, example: e2, Make sure to move from a valid square' }),
-      to: z.string({ description: 'The square to move to, example: e4. Make sure to move to a valid square' }),
-      promote: z.enum(['queen', 'rook', 'bishop', 'knight'], { description: 'The promotion piece, if any' }).optional(),
-    },
-    { description: 'Your move, make sure to move from a valid square and to a valid square' },
-  ),
-})
-
 const template = fs.readFileSync(path.join(__dirname, '05-ai-player.mustache'), 'utf8')
 
 export const handler: Handlers['AI_Player'] = async (input, { logger, emit, streams }) => {
@@ -60,9 +46,8 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
     return
   }
 
-  let attempts = 0
+  let attempts = 1
   let lastInvalidMove = undefined
-
   const validMoves = evaluateBestMoves(game)
 
   while (true) {
@@ -92,15 +77,25 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       { escape: (value: string) => value },
     )
 
-    let action: z.infer<typeof responseSchema> | undefined
+    let action: AiPlayerPrompt | undefined
 
     try {
       action = await makePrompt({
         prompt,
-        zod: responseSchema,
         provider: player.ai,
         logger,
         model: player.model!,
+        onThoughtUpdate: async (partialThought) => {
+          if (partialThought) {
+            await streams.chessGameMessage.set(input.gameId, messageId, {
+              id: messageId,
+              message: partialThought,
+              sender: player.ai!,
+              role: input.player,
+              timestamp: Date.now(),
+            })
+          }
+        },
       })
 
       logger.info('Updating message', { messageId, gameId: input.gameId })
@@ -129,8 +124,8 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       }
 
       return
-    } catch (err) {
-      logger.error('Error making prompt', { err })
+    } catch (error) {
+      logger.error('Error making prompt', { error })
 
       if (action) {
         await streams.chessGameMessage.set(input.gameId, messageId, {

@@ -1,12 +1,14 @@
+import { AiModelProvider } from '@chessarena/types/ai-models'
 import { Logger } from 'motia'
 
 type Stream = JSONStream<z.infer<typeof zod>>
 
-type HandlerInput<T extends ZodRawShape> = {
+export type PromptInput = {
   prompt: string
-  zod: ZodObject<T>
+  provider: AiModelProvider
   logger: Logger
-  model?: string
+  model: string
+  onThoughtUpdate: (partialThought?: string) => Promise<void>
 }
 
-export type Handler = <T extends ZodRawShape>(input: HandlerInput<T>) => Promise<T>
+export type Handler = (input: PromptInput) => Promise<AiPlayerPrompt>

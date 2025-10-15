@@ -19,7 +19,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/react": "^19.1.2",
-    "typescript": "~5.8.3",
+    "typescript": "catalog:",
     "prettier": "^3.5.3"
   }
 }

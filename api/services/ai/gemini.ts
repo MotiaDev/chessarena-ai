@@ -15,7 +15,6 @@ export const gemini: Handler = async ({ prompt, logger, model, onThoughtUpdate }
     schema: AiPlayerPromptSchema,
     maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
-    mode: 'json',
   })
 
   for await (const partialObject of partialObjectStream) {

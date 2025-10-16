@@ -52,9 +52,13 @@ export const ChessMessage: React.FC<Props> = memo(({ message, game, isLast }) =>
         src={image}
       />
       <ChatBubbleMessage className="max-w-[calc(100%-40px)]">
-        <div className="flex flex-col text-md font-semibold mb-3 capitalize">
-          <div className="capitalize">{message.sender}</div>
-          {modelName && <div className="text-xs text-gray-400 font-normal">{modelName}</div>}
+        <div className="flex flex-col mb-3 capitalize">
+          <span className="capitalize text-lg font-bold">{message.sender}</span>
+          {modelName && (
+            <span className={cn('text-sm font-medium', message.role === 'white' ? 'text-gray-800' : 'text-gray-300')}>
+              {modelName}
+            </span>
+          )}
         </div>
         <p className="text-md font-medium">{message.message}</p>
         {message.isIllegalMove && (

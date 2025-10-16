@@ -15,6 +15,7 @@ export const Matchup: React.FC<MatchupProps> = ({ white, black }) => (
       {white.ai && <AiIcon ai={white.ai} color="black" />}
       <div className="flex flex-col">
         {white.ai && <span className="font-bold capitalize">{white.ai ?? 'White'}</span>}
+        {white.model && <span className="text-xs text-gray-600">{white.model}</span>}
         <div className="flex gap-2">
           <ChessIcon color="white" size={20} transparent />
           <span className="font-semibold">White</span>
@@ -25,6 +26,7 @@ export const Matchup: React.FC<MatchupProps> = ({ white, black }) => (
     <div className="flex items-start gap-2 justify-end bg-black text-white px-4 py-3 w-48 relative flex-1">
       <div className="flex flex-col">
         {black.ai && <span className="font-bold text-right capitalize">{black.ai ?? 'Black'}</span>}
+        {black.model && <span className="text-xs text-gray-400 text-right">{black.model}</span>}
         <div className="flex gap-2 text-right">
           <ChessIcon color="black" size={20} transparent />
           <span className="font-semibold">Black</span>

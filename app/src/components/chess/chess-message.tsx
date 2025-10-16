@@ -2,6 +2,7 @@ import { useScrollIntoView } from '@/lib/use-scroll-into-view'
 import { cn } from '@/lib/utils'
 import type { AiModelProvider } from '@chessarena/types/ai-models'
 import type { GameMessage } from '@chessarena/types/game-message'
+import type { Game } from '@chessarena/types/game'
 import { OctagonX } from 'lucide-react'
 import React, { memo } from 'react'
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../ui/chat/chat-bubble'
@@ -9,6 +10,7 @@ import { ChessMove } from './chess-move'
 
 type Props = {
   message: GameMessage
+  game: Game
   isLast?: boolean
 }
 
@@ -30,7 +32,7 @@ const avatarImages: ChessPlayers = {
   },
 }
 
-export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
+export const ChessMessage: React.FC<Props> = memo(({ message, game, isLast }) => {
   const ref = useScrollIntoView(!!isLast)
 
   if (message.role === 'spectator') {
@@ -39,6 +41,8 @@ export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
 
   const role = message.role === 'root' ? 'white' : message.role
   const image = message.profilePic ?? avatarImages[role]?.[message.sender as keyof (typeof avatarImages)[typeof role]]
+  const player = game.players[role]
+  const modelName = player?.model
 
   return (
     <ChatBubble variant={role} ref={ref}>
@@ -48,8 +52,9 @@ export const ChessMessage: React.FC<Props> = memo(({ message, isLast }) => {
         src={image}
       />
       <ChatBubbleMessage className="max-w-[calc(100%-40px)]">
-        <div className="flex flex-row text-md font-semibold mb-3 capitalize">
+        <div className="flex flex-col text-md font-semibold mb-3 capitalize">
           <div className="capitalize">{message.sender}</div>
+          {modelName && <div className="text-xs text-gray-400 font-normal">{modelName}</div>}
         </div>
         <p className="text-md font-medium">{message.message}</p>
         {message.isIllegalMove && (

@@ -13,9 +13,10 @@ export const Matchup: React.FC<MatchupProps> = ({ white, black }) => (
     {/* White Side */}
     <div className="flex items-start gap-2 justify-start bg-white text-black px-4 py-3 w-48 relative flex-1">
       {white.ai && <AiIcon ai={white.ai} color="black" />}
-      <div className="flex flex-col">
+      <div className="flex flex-col self-stretch">
         {white.ai && <span className="font-bold capitalize">{white.ai ?? 'White'}</span>}
-        <div className="flex gap-2">
+        {white.model && <span className="grow pr-2 break-words text-xs text-gray-600">{white.model}</span>}
+        <div className="flex gap-2 mt-2">
           <ChessIcon color="white" size={20} transparent />
           <span className="font-semibold">White</span>
         </div>
@@ -23,17 +24,18 @@ export const Matchup: React.FC<MatchupProps> = ({ white, black }) => (
     </div>
 
     <div className="flex items-start gap-2 justify-end bg-black text-white px-4 py-3 w-48 relative flex-1">
-      <div className="flex flex-col">
+      <div className="flex flex-col self-stretch items-end">
         {black.ai && <span className="font-bold text-right capitalize">{black.ai ?? 'Black'}</span>}
-        <div className="flex gap-2 text-right">
-          <ChessIcon color="black" size={20} transparent />
+        {black.model && <span className="grow pl-2 break-words text-xs text-gray-400 text-right">{black.model}</span>}
+        <div className="flex gap-2 mt-2 text-right">
           <span className="font-semibold">Black</span>
+          <ChessIcon color="black" size={20} transparent />
         </div>
       </div>
       {black.ai && <AiIcon ai={black.ai} color="white" />}
     </div>
 
-    <div className="h-[30px] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center bg-gray-400/80 backdrop-blur-sm text-white font-medium px-3 rounded-md">
+    <div className="w-10 h-[30px] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center bg-gray-400/80 backdrop-blur-sm text-white font-medium rounded-md">
       vs
     </div>
   </div>

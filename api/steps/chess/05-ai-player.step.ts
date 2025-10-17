@@ -3,7 +3,7 @@ import { EventConfig, Handlers } from 'motia'
 import mustache from 'mustache'
 import path from 'path'
 import { z } from 'zod'
-import { Chess } from 'chess.js'
+import { Chess, PieceSymbol } from 'chess.js'
 import { AiPlayerPrompt } from '@chessarena/types/ai-models'
 import { makePrompt } from '../../services/ai/make-prompt'
 import { move } from '../../services/chess/move'
@@ -49,7 +49,15 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
   let attempts = 0
   let lastInvalidMove = undefined
   const chess = new Chess(game.fen)
-  const validMoves = chess.moves({ verbose: true }).map((move) => ({ move }))
+  const promotionMap = {
+    q: 'queen',
+    r: 'rook',
+    b: 'bishop',
+    n: 'knight',
+  } as Record<PieceSymbol, 'queen' | 'rook' | 'bishop' | 'knight'>
+  const validMoves = chess.moves({ verbose: true }).map((move) => ({
+    move: { ...move, ...(move.promotion ? { promote: promotionMap[move.promotion] } : {}) },
+  }))
 
   while (true) {
     const messageId = crypto.randomUUID()
@@ -78,6 +86,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       {},
       { escape: (value: string) => value },
     )
+    logger.info('Prompt', { prompt })
 
     let action: AiPlayerPrompt | undefined
 

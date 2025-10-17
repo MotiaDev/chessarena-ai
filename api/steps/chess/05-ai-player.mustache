@@ -10,7 +10,7 @@ CRITICAL: You can ONLY use moves from this list. ANY other move will be rejected
 {{#totalMoves}}You have {{totalMoves}} legal moves—evaluate them carefully and choose the strongest one.{{/totalMoves}}
 
 {{#validMoves}}
-- {"from": "{{move.from}}", "to": "{{move.to}}"}
+- {"from": "{{move.from}}", "to": "{{move.to}}"{{#move.promote}}, "promote": "{{move.promote}}"{{/move.promote}}}
 {{/validMoves}}
 
 {{#lastInvalidMove}}

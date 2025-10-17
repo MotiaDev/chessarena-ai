@@ -8,7 +8,7 @@ import { evaluateBestMoves } from '../../services/chess/evaluate-best-moves'
 import { move } from '../../services/chess/move'
 import { AiPlayerPrompt } from '@chessarena/types/ai-models'
 
-const MAX_ATTEMPTS = 2
+const MAX_ATTEMPTS = 3
 
 export const config: EventConfig = {
   type: 'event',
@@ -46,7 +46,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
     return
   }
 
-  let attempts = 1
+  let attempts = 0
   let lastInvalidMove = undefined
   const validMoves = evaluateBestMoves(game)
 
@@ -147,7 +147,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       /**
        * Player loses the game if they make too many illegal moves
        */
-      if (attempts++ >= MAX_ATTEMPTS) {
+      if (++attempts >= MAX_ATTEMPTS) {
         logger.error('Max attempts reached', { gameId: input.gameId, attempts, player: player.ai })
 
         const playerIllegalMoveAttempts = game.players[input.player].illegalMoveAttempts ?? 0

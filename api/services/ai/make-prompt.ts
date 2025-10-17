@@ -12,7 +12,7 @@ const providers: Record<AiModelProvider, Handler> = {
   grok,
 }
 
-export const makePrompt = async (input: PromptInput) => {
+export const makePrompt = (input: PromptInput) => {
   const handler = providers[input.provider]
 
   return handler(input)

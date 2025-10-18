@@ -1,4 +1,4 @@
-import { streamObject } from 'ai'
+import { streamObject, tool } from 'ai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { models } from './models'
@@ -23,7 +23,7 @@ export const gemini: Handler = async ({ prompt, logger, model, onThoughtUpdate }
 
   const completion = await object
 
-  if (!completion.move || !completion.thought) {
+  if (!completion.moveSan || !completion.thought) {
     logger.error('Invalid Gemini response received', { model, completion })
     return
   }

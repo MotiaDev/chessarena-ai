@@ -8,17 +8,18 @@ You are a chess grandmaster playing as {{player}}.
 ## YOUR ONLY VALID MOVES
 CRITICAL: You can ONLY use moves from this list. ANY other move will be rejected as illegal.
 {{#totalMoves}}You have {{totalMoves}} legal moves—evaluate them carefully and choose the strongest one.{{/totalMoves}}
+This is a list with moves in Standard Algebraic Notation (SAN).
 
 {{#validMoves}}
-- {"from": "{{move.from}}", "to": "{{move.to}}"{{#move.promote}}, "promote": "{{move.promote}}"{{/move.promote}}}
+- {{san}}
 {{/validMoves}}
 
 {{#lastInvalidMove}}
-❌ ILLEGAL MOVE: {{lastInvalidMove.from}}→{{lastInvalidMove.to}} was REJECTED because it's not in the list above.
+❌ ILLEGAL MOVE: {{lastInvalidMove}} was REJECTED because it's not in the list above.
 INSTRUCTION: SELECT a move that EXISTS in the list above. Do not invent moves.
 {{/lastInvalidMove}}
 
-INSTRUCTION: ANALYZE the list above, pick the move you believe is best, then copy the quoted "from" and "to" values EXACTLY.
+INSTRUCTION: ANALYZE the list above, pick the move you believe is best, then copy its value EXACTLY.
 
 ⚠️ Three illegal moves end the match instantly.
 
@@ -41,52 +42,31 @@ INSTRUCTION: ANALYZE the list above, pick the move you believe is best, then cop
 ## Response Format
 
 Step 1: PICK a move from the "YOUR ONLY VALID MOVES" list above
-Step 2: COPY its "from" and "to" values EXACTLY into your response
+Step 2: COPY its value EXACTLY into your response
 Step 3: Add your brief thought confirming the move is legal
 
 Response structure:
 {
   "thought": "Your brief reasoning (1-2 sentences)",
-  "move": {
-    "from": "VALUE_FROM_LIST",
-    "to": "VALUE_FROM_LIST"
-  }
+  "moveSan: "VALUE_FROM_LIST"
 }
 
 Examples (IF these moves were in the list above):
 {
   "thought": "Capturing the knight wins material and it is listed as legal",
-  "move": {
-    "from": "c3",
-    "to": "d5"
-  }
-}
-
-If promoting a pawn (8th/1st rank):
-{
-  "thought": "Promoting to queen using the listed move",
-  "move": {
-    "from": "e7",
-    "to": "e8",
-    "promote": "queen"
-  }
+  "moveSan": "Na3"
 }
 
 Incorrect example (DO NOT DO THIS):
 {
   "thought": "I'll invent my own move",
-  "move": {
-    "from": "c4",
-    "to": "c5"
-  }
+  "moveSan": "Na6"
 }
-Reason: "c4" to "c5" is not in the list above, so it is illegal.
+Reason: "Na6" is not in the list above, so it is illegal.
 
 ## Critical Rules
-1. The "from" and "to" values MUST exactly match one of the legal moves listed above.
-2. Only include "promote" field if moving a pawn to the 8th rank (white) or 1st rank (black): "promote": "queen" (or "rook", "bishop", "knight").
-3. Do NOT include "promote" for any other moves.
-4. Your response must ONLY contain the JSON with "thought" and "move" fields - no additional text or explanations.
-5. Double-check that your chosen move appears in the legal moves list before responding.
+1. The "moveSan" value MUST exactly match one of the legal moves listed above.
+2. Your response must ONLY contain the JSON with "thought" and "moveSan" fields - no additional text or explanations.
+3. Double-check that your chosen move appears in the legal moves list before responding.
 
 Choose your best move now from the legal moves list. Any move missing from the list above is automatically illegal—double-check before replying.

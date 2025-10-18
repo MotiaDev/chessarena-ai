@@ -20,18 +20,9 @@ export const AiPlayerPromptSchema = z
       .describe(
         'The thought process of the move. Make it look like you were just thinking for yourself, this is not an explanation to someone else. Keep it short and concise.',
       ),
-    move: z
-      .object({
-        from: z.string().describe('The square to move from, example: e2, Make sure to move from a valid square'),
-        to: z.string().describe('The square to move to, example: e4. Make sure to move to a valid square'),
-        promote: z
-          .enum(['queen', 'rook', 'bishop', 'knight'])
-          .optional()
-          .describe("The promotion piece, if any. Don't include if no promotion"),
-      })
-      .describe('Your move, make sure to move from a valid square and to a valid square'),
+    moveSan: z.string().describe('The move in Standard Algebraic Notation (SAN)'),
   })
-  .describe("The AI player response to the prompt. Don't include any other text than the thought and move.")
+  .describe("The AI player response to the prompt. Don't include any other text than the thought and moveSan.")
 
 export type AiModels = z.infer<ReturnType<typeof AiModelsSchema>>
 export type AiProviderDefaultModel = z.infer<typeof AiProviderDefaultModelSchema>

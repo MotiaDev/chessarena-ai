@@ -23,7 +23,7 @@ export const claude: Handler = async ({ prompt, logger, model, onThoughtUpdate }
 
   const completion = await object
 
-  if (!completion.move || !completion.thought) {
+  if (!completion.moveSan || !completion.thought) {
     logger.error('Invalid Claude response received', { model, completion })
     return
   }

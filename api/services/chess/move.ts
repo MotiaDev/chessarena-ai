@@ -1,16 +1,15 @@
 import type { Game } from '@chessarena/types/game'
-import { Chess } from 'chess.js'
+import { Chess, Move } from 'chess.js'
 import { randomUUID } from 'crypto'
 import { Emitter, FlowContextStateStreams, Logger } from 'motia'
 import { getCaptureScore } from './get-capture-score'
 
-export type ActionMove = { from: string; to: string; promote?: 'queen' | 'rook' | 'bishop' | 'knight' }
 type Args = {
   logger: Logger
   streams: FlowContextStateStreams
   gameId: string
   game: Game
-  action: ActionMove
+  moveSan: string
   player: 'white' | 'black'
   illegalMoveAttempts?: number
   emit: Emitter<
@@ -45,7 +44,7 @@ export const move = async ({
   streams,
   gameId,
   game,
-  action,
+  moveSan,
   emit,
   player,
   illegalMoveAttempts = 0,
@@ -59,11 +58,7 @@ export const move = async ({
   }
 
   const turns = game.turns ?? 0
-  const move = chess.move({
-    from: action.from,
-    to: action.to,
-    ...(action.promote && { promotion: action.promote.charAt(0) }),
-  })
+  const move = chess.move(moveSan)
   const isAiGame = !!game.players.black.ai && !!game.players.white.ai
   const shouldBeDraw = turns >= 50 && isAiGame
   const status = shouldBeDraw || chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
@@ -130,8 +125,8 @@ export const move = async ({
         player,
         fenBefore: game.fen,
         move: {
-          from: action.from,
-          to: action.to,
+          from: move.from,
+          to: move.to,
         },
       },
     })

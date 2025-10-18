@@ -3,7 +3,7 @@ import { EventConfig, Handlers } from 'motia'
 import mustache from 'mustache'
 import path from 'path'
 import { z } from 'zod'
-import { Chess, PieceSymbol } from 'chess.js'
+import { Chess, Move, PieceSymbol } from 'chess.js'
 import { AiPlayerPrompt } from '@chessarena/types/ai-models'
 import { makePrompt } from '../../services/ai/make-prompt'
 import { move } from '../../services/chess/move'
@@ -49,15 +49,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
   let attempts = 0
   let lastInvalidMove = undefined
   const chess = new Chess(game.fen)
-  const promotionMap = {
-    q: 'queen',
-    r: 'rook',
-    b: 'bishop',
-    n: 'knight',
-  } as Record<PieceSymbol, 'queen' | 'rook' | 'bishop' | 'knight'>
-  const validMoves = chess.moves({ verbose: true }).map((move) => ({
-    move: { ...move, ...(move.promotion ? { promote: promotionMap[move.promotion] } : {}) },
-  }))
+  const validMoves = chess.moves({ verbose: true })
 
   while (true) {
     const messageId = crypto.randomUUID()
@@ -109,13 +101,17 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
         },
       })
 
-      logger.info('Updating message', { messageId, gameId: input.gameId })
+      // logger.info('Updating message', { messageId, gameId: input.gameId })
 
       if (action) {
+        const gameMove = chess.move(action.moveSan)
         await streams.chessGameMessage.set(input.gameId, messageId, {
           ...message,
           message: action.thought,
-          move: action.move,
+          move: {
+            from: gameMove.from,
+            to: gameMove.to,
+          },
         })
 
         logger.info('AI response', { action })
@@ -126,7 +122,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
           gameId: input.gameId,
           player: input.player,
           game,
-          action: action.move,
+          moveSan: action.moveSan,
           emit,
           illegalMoveAttempts: attempts,
         })
@@ -143,11 +139,14 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
           ...message,
           message: action.thought,
           isIllegalMove: true,
-          move: action.move,
+          move: {
+            from: action.moveSan,
+            to: action.moveSan,
+          },
         })
 
-        logger.error('Invalid move', { move: action.move })
-        lastInvalidMove = action.move
+        logger.error('Invalid move', { move: action.moveSan })
+        lastInvalidMove = action.moveSan
       } else {
         await streams.chessGameMessage.set(input.gameId, messageId, {
           ...message,

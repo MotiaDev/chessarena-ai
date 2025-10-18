@@ -15,6 +15,7 @@ export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) 
     schema: AiPlayerPromptSchema,
     maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
+    temperature: 0,
   })
 
   for await (const partialObject of partialObjectStream) {
@@ -23,7 +24,7 @@ export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) 
 
   const completion = await object
 
-  if (!completion.move || !completion.thought) {
+  if (!completion.moveSan || !completion.thought) {
     logger.error('Invalid Grok response received', { model, completion })
     return
   }

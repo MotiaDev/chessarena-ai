@@ -29,5 +29,5 @@ export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) 
   }
 
   logger.info('Grok response received', { model, response: completion })
-  return completion
+  return { ...completion, moveSan: completion.moveSan.trim() }
 }

@@ -29,5 +29,5 @@ export const gemini: Handler = async ({ prompt, logger, model, onThoughtUpdate }
   }
 
   logger.info('Gemini response received', { model, response: completion })
-  return completion
+  return { ...completion, moveSan: completion.moveSan.trim() }
 }

@@ -29,5 +29,5 @@ export const claude: Handler = async ({ prompt, logger, model, onThoughtUpdate }
   }
 
   logger.info('Claude response received', { model, response: completion })
-  return completion
+  return { ...completion, moveSan: completion.moveSan.trim() }
 }

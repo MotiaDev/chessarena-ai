@@ -29,5 +29,5 @@ export const openai: Handler = async ({ model, logger, prompt, onThoughtUpdate }
   }
 
   logger.info('OpenAI response received', { model, response: completion })
-  return completion
+  return { ...completion, moveSan: completion.moveSan.trim() }
 }

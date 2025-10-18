@@ -15,7 +15,6 @@ export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) 
     schema: AiPlayerPromptSchema,
     maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
-    temperature: 0,
   })
 
   for await (const partialObject of partialObjectStream) {

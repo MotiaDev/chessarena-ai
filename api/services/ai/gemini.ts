@@ -1,4 +1,4 @@
-import { streamObject, tool } from 'ai'
+import { streamObject } from 'ai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { models } from './models'

@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "motia install",
     "dev": "motia dev",
-    "dev:debug": "motia dev --verbose",
+    "dev:debug": "motia dev --debug",
     "generate-types": "motia generate-types",
     "build": "motia build",
     "install-stockfish": "bash download.sh $1",

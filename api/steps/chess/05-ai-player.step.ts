@@ -3,7 +3,7 @@ import { EventConfig, Handlers } from 'motia'
 import mustache from 'mustache'
 import path from 'path'
 import { z } from 'zod'
-import { Chess, Move, PieceSymbol } from 'chess.js'
+import { Chess } from 'chess.js'
 import { AiPlayerPrompt } from '@chessarena/types/ai-models'
 import { makePrompt } from '../../services/ai/make-prompt'
 import { move } from '../../services/chess/move'
@@ -68,7 +68,6 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       {
         fenBefore: input.fenBefore,
         fen: input.fen,
-        lastMove: input.lastMove ? { from: input.lastMove[0], to: input.lastMove[1] } : undefined,
         inCheck: input.check,
         player: input.player,
         lastInvalidMove,
@@ -101,17 +100,13 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
         },
       })
 
-      // logger.info('Updating message', { messageId, gameId: input.gameId })
+      logger.info('Updating message', { messageId, gameId: input.gameId })
 
       if (action) {
-        const gameMove = chess.move(action.moveSan)
         await streams.chessGameMessage.set(input.gameId, messageId, {
           ...message,
           message: action.thought,
-          move: {
-            from: gameMove.from,
-            to: gameMove.to,
-          },
+          moveSan: action.moveSan,
         })
 
         logger.info('AI response', { action })
@@ -127,7 +122,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
           illegalMoveAttempts: attempts,
         })
 
-        logger.info('Move successful', { action })
+        logger.info('Move successful', { move: action.moveSan })
       }
 
       return
@@ -139,10 +134,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
           ...message,
           message: action.thought,
           isIllegalMove: true,
-          move: {
-            from: action.moveSan,
-            to: action.moveSan,
-          },
+          moveSan: action.moveSan,
         })
 
         logger.error('Invalid move', { move: action.moveSan })

@@ -1,5 +1,3 @@
-import type { Role } from '@lichess-org/chessground/types'
-import { type Key } from 'react'
 import { apiClient } from './auth/api-client'
 
 type Args = {
@@ -7,8 +5,8 @@ type Args = {
 }
 
 export const useMove = ({ gameId }: Args) => {
-  const move = async (from: Key, to: Key, promote?: Role) => {
-    await apiClient.post(`/chess/game/${gameId}/move`, { from, to, promote })
+  const move = async (moveSan: string) => {
+    await apiClient.post(`/chess/game/${gameId}/move`, { moveSan })
   }
 
   return move

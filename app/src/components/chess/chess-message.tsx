@@ -67,7 +67,7 @@ export const ChessMessage: React.FC<Props> = memo(({ message, game, isLast }) =>
             This move is illegal
           </div>
         )}
-        {message.move && (
+        {message.moveSan && (
           <div
             className={cn(
               'flex flex-row justify-between w-full p-4 rounded-sm font-medium items-center mt-3',
@@ -75,7 +75,7 @@ export const ChessMessage: React.FC<Props> = memo(({ message, game, isLast }) =>
             )}
           >
             {message.role === 'white' ? 'White move' : 'Black move'}
-            <ChessMove move={[message.move.from, message.move.to]} color={role} />
+            <ChessMove move={message.moveSan} color={role} />
           </div>
         )}
       </ChatBubbleMessage>

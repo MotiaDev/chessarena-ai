@@ -4,7 +4,7 @@ import { useChessInstance } from '@/lib/use-chess-instance'
 import { useMove } from '@/lib/use-move'
 import { Chess, SQUARES, type Square } from 'chess.js'
 import type { Config } from '@lichess-org/chessground/config'
-import type { Key, Role } from '@lichess-org/chessground/types'
+import type { Key } from '@lichess-org/chessground/types'
 import { useEffect, useState } from 'react'
 import { Chessground } from './chessground'
 import { ChessPromote } from './promote/chess-promote'
@@ -52,10 +52,12 @@ export const ChessBoard: React.FC<Props> = ({ role, game }) => {
     return <Chessground />
   }
 
-  const onPromote = (piece: Role) => {
+  const onPromote = (piece: 'knight' | 'bishop' | 'rook' | 'queen') => {
     if (!promote) return
-
-    move(promote.from, promote.to, piece)
+    const piecesMap = { queen: 'q', rook: 'r', bishop: 'b', knight: 'n' } as const
+    const chess = getInstance()
+    const gameMove = chess.move({ from: promote.from, to: promote.to, promotion: piecesMap[piece] })
+    move(gameMove.san)
     setPromote(undefined)
   }
 
@@ -80,7 +82,7 @@ export const ChessBoard: React.FC<Props> = ({ role, game }) => {
         if ((isPawn && color === 'white' && line === '8') || (color === 'black' && line === '1')) {
           setPromote({ from, to, color })
         } else {
-          move(from, to)
+          move(chess.move({ from, to }).san)
         }
       },
     },

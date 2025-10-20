@@ -80,6 +80,7 @@ export const move = async ({
     winner: status === 'completed' ? (chess.isCheckmate() ? player : undefined) : undefined,
     turn: player === 'white' ? 'black' : 'white',
     lastMove: [gameMove.from, gameMove.to],
+    lastMoveSan: gameMove.san,
     endGameReason,
     players: {
       ...game.players,

@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (params.access_token || !apiClient.isAuthenticated()) {
       fetchUser()
     }
-  }, [setUser])
+  }, [navigate, setUser])
 
   const login = useCallback(async (email: string, password: string): Promise<void> => {
     setIsLoading(true)
@@ -91,29 +91,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  const verifyOtp = useCallback(async (email: string, token: string): Promise<void> => {
-    setIsLoading(true)
-    setAuthError(null)
+  const verifyOtp = useCallback(
+    async (email: string, token: string): Promise<void> => {
+      setIsLoading(true)
+      setAuthError(null)
 
-    try {
-      const { session } = await AuthService.verifyOtp(email, token)
-      if (session?.access_token) {
-        const result = await authApi.auth(session.access_token)
-        setUser(result.user)
+      try {
+        const { session } = await AuthService.verifyOtp(email, token)
+        if (session?.access_token) {
+          const result = await authApi.auth(session.access_token)
+          setUser(result.user)
+        }
+      } catch (error: unknown) {
+        console.error('Login error:', error)
+        const supabaseError = error as SupabaseError
+        setAuthError({
+          error: supabaseError.message || 'Failed to log in',
+          error_code: supabaseError.code || '',
+          error_description: '',
+        })
+        throw error
+      } finally {
+        setIsLoading(false)
       }
-    } catch (error: unknown) {
-      console.error('Login error:', error)
-      const supabaseError = error as SupabaseError
-      setAuthError({
-        error: supabaseError.message || 'Failed to log in',
-        error_code: supabaseError.code || '',
-        error_description: '',
-      })
-      throw error
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+    },
+    [setUser],
+  )
 
   const loginWithOtp = useCallback(async (email: string): Promise<void> => {
     setAuthError(null)
@@ -174,7 +177,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout,
       verifyOtp,
     }),
-    [authError, isAuthenticated, isLoading, login, loginWithOtp, loginWithOAuth, logout, user],
+    [user, isAuthenticated, isLoading, authError, login, loginWithOtp, loginWithOAuth, logout, verifyOtp],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -52,6 +52,7 @@ export const GameSchema = z.object({
   turn: z.enum(['white', 'black'], { description: 'The color of the current turn' }),
   status: z.enum(['pending', 'completed', 'draw'], { description: 'The status of the game' }),
   lastMove: z.array(z.string({ description: 'The last move made' })).optional(),
+  lastMoveSan: z.string({ description: 'The last move made in Standard Algebraic Notation (SAN)' }).optional(),
   winner: z.enum(['white', 'black']).optional(),
   turns: z.number({ description: 'The number of turns' }).optional(),
   endGameReason: z.string({ description: 'The reason the game ended' }).optional(),

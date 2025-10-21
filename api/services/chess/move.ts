@@ -4,13 +4,12 @@ import { randomUUID } from 'crypto'
 import { Emitter, FlowContextStateStreams, Logger } from 'motia'
 import { getCaptureScore } from './get-capture-score'
 
-export type ActionMove = { from: string; to: string; promote?: 'queen' | 'rook' | 'bishop' | 'knight' }
 type Args = {
   logger: Logger
   streams: FlowContextStateStreams
   gameId: string
   game: Game
-  action: ActionMove
+  moveSan: string
   player: 'white' | 'black'
   illegalMoveAttempts?: number
   emit: Emitter<
@@ -45,7 +44,7 @@ export const move = async ({
   streams,
   gameId,
   game,
-  action,
+  moveSan,
   emit,
   player,
   illegalMoveAttempts = 0,
@@ -59,32 +58,29 @@ export const move = async ({
   }
 
   const turns = game.turns ?? 0
-  const move = chess.move({
-    from: action.from,
-    to: action.to,
-    ...(action.promote && { promotion: action.promote.charAt(0) }),
-  })
+  const gameMove = chess.move(moveSan)
   const isAiGame = !!game.players.black.ai && !!game.players.white.ai
   const shouldBeDraw = turns >= 50 && isAiGame
   const status = shouldBeDraw || chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
   const nextIllegalMoveAttempts = (game.players[player].illegalMoveAttempts ?? 0) + illegalMoveAttempts
   const endGameReason = chess.isCheckmate() ? 'Checkmate' : shouldBeDraw ? 'Draw' : undefined
-  const pieceCaptured = move?.captured
+  const pieceCaptured = gameMove?.captured
     ? {
-        piece: move.captured,
-        score: getCaptureScore(move.captured),
+        piece: gameMove.captured,
+        score: getCaptureScore(gameMove.captured),
       }
     : undefined
-  const isPawnPromotion = move?.promotion !== undefined
+  const isPawnPromotion = gameMove?.promotion !== undefined
 
   const newGame = await streams.chessGame.set('game', gameId, {
     id: gameId,
-    fen: move.after,
+    fen: gameMove.after,
     status,
     turns: turns + 1,
     winner: status === 'completed' ? (chess.isCheckmate() ? player : undefined) : undefined,
     turn: player === 'white' ? 'black' : 'white',
-    lastMove: [move.from, move.to],
+    lastMove: [gameMove.from, gameMove.to],
+    lastMoveSan: gameMove.san,
     endGameReason,
     players: {
       ...game.players,
@@ -106,8 +102,8 @@ export const move = async ({
   await streams.chessGameMove.set(gameId, moveId, {
     color: player,
     fenBefore: game.fen,
-    fenAfter: move.after,
-    lastMove: [move.from, move.to],
+    fenAfter: gameMove.after,
+    lastMove: [gameMove.from, gameMove.to],
     check: chess.inCheck(),
   })
 
@@ -116,7 +112,7 @@ export const move = async ({
     data: {
       gameId,
       fenBefore: game.fen,
-      fenAfter: move.after,
+      fenAfter: gameMove.after,
       moveId,
       player,
     },
@@ -130,8 +126,8 @@ export const move = async ({
         player,
         fenBefore: game.fen,
         move: {
-          from: action.from,
-          to: action.to,
+          from: gameMove.from,
+          to: gameMove.to,
         },
       },
     })

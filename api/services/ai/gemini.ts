@@ -23,11 +23,11 @@ export const gemini: Handler = async ({ prompt, logger, model, onThoughtUpdate }
 
   const completion = await object
 
-  if (!completion.move || !completion.thought) {
+  if (!completion.moveSan || !completion.thought) {
     logger.error('Invalid Gemini response received', { model, completion })
     return
   }
 
   logger.info('Gemini response received', { model, response: completion })
-  return completion
+  return { ...completion, moveSan: completion.moveSan.trim() }
 }

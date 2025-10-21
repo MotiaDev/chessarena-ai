@@ -23,11 +23,11 @@ export const openai: Handler = async ({ model, logger, prompt, onThoughtUpdate }
 
   const completion = await object
 
-  if (!completion.move || !completion.thought) {
+  if (!completion.moveSan || !completion.thought) {
     logger.error('Invalid OpenAI response received', { model, completion })
     return
   }
 
   logger.info('OpenAI response received', { model, response: completion })
-  return completion
+  return { ...completion, moveSan: completion.moveSan.trim() }
 }

@@ -1,12 +1,11 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
-import type { Role } from '@lichess-org/chessground/types'
 import { PromotePiece } from './promote-piece'
 
 type Props = {
   color: 'white' | 'black'
   isOpen: boolean
-  onPromote: (piece: Role) => void
+  onPromote: (piece: 'knight' | 'bishop' | 'rook' | 'queen') => void
 }
 
 export const ChessPromote: React.FC<Props> = ({ color, isOpen, onPromote }) => {

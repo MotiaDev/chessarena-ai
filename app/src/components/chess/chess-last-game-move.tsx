@@ -5,7 +5,7 @@ import { ChessIcon } from './chess-icon'
 import { ChessMove } from './chess-move'
 
 export const ChessLastGameMove: React.FC<{ game: Game }> = ({ game }) => {
-  const move = game.lastMove
+  const move = game.lastMoveSan
   const isCompleted = game.status === 'completed'
   const isDraw = game.status === 'draw'
   const color = game.turn === 'white' ? 'black' : 'white'
@@ -29,7 +29,7 @@ export const ChessLastGameMove: React.FC<{ game: Game }> = ({ game }) => {
       ) : move ? (
         <div className="flex flex-row gap-2 items-center">
           <ChessIcon size={24} color={game.turn === 'white' ? 'black' : 'white'} transparent />
-          {game.turn === 'white' ? 'Black move' : 'White move'}
+          <span>{game.turn === 'white' ? 'Black move' : 'White move'}</span>
         </div>
       ) : (
         <div>No moves have been made</div>

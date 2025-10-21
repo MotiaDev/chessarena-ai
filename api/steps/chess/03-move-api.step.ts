@@ -15,9 +15,7 @@ export const config: ApiRouteConfig = {
   flows: ['chess'],
   middleware: [auth({ required: true })],
   bodySchema: z.object({
-    promote: z.enum(['queen', 'rook', 'bishop', 'knight']).optional(),
-    from: z.string({ description: 'The square to move from' }),
-    to: z.string({ description: 'The square to move to' }),
+    moveSan: z.string({ description: 'The move in Standard Algebraic Notation (SAN)' }),
   }),
   responseSchema: {
     200: GameSchema as unknown as ZodInput,
@@ -26,7 +24,7 @@ export const config: ApiRouteConfig = {
   },
 }
 
-export const handler: Handlers['MovePiece'] = async (req, { logger, emit, streams, state }) => {
+export const handler: Handlers['MovePiece'] = async (req, { logger, emit, streams }) => {
   logger.info('Received move event', { body: req.body })
 
   const gameId = req.pathParams.id
@@ -55,11 +53,11 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
       gameId,
       game,
       player: game.turn,
-      action: { from: req.body.from, to: req.body.to, promote: req.body.promote },
+      moveSan: req.body.moveSan,
       emit,
     })
 
-    logger.info('Move made', { from: req.body.from, to: req.body.to })
+    logger.info('Move made', req.body.moveSan)
 
     return { status: 200, body: newGame }
   } catch (error) {

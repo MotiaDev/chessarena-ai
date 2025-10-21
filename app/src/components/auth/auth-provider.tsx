@@ -115,12 +115,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  const loginWithMagicLink = useCallback(async (email: string): Promise<void> => {
+  const loginWithOtp = useCallback(async (email: string): Promise<void> => {
     setAuthError(null)
     setIsLoading(true)
 
     try {
-      await AuthService.loginWithMagicLink(email)
+      await AuthService.loginWithOtp(email)
     } catch (error: unknown) {
       console.error('Magic link error:', error)
       setAuthError(handleAuthError(error))
@@ -169,12 +169,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isLoading,
       authError,
       login,
-      loginWithMagicLink,
+      loginWithOtp,
       loginWithOAuth,
       logout,
       verifyOtp,
     }),
-    [authError, isAuthenticated, isLoading, login, loginWithMagicLink, loginWithOAuth, logout, user],
+    [authError, isAuthenticated, isLoading, login, loginWithOtp, loginWithOAuth, logout, user],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -31,7 +31,7 @@ const formatErrorMessage = (error: AuthError): string => {
 }
 
 export const useLogin = () => {
-  const { loginWithOAuth, loginWithMagicLink, verifyOtp, authError, isAuthenticated, isLoading } = useAuth()
+  const { loginWithOAuth, loginWithOtp, verifyOtp, authError, isAuthenticated, isLoading } = useAuth()
   const [state, setState] = useState<LoginState>(INITIAL_STATE)
   const navigate = useNavigate()
 
@@ -56,7 +56,7 @@ export const useLogin = () => {
           throw new Error('Email is required')
         }
 
-        await loginWithMagicLink(options.email)
+        await loginWithOtp(options.email)
 
         setState((prev) => ({
           ...prev,

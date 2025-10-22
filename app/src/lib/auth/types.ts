@@ -18,7 +18,7 @@ export interface AuthContextType {
   isLoading: boolean
   authError: AuthError | null
   login: (email: string, password: string) => Promise<void>
-  loginWithMagicLink: (email: string) => Promise<void>
+  loginWithOtp: (email: string) => Promise<void>
   verifyOtp: (email: string, token: string) => Promise<void>
   loginWithOAuth: (provider: 'google' | 'twitter') => Promise<void>
   logout: () => Promise<void>

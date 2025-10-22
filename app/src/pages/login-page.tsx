@@ -56,7 +56,7 @@ export const LoginPage = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {error && <p className="text-red-500 text-center font-semibold">{error}</p>}
+            {error && <p className="text-red-500 text-center font-semibold first-letter:uppercase">{error}</p>}
             {!isAuthenticating && (
               <>
                 <BaseButton className="w-full" onClick={() => handleLogin('google')}>

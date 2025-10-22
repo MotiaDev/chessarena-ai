@@ -22,7 +22,7 @@ export class AuthService {
     return session
   }
 
-  static async loginWithMagicLink(email: string) {
+  static async loginWithOtp(email: string) {
     const { error } = await supabaseClient.auth.signInWithOtp({ email })
 
     if (error) {
@@ -31,7 +31,7 @@ export class AuthService {
   }
 
   static async verifyOtp(email: string, token: string) {
-    const { data, error } = await supabaseClient.auth.verifyOtp({ email, token, type: 'magiclink' })
+    const { data, error } = await supabaseClient.auth.verifyOtp({ email, token, type: 'email' })
 
     if (error) {
       throw error

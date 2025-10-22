@@ -37,7 +37,7 @@ async def evaluate_position(
         chess.engine.Limit(time=time_limit),
         info=chess.engine.INFO_ALL
     )
-    
+
     score = analysis["score"]
     centipawn_score = score.white().score() if player == "white" else score.black().score()
     move = analysis.get("pv", [None])[0]
@@ -90,12 +90,12 @@ async def handler(input: EvaluatePlayerMoveInput, ctx):
             "best_move": eval_best_move,
         })
 
-        evaluation_swing = max(0, eval_best_move.centipawn_score - eval_after.centipawn_score)
+        evaluation_swing = eval_best_move.centipawn_score - eval_after.centipawn_score
         blunder = evaluation_swing > 100
 
         evaluation = {
             "centipawnScore": eval_after.centipawn_score,
-            "bestMove": eval_after.best_move,
+            "bestMove": eval_before.best_move,
             "evaluationSwing": evaluation_swing,
             "blunder": blunder,
         }

@@ -37,7 +37,7 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
   }
 
   const moves = await streams.chessGameMove.getGroup(input.gameId)
-  const scoreboard = generateGameScore(moves)
+  const scoreboard = generateGameScore(moves, game)
 
   await streams.chessGame.set('game', game.id, { ...game, scoreboard })
 

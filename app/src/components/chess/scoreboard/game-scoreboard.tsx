@@ -16,28 +16,28 @@ const PlayerCard: React.FC<ScoreboardProps> = ({ game }) => {
   return (
     <table className="w-full">
       <tbody>
-        <ScoreboardRow
-          white={scoreboard.white.averageCentipawnScore}
-          label="Avg. Score"
-          black={scoreboard.black.averageCentipawnScore}
-        />
-        <ScoreboardRow
-          white={scoreboard.white.medianCentipawnScore}
-          label="Median Score"
-          black={scoreboard.black.medianCentipawnScore}
-        />
-        <ScoreboardRow white={scoreboard.white.medianSwing} label="Median Swing" black={scoreboard.black.medianSwing} />
+        <ScoreboardRow white={scoreboard.white.averageSwing} label="Avg. Swing" black={scoreboard.black.averageSwing} />
         <ScoreboardRow
           white={scoreboard.white.highestSwing}
           label="Highest Swing"
           black={scoreboard.black.highestSwing}
         />
-        <ScoreboardRow white={scoreboard.white.averageSwing} label="Avg. Swing" black={scoreboard.black.averageSwing} />
         <ScoreboardRow white={scoreboard.white.blunders} label="Blunders" black={scoreboard.black.blunders} />
         <ScoreboardRow
-          size="lg"
+          white={scoreboard.white.illegalMoveAttempts}
+          label="Illegal Moves"
+          black={scoreboard.black.illegalMoveAttempts}
+        />
+        <ScoreboardRow
+          white={scoreboard.white.captures.length}
+          label="Captures"
+          black={scoreboard.black.captures.length}
+        />
+        <ScoreboardRow white={scoreboard.white.promotions} label="Promotions" black={scoreboard.black.promotions} />
+        <ScoreboardRow white={scoreboard.white.checks} label="Checks" black={scoreboard.black.checks} />
+        <ScoreboardRow
           white={scoreboard.white.finalCentipawnScore}
-          label="Final Score"
+          label="Centipawn Score"
           black={scoreboard.black.finalCentipawnScore}
         />
       </tbody>

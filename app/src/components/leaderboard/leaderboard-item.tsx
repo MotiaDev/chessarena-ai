@@ -15,21 +15,20 @@ const LeaderboardRow = ({ value }: { value: React.ReactNode }) => {
 }
 
 export const LeaderboardItem: React.FC<Props> = ({ leaderboard }) => {
-  const winRate =
-    leaderboard.victories > 0 ? (leaderboard.victories / (leaderboard.gamesPlayed - leaderboard.draws)) * 100 : 0
-  const score = leaderboard.sumCentipawnScores / leaderboard.gamesPlayed
+  const winRate = leaderboard.victories > 0 ? (leaderboard.victories / leaderboard.gamesPlayed) * 100 : 0
+  const centipawnScore = leaderboard.sumCentipawnScores / leaderboard.gamesPlayed
   const swing = leaderboard.sumHighestSwing / leaderboard.gamesPlayed
   const illegalMoves = leaderboard.illegalMoves / leaderboard.gamesPlayed
 
   return (
     <div className="flex flex-col gap-2 w-full text-sm h-[52px]">
       <div className="flex flex-row gap-2 items-center justify-between py-4">
-        <LeaderboardRow value={formatNumber(leaderboard.gamesPlayed)} />
         <LeaderboardRow value={formatNumber(leaderboard.victories)} />
+        <LeaderboardRow value={`${winRate.toFixed(1)}%`} />
         <LeaderboardRow value={formatNumber(leaderboard.checkmates)} />
         <LeaderboardRow value={formatNumber(leaderboard.draws)} />
-        <LeaderboardRow value={`${winRate.toFixed(1)}%`} />
-        <LeaderboardRow value={score.toFixed(0)} />
+        <LeaderboardRow value={formatNumber(leaderboard.gamesPlayed)} />
+        <LeaderboardRow value={centipawnScore.toFixed(0)} />
         <LeaderboardRow value={`${illegalMoves.toFixed(0)}`} />
         <LeaderboardRow value={swing.toFixed(0)} />
       </div>

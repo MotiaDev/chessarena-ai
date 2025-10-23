@@ -18,7 +18,6 @@ declare module 'motia' {
 
   interface Handlers {
     'PurgeStuckGames': CronHandler<never>
-    'GameEnded': EventHandler<{ gameId: string }, never>
     'SendMessage': ApiRouteHandler<{ message: string; name: string; role: 'white' | 'black' | 'spectator' | 'root' }, ApiResponse<200, { message: string; sender: string; timestamp: number }> | ApiResponse<404, { message: string }>, never>
     'AI_Player': EventHandler<{ player: 'white' | 'black'; fenBefore: string; fen: string; lastMove?: Array<string>; check: boolean; gameId: string }, { topic: 'chess-game-moved'; data: { gameId: string; fenBefore: string } } | { topic: 'chess-game-ended'; data: { gameId: string } } | { topic: 'evaluate-player-move'; data: { fenBefore: string; fenAfter: string; gameId: string; moveId: string; player: string } }>
     'ChessGameMoved': EventHandler<{ gameId: string; fenBefore: string }, { topic: 'ai-move'; data: { player: 'white' | 'black'; fenBefore: string; fen: string; lastMove?: Array<string>; check: boolean; gameId: string } }>
@@ -31,5 +30,6 @@ declare module 'motia' {
     'GetUser': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, { id: string; name: string; profilePic: string }> | ApiResponse<404, { message: string }>, never>
     'Auth': ApiRouteHandler<{ authToken: string }, ApiResponse<200, { accessToken: string; user: { id: string; name: string; profilePic: string; email: string } }> | ApiResponse<401, { error: string }> | ApiResponse<500, { error: string }>, never>
     'EvaluatePlayerMove': EventHandler<{ fenBefore: string; fenAfter: string; gameId: string; moveId: string; player: string }, never>
+    'GameEnded': EventHandler<{ gameId: string }, never>
   }
 }

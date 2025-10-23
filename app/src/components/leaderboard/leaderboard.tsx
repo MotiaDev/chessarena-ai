@@ -67,12 +67,12 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className
             <div className="flex flex-col overflow-x-auto grow">
               <div className="flex flex-row gap-2">
                 <div className="flex flex-row gap-2 items-center justify-between w-full py-4">
-                  <HeaderRow label="Matches" />
                   <HeaderRow label="Wins" />
+                  <HeaderRow label="Win %" />
                   <HeaderRow label="Checkmates" />
                   <HeaderRow label="Draws" />
-                  <HeaderRow label="Win %" />
-                  <HeaderRow label="Avg. Score" />
+                  <HeaderRow label="Matches" />
+                  <HeaderRow label="Avg. Centipawn Score" />
                   <HeaderRow label="Avg. Illegal Moves" />
                   <HeaderRow label="Avg. Swing" />
                 </div>

@@ -90,7 +90,7 @@ async def handler(input: EvaluatePlayerMoveInput, ctx):
             "best_move": eval_best_move,
         })
 
-        evaluation_swing = eval_best_move.centipawn_score - eval_after.centipawn_score
+        evaluation_swing = max(0, eval_best_move.centipawn_score - eval_after.centipawn_score)
         blunder = evaluation_swing > 100
 
         evaluation = {

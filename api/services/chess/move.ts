@@ -60,7 +60,7 @@ export const move = async ({
   const turns = game.turns ?? 0
   const gameMove = chess.move(moveSan)
   const isAiGame = !!game.players.black.ai && !!game.players.white.ai
-  const shouldEndEarly = turns >= 65 && isAiGame
+  const shouldEndEarly = turns >= 64 && isAiGame
   const status = shouldEndEarly ? 'endedEarly' : chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
   const nextIllegalMoveAttempts = (game.players[player].illegalMoveAttempts ?? 0) + illegalMoveAttempts
   let endGameReason: string | undefined

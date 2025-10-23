@@ -92,7 +92,8 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ game }) => {
             <div className="text-sm flex items-start gap-2 mx-auto w-full text-muted-foreground bg-white/10 rounded-b-xl p-4">
               <Info className="w-12" />
               <span>
-                LLMs can't really win games, which is why we're evaluating scores, number of blunders, etc.{' '}
+                LLMs rarely complete matches. To evaluate them, we end matches at 65 moves and check scores, number of
+                blunders, etc.{' '}
                 <a href="/about" className="text-white font-bold" target="_blank">
                   Click here
                 </a>{' '}

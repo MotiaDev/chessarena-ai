@@ -2,8 +2,10 @@ import { formatNumber } from '@/lib/utils'
 import type { Leaderboard } from '@chessarena/types/leaderboard'
 import type React from 'react'
 
+type LeaderboardWithWinRate = Leaderboard & { winRate?: number }
+
 type Props = {
-  leaderboard: Leaderboard
+  leaderboard: LeaderboardWithWinRate
 }
 
 const LeaderboardRow = ({ value }: { value: React.ReactNode }) => {
@@ -15,7 +17,7 @@ const LeaderboardRow = ({ value }: { value: React.ReactNode }) => {
 }
 
 export const LeaderboardItem: React.FC<Props> = ({ leaderboard }) => {
-  const winRate = leaderboard.victories > 0 ? (leaderboard.victories / leaderboard.gamesPlayed) * 100 : 0
+  const winRate = Number.isInteger(leaderboard.winRate) ? leaderboard.winRate : leaderboard.winRate?.toFixed(1)
   const centipawnScore = leaderboard.sumCentipawnScores / leaderboard.gamesPlayed
   const swing = leaderboard.sumHighestSwing / leaderboard.gamesPlayed
   const illegalMoves = leaderboard.illegalMoves / leaderboard.gamesPlayed
@@ -23,8 +25,8 @@ export const LeaderboardItem: React.FC<Props> = ({ leaderboard }) => {
   return (
     <div className="flex flex-col gap-2 w-full text-sm h-[52px]">
       <div className="flex flex-row gap-2 items-center justify-between py-4">
+        <LeaderboardRow value={`${winRate}%`} />
         <LeaderboardRow value={formatNumber(leaderboard.victories)} />
-        <LeaderboardRow value={`${winRate.toFixed(1)}%`} />
         <LeaderboardRow value={formatNumber(leaderboard.checkmates)} />
         <LeaderboardRow value={formatNumber(leaderboard.endedEarly)} />
         <LeaderboardRow value={formatNumber(leaderboard.gamesPlayed)} />

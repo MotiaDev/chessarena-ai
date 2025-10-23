@@ -29,11 +29,19 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className
     streamName: 'chessLeaderboard',
   })
 
+  const leaderboardWithWinRate =
+    leaderboard?.map((item) => ({
+      ...item,
+      winRate: item.gamesPlayed > 0 ? (item.victories / item.gamesPlayed) * 100 : 0,
+    })) ?? []
+
+  const sortedLeaderboard = leaderboardWithWinRate.sort((a, b) => b.winRate - a.winRate)
+
   return (
     <div
       className={cn(
         'flex flex-col grow min-h-[288px] bg-white/5 backdrop-blur-lg md:rounded-lg md:border-2 md:border-white/5',
-        leaderboard.length > 0 ? 'max-w-full' : 'w-full max-w-[1215px]',
+        sortedLeaderboard.length > 0 ? 'max-w-full' : 'w-full max-w-[1215px]',
         className,
       )}
     >
@@ -42,7 +50,7 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className
         <h1 className="grow mr-6 text-center text-lg font-semibold text-white">Leaderboard</h1>
       </div>
       <div className="flex flex-col grow gap-6 w-full overflow-y-auto">
-        {!leaderboard || leaderboard.length === 0 ? (
+        {!sortedLeaderboard || sortedLeaderboard.length === 0 ? (
           <>
             <LeaderboardSkeleton />
             <LeaderboardSkeleton />
@@ -51,7 +59,7 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className
         ) : (
           <div className="flex flex-row grow">
             <div className="border-r border-white/10 flex flex-col gap-6 pt-20 grow pb-4">
-              {leaderboard.map((leaderboard, position) => (
+              {sortedLeaderboard.map((leaderboard, position) => (
                 <div key={position} className="flex flex-row gap-2 items-center w-[230px] h-[52px]">
                   <div className="font-bold text-white w-[40px] text-center">{position + 1}</div>
                   <div className="bg-white rounded-full p-1">
@@ -67,8 +75,8 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className
             <div className="flex flex-col overflow-x-auto grow">
               <div className="flex flex-row gap-2">
                 <div className="flex flex-row gap-2 items-center justify-between w-full py-4">
-                  <HeaderRow label="Wins" />
                   <HeaderRow label="Win %" />
+                  <HeaderRow label="Wins" />
                   <HeaderRow label="Checkmates" />
                   <HeaderRow label="Ended Early" />
                   <HeaderRow label="Matches" />
@@ -78,7 +86,7 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className
                 </div>
               </div>
               <div className="flex flex-col gap-6 pb-4">
-                {leaderboard.map((item) => (
+                {sortedLeaderboard.map((item) => (
                   <LeaderboardItem key={item.model} leaderboard={item} />
                 ))}
               </div>

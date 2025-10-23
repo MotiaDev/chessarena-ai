@@ -10,7 +10,7 @@ export const config: CronConfig = {
   flows: ['chess'],
 }
 
-const TEN_MINUTES = 1000 * 60 * 10
+const FIFTEEN_MINUTES = 1000 * 60 * 15
 
 const shouldPurgeGame = (game: LiveAiGames) => {
   if (!game.createdAt) {
@@ -20,7 +20,7 @@ const shouldPurgeGame = (game: LiveAiGames) => {
   const createdAt = new Date(game.createdAt)
   const now = new Date()
   const diff = now.getTime() - createdAt.getTime()
-  return diff > TEN_MINUTES
+  return diff > FIFTEEN_MINUTES
 }
 
 export const handler: Handlers['PurgeStuckGames'] = async ({ logger, streams }) => {

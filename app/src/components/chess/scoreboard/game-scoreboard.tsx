@@ -74,7 +74,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ game }) => {
               <div className="flex flex-col">
                 <div className="text-2xl text-white font-bold mx-auto text-center w-full">Ended Early</div>
                 <div className="text-md mx-auto text-center w-full text-muted-foreground">
-                  Game ended after 65 moves without capture or pawn move
+                  The match ended early after 65 moves
                 </div>
               </div>
             )}

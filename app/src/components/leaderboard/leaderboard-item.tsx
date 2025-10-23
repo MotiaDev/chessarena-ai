@@ -26,7 +26,7 @@ export const LeaderboardItem: React.FC<Props> = ({ leaderboard }) => {
         <LeaderboardRow value={formatNumber(leaderboard.victories)} />
         <LeaderboardRow value={`${winRate.toFixed(1)}%`} />
         <LeaderboardRow value={formatNumber(leaderboard.checkmates)} />
-        <LeaderboardRow value={formatNumber(leaderboard.earlyEnded)} />
+        <LeaderboardRow value={formatNumber(leaderboard.endedEarly)} />
         <LeaderboardRow value={formatNumber(leaderboard.gamesPlayed)} />
         <LeaderboardRow value={centipawnScore.toFixed(0)} />
         <LeaderboardRow value={`${illegalMoves.toFixed(0)}`} />

@@ -97,7 +97,7 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
       victories: (leaderboard?.victories ?? 0) + (winner === color ? 1 : 0),
       checkmates: (leaderboard?.checkmates ?? 0) + (game.winner === color ? 1 : 0),
       draws: (leaderboard?.draws ?? 0) + (isTechnicalDraw ? 1 : 0),
-      earlyEnded: (leaderboard?.earlyEnded ?? 0) + (isEndedEarly ? 1 : 0),
+      endedEarly: (leaderboard?.endedEarly ?? 0) + (isEndedEarly ? 1 : 0),
       illegalMoves: (leaderboard?.illegalMoves ?? 0) + playerIllegalMoves,
       sumCentipawnScores: (leaderboard?.sumCentipawnScores ?? 0) + playerScore.finalCentipawnScore,
       sumHighestSwing: (leaderboard?.sumHighestSwing ?? 0) + playerScore.highestSwing,

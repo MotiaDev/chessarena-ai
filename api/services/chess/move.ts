@@ -60,16 +60,15 @@ export const move = async ({
   const turns = game.turns ?? 0
   const gameMove = chess.move(moveSan)
   const isAiGame = !!game.players.black.ai && !!game.players.white.ai
-  const shouldEndEarly = chess.isDrawByFiftyMoves() && turns >= 65 && isAiGame
-  const isTechnicalDraw = chess.isDraw() && !shouldEndEarly
-  const status = shouldEndEarly || isTechnicalDraw ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
+  const shouldEndEarly = turns >= 65 && isAiGame
+  const status = shouldEndEarly ? 'endedEarly' : chess.isDraw() ? 'draw' : chess.isGameOver() ? 'completed' : 'pending'
   const nextIllegalMoveAttempts = (game.players[player].illegalMoveAttempts ?? 0) + illegalMoveAttempts
   let endGameReason: string | undefined
   if (chess.isCheckmate()) {
     endGameReason = 'Checkmate'
   } else if (shouldEndEarly) {
     endGameReason = 'Ended Early'
-  } else if (isTechnicalDraw) {
+  } else if (chess.isDraw()) {
     endGameReason = 'Draw'
   }
 

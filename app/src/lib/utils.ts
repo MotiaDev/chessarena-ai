@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatNumber(count: number): string {
+export function formatNumber(count: number = 0): string {
   if (count >= 1000000) {
     return (count / 1000000).toFixed(1) + 'M'
   } else if (count >= 1000) {

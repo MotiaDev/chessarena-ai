@@ -70,7 +70,7 @@ export const Leaderboard: React.FC<Props> = ({ showBackButton = false, className
                   <HeaderRow label="Wins" />
                   <HeaderRow label="Win %" />
                   <HeaderRow label="Checkmates" />
-                  <HeaderRow label="Draws" />
+                  <HeaderRow label="Early Ended" />
                   <HeaderRow label="Matches" />
                   <HeaderRow label="Avg. Centipawn Score" />
                   <HeaderRow label="Avg. Illegal Moves" />

@@ -1,8 +1,8 @@
 import type { GameMove, MoveEvaluation } from '@chessarena/types/game-move'
 import type { PlayerScore, Scoreboard } from '@chessarena/types/game'
-import { average, highest, lowest, median } from './utils'
+import { average, highest } from './utils'
 
-const generatePlayerScore = (moves: GameMove[], player: 'white' | 'black'): PlayerScore => {
+const generatePlayerScore = (moves: GameMove[], player: 'white' | 'black', game?: any): PlayerScore => {
   const evaluations: MoveEvaluation[] = moves
     .filter((move) => move.color === player)
     .map((move) => move.evaluation)
@@ -10,34 +10,33 @@ const generatePlayerScore = (moves: GameMove[], player: 'white' | 'black'): Play
 
   const swings = evaluations.map((evaluation) => evaluation.evaluationSwing)
   const centipawnScores = evaluations.map((evaluation) => evaluation.centipawnScore)
+  const checks = moves.filter((move) => move.color === player && move.check).length
 
   return {
     averageSwing: Math.round(average(swings)),
-    medianSwing: median(swings),
     highestSwing: highest(swings),
-    highestCentipawnScore: highest(centipawnScores),
-    lowestCentipawnScore: lowest(centipawnScores),
-    averageCentipawnScore: Math.round(average(centipawnScores)),
-    medianCentipawnScore: median(centipawnScores),
     finalCentipawnScore: centipawnScores[centipawnScores.length - 1],
     blunders: evaluations.filter((evaluation) => evaluation.blunder).length,
+    illegalMoveAttempts: game?.players?.[player]?.illegalMoveAttempts ?? 0,
+    captures: game?.players?.[player]?.captures ?? [],
+    promotions: game?.players?.[player]?.promotions ?? 0,
+    checks,
   }
 }
 
-export const generateGameScore = (moves: GameMove[]): Scoreboard => {
+export const generateGameScore = (moves: GameMove[], game?: any): Scoreboard => {
   const firstMove = moves[0]
 
   if (!firstMove) {
     const defaultScore: PlayerScore = {
       averageSwing: 0,
-      medianSwing: 0,
       highestSwing: 0,
-      highestCentipawnScore: 0,
-      lowestCentipawnScore: 0,
-      averageCentipawnScore: 0,
-      medianCentipawnScore: 0,
       finalCentipawnScore: 0,
       blunders: 0,
+      illegalMoveAttempts: 0,
+      captures: [],
+      promotions: 0,
+      checks: 0,
     }
 
     return {
@@ -56,8 +55,8 @@ export const generateGameScore = (moves: GameMove[]): Scoreboard => {
   }, firstMove)
   const moveNumber = moves.findIndex((move) => move === highestSwingMove) + 1
 
-  const whiteScore = generatePlayerScore(moves, 'white')
-  const blackScore = generatePlayerScore(moves, 'black')
+  const whiteScore = generatePlayerScore(moves, 'white', game)
+  const blackScore = generatePlayerScore(moves, 'black', game)
 
   return {
     white: whiteScore,

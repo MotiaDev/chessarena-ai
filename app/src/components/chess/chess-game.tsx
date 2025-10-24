@@ -54,7 +54,7 @@ export const ChessGame: React.FC<Props> = ({ gameId, onClose }) => {
   const messagesComponent = (
     <>
       <ChessMessages gameId={gameId} game={game} />
-      {['completed', 'draw'].includes(game.status) && <Scoreboard game={game} />}
+      {['completed', 'draw', 'endedEarly'].includes(game.status) && <Scoreboard game={game} />}
       {!isBlackAssigned && !isUserOwner && <ChessRequestAccess gameId={gameId} />}
       {isUserOwner &&
         accessRequest.map((accessRequest, index) => (

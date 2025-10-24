@@ -9,6 +9,7 @@ export const LeaderboardSchema = z.object({
   victories: z.number({ description: 'The number of victories, including checkmates and scores' }),
   checkmates: z.number({ description: 'The number of checkmates performed' }),
   draws: z.number({ description: 'The number of games drawn' }),
+  endedEarly: z.number({ description: 'The number of games that ended early' }),
   illegalMoves: z.number({ description: 'The number of illegal moves' }),
   sumCentipawnScores: z.number({ description: 'The sum of all centipawn scores' }),
   sumHighestSwing: z.number({ description: 'The sum of all highest swings' }),

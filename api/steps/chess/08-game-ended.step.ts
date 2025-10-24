@@ -37,7 +37,7 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
   }
 
   const moves = await streams.chessGameMove.getGroup(input.gameId)
-  const scoreboard = generateGameScore(moves)
+  const scoreboard = generateGameScore(moves, game)
 
   await streams.chessGame.set('game', game.id, { ...game, scoreboard })
 
@@ -85,6 +85,9 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
       }
     }
 
+    const isTechnicalDraw = game.endGameReason === 'Draw'
+    const isEndedEarly = game.endGameReason === 'Ended Early'
+
     return {
       id: model,
       provider,
@@ -93,7 +96,8 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
       gamesPlayed: (leaderboard?.gamesPlayed ?? 0) + 1,
       victories: (leaderboard?.victories ?? 0) + (winner === color ? 1 : 0),
       checkmates: (leaderboard?.checkmates ?? 0) + (game.winner === color ? 1 : 0),
-      draws: (leaderboard?.draws ?? 0) + (winner === undefined ? 1 : 0),
+      draws: (leaderboard?.draws ?? 0) + (isTechnicalDraw ? 1 : 0),
+      endedEarly: (leaderboard?.endedEarly ?? 0) + (isEndedEarly ? 1 : 0),
       illegalMoves: (leaderboard?.illegalMoves ?? 0) + playerIllegalMoves,
       sumCentipawnScores: (leaderboard?.sumCentipawnScores ?? 0) + playerScore.finalCentipawnScore,
       sumHighestSwing: (leaderboard?.sumHighestSwing ?? 0) + playerScore.highestSwing,

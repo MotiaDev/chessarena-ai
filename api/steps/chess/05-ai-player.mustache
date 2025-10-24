@@ -14,11 +14,11 @@ This is a list of moves in Standard Algebraic Notation (SAN).
 {{/validMoves}}
 
 {{#lastInvalidMove}}
-❌ ILLEGAL MOVE: {{lastInvalidMove}} was REJECTED because it's not in the list above.
+ILLEGAL MOVE: {{lastInvalidMove}} was REJECTED because it's not in the list above.
 INSTRUCTION: SELECT a move that EXISTS in the list above. Do not invent moves.
 {{/lastInvalidMove}}
 
-⚠️ Three illegal moves end the match instantly.
+Three illegal moves end the match instantly.
 
 ## Required Response Format
 
@@ -36,21 +36,17 @@ Your response must be valid JSON with exactly two fields:
 5. Respond ONLY with the JSON—no additional text
 
 **Example responses** (only valid if these moves are in your legal moves list):
-```json
 {
   "thought": "Capturing the knight wins material while maintaining king safety",
   "moveSan": "Na3"
 }
-```
 
 **Incorrect example (DO NOT DO THIS):**
-```json
 {
   "thought": "I'll invent my own move",
   "moveSan": "Na6"
 }
-```
-❌ This is wrong because "Na6" is not in the valid moves list above.
+This is wrong because "Na6" is not in the valid moves list above.
 
 ## Strategy Guidelines
 When evaluating moves, consider:

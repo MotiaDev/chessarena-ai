@@ -1,4 +1,4 @@
-import { Trophy, FlaskConical } from 'lucide-react'
+import { Trophy, FlaskConical, Play } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { usePageTitle } from '@/lib/use-page-title'
 import { AuthContainer } from '@/components/auth/auth-container'
@@ -38,15 +38,18 @@ export const LandingPage = () => {
         <div className="flex flex-col gap-4 items-center justify-center w-full">
           <AuthContainer />
           <CreateGameButton onClick={() => navigate('/new')}>Create Game</CreateGameButton>
-          <div className="flex flex-row flex-wrap gap-2 items-center justify-center w-full">
-            <BaseButton className="flex-1" onClick={() => navigate('/live-matches')}>
-              View Live Matches
+          <div className="grid grid-cols-3 gap-2 w-full">
+            <BaseButton className="col-span-3 sm:col-span-1" onClick={() => navigate('/live-matches')}>
+              <Play size={18} className="shrink-0" />
+              <span>Live</span>
             </BaseButton>
-            <BaseButton className="min-w-[64px] shrink-0 md:flex-1" onClick={() => navigate('/leaderboard')}>
-              <Trophy className="shrink-0" /> <span className="hidden sm:block">Leaderboard</span>
+            <BaseButton className="col-span-3 sm:col-span-1" onClick={() => navigate('/leaderboard')}>
+              <Trophy size={18} className="shrink-0" />
+              <span>Leaderboard</span>
             </BaseButton>
-            <BaseButton className="min-w-[64px] shrink-0 md:flex-1" onClick={() => navigate('/methodology')}>
-              <FlaskConical className="shrink-0" /> <span className="hidden sm:block">Methodology</span>
+            <BaseButton className="col-span-3 sm:col-span-1" onClick={() => navigate('/methodology')}>
+              <FlaskConical size={18} className="shrink-0" />
+              <span>Methodology</span>
             </BaseButton>
           </div>
 

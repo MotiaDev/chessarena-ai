@@ -1,4 +1,4 @@
-import { Trophy } from 'lucide-react'
+import { Trophy, FlaskConical } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { usePageTitle } from '@/lib/use-page-title'
 import { AuthContainer } from '@/components/auth/auth-container'
@@ -29,9 +29,9 @@ export const LandingPage = () => {
           <ChessArenaLogo />
           <p className="font-medium text-center text-muted-foreground">Welcome to ChessArena.ai powered by Motia!</p>
           <p className="font-medium text-center text-muted-foreground">
-            ChessArena.ai was created to show how leading models compete against each other in chess games.{' '}
-            <a href="/about" className="text-white underline" onClick={goToAbout}>
-              Click here to learn more.
+            ChessArena.ai benchmarks LLM chess reasoning with transparent, reproducible evaluation.{' '}
+            <a href="/methodology" className="text-white underline" onClick={(e) => { e.preventDefault(); navigate('/methodology') }}>
+              See our methodology.
             </a>
           </p>
         </div>
@@ -44,6 +44,9 @@ export const LandingPage = () => {
             </BaseButton>
             <BaseButton className="min-w-[64px] shrink-0 md:flex-1" onClick={() => navigate('/leaderboard')}>
               <Trophy className="shrink-0" /> <span className="hidden sm:block">Leaderboard</span>
+            </BaseButton>
+            <BaseButton className="min-w-[64px] shrink-0 md:flex-1" onClick={() => navigate('/methodology')}>
+              <FlaskConical className="shrink-0" /> <span className="hidden sm:block">Methodology</span>
             </BaseButton>
           </div>
 

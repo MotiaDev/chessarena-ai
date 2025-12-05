@@ -1,5 +1,5 @@
 import { AiModelProviderSchema } from '@chessarena/types/ai-models'
-import { GameSchema, Player } from '@chessarena/types/game'
+import { GameSchema, Player, BenchmarkVariantSchema } from '@chessarena/types/game'
 import { ApiRouteConfig, Handlers } from 'motia'
 import { RefinementCtx, z } from 'zod'
 import { supportedModelsByProvider } from '../../services/ai/models'
@@ -52,6 +52,7 @@ const bodySchema = z.object({
     white: playerSchema(),
     black: playerSchema(),
   }),
+  variant: BenchmarkVariantSchema.default('guided'),
 })
 
 export const config: ApiRouteConfig = {
@@ -92,9 +93,10 @@ export const handler: Handlers['CreateGame'] = async (req, { logger, emit, state
     return { status: 400, body: { message: 'Invalid request body', errors: validationResult.error.errors } }
   }
 
-  const game = await createGame(req.body.players, streams, logger, user)
+  const variant = req.body.variant ?? 'guided'
+  const game = await createGame(req.body.players, streams, logger, user, variant)
 
-  logger.info('[CreateGame] Game created', { gameId: game.id })
+  logger.info('[CreateGame] Game created', { gameId: game.id, variant })
 
   await emit({
     topic: 'chess-game-created',

@@ -50,11 +50,16 @@ export const PlayerSchema = () =>
     promotions: z.number({ description: 'The number of pawn promotions' }).optional(),
   })
 
+export const BenchmarkVariantSchema = z.enum(['guided', 'unguided'], {
+  description: 'Benchmark variant: guided (with legal moves) or unguided (FEN only)',
+})
+
 export const GameSchema = z.object({
   id: z.string({ description: 'The ID of the game' }),
   fen: z.string({ description: 'The FEN of the game' }),
   turn: z.enum(['white', 'black'], { description: 'The color of the current turn' }),
   status: z.enum(['pending', 'completed', 'draw', 'endedEarly'], { description: 'The status of the game' }),
+  variant: BenchmarkVariantSchema.default('guided').optional(),
   lastMove: z.array(z.string({ description: 'The last move made' })).optional(),
   lastMoveSan: z.string({ description: 'The last move made in Standard Algebraic Notation (SAN)' }).optional(),
   winner: z.enum(['white', 'black']).optional(),
@@ -76,3 +81,4 @@ export type Player = z.infer<ReturnType<typeof PlayerSchema>>
 export type PlayerScore = z.infer<ReturnType<typeof PlayerScoreSchema>>
 export type Scoreboard = z.infer<typeof ScoreboardSchema>
 export type GameRole = z.infer<typeof roleSchema>
+export type BenchmarkVariant = z.infer<typeof BenchmarkVariantSchema>

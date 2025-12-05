@@ -1,6 +1,6 @@
 import { FlowContextStateStreams, Logger } from 'motia'
 import { createGameId } from './create-game-id'
-import { Game } from '@chessarena/types/game'
+import { BenchmarkVariant, Game } from '@chessarena/types/game'
 import { models } from '../ai/models'
 import { isAiGame } from './utils'
 import { User } from '@chessarena/types/user'
@@ -10,6 +10,7 @@ export const createGame = async (
   streams: FlowContextStateStreams,
   logger: Logger,
   user?: User,
+  variant: BenchmarkVariant = 'guided',
 ): Promise<Game> => {
   const gameId = await createGameId({ streams, logger })
 
@@ -18,6 +19,7 @@ export const createGame = async (
     fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
     turn: 'white',
     status: 'pending',
+    variant,
     players: {
       white: { ...players.white, userId: players.white.ai ? undefined : user?.id },
       black: { ...players.black, userId: players.black.ai },

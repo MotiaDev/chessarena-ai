@@ -50,8 +50,8 @@
         "y": 112
       },
       "steps/chess/02-get-game.step.ts": {
-        "x": 1045,
-        "y": 114
+        "x": 1019,
+        "y": 92
       },
       "steps/chess/01-create-game.step.ts": {
         "x": 432,

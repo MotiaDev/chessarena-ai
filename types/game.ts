@@ -71,6 +71,7 @@ export const GameSchema = z.object({
   }),
   check: z.boolean({ description: 'Whether the game is in check' }),
   scoreboard: ScoreboardSchema.optional(),
+  createdAt: z.number({ description: 'Unix timestamp when game was created' }).optional(),
 })
 
 export const roleSchema = z.enum(['white', 'black', 'spectator', 'root'])

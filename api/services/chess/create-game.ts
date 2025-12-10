@@ -25,6 +25,7 @@ export const createGame = async (
       black: { ...players.black, userId: players.black.ai },
     },
     check: false,
+    createdAt: Date.now(),
   })
 
   if (isAiGame(game) && players.white.ai && players.black.ai) {

@@ -2,8 +2,10 @@ import { EventConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { models } from '../../services/ai/models'
 import { generateGameScore } from '../../services/chess/generate-game-score'
+import { generatePgn } from '../../services/chess/generate-pgn'
 import { Scoreboard } from '@chessarena/types/game'
 import { Leaderboard } from '@chessarena/types/leaderboard'
+import { GameHistory } from '@chessarena/types/game-history'
 import { isAiGame } from '../../services/chess/utils'
 
 /*
@@ -37,9 +39,47 @@ export const handler: Handlers['GameEnded'] = async (input, { logger, streams })
   }
 
   const moves = await streams.chessGameMove.getGroup(input.gameId)
+  const messages = await streams.chessGameMessage.getGroup(input.gameId)
   const scoreboard = generateGameScore(moves, game)
 
   await streams.chessGame.set('game', game.id, { ...game, scoreboard })
+
+  // Archive game to history
+  const endedAt = Date.now()
+  const startedAt = game.createdAt ?? endedAt
+  const pgn = generatePgn({ game, moves })
+
+  const gameHistory: GameHistory = {
+    id: game.id,
+    startedAt,
+    endedAt,
+    duration: endedAt - startedAt,
+    whitePlayer: {
+      provider: game.players.white.ai,
+      model: game.players.white.model,
+      isHuman: !game.players.white.ai,
+    },
+    blackPlayer: {
+      provider: game.players.black.ai,
+      model: game.players.black.model,
+      isHuman: !game.players.black.ai,
+    },
+    status: game.status === 'pending' ? 'completed' : game.status,
+    winner: game.winner,
+    endGameReason: game.endGameReason,
+    variant: game.variant ?? 'guided',
+    totalMoves: moves.length,
+    whiteIllegalMoves: game.players.white.illegalMoveAttempts ?? 0,
+    blackIllegalMoves: game.players.black.illegalMoveAttempts ?? 0,
+    finalFen: game.fen,
+    moves,
+    messages,
+    scoreboard,
+    pgn,
+  }
+
+  await streams.chessGameHistory.set('all', game.id, gameHistory)
+  logger.info('Game archived to history', { gameId: game.id })
 
   if (!isAiGame(game)) {
     return

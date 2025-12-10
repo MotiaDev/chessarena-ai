@@ -7,6 +7,35 @@ type PgnOptions = {
   moves: GameMove[]
 }
 
+const detectPromotion = (fenBefore: string, fenAfter: string, to: string): string | undefined => {
+  // Check if a pawn moved to the back rank (promotion)
+  const toRank = to[1]
+  if (toRank !== '1' && toRank !== '8') return undefined
+
+  // Parse the piece at destination in fenAfter to detect what it promoted to
+  const afterBoard = fenAfter.split(' ')[0]
+  const file = to.charCodeAt(0) - 'a'.charCodeAt(0)
+  const rank = toRank === '8' ? 0 : 7
+
+  const rows = afterBoard.split('/')
+  let col = 0
+  for (const char of rows[rank]) {
+    if (col === file) {
+      const piece = char.toLowerCase()
+      if (['q', 'r', 'b', 'n'].includes(piece)) {
+        return piece
+      }
+      break
+    }
+    if (/\d/.test(char)) {
+      col += parseInt(char)
+    } else {
+      col++
+    }
+  }
+  return undefined
+}
+
 export const generatePgn = ({ game, moves }: PgnOptions): string => {
   const chess = new Chess()
 
@@ -16,7 +45,8 @@ export const generatePgn = ({ game, moves }: PgnOptions): string => {
     const to = move.lastMove[1]
 
     try {
-      chess.move({ from, to })
+      const promotion = detectPromotion(move.fenBefore, move.fenAfter, to)
+      chess.move({ from, to, promotion })
     } catch {
       // Skip invalid moves (shouldn't happen with valid history)
     }

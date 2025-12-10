@@ -20,6 +20,15 @@ export const config: ApiRouteConfig = {
   },
 }
 
+const escapeCsvField = (value: string | number | undefined | null): string => {
+  if (value === undefined || value === null) return ''
+  const str = String(value)
+  if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+    return `"${str.replace(/"/g, '""')}"`
+  }
+  return str
+}
+
 export const handler: Handlers['ExportGameHistory'] = async (req, { logger, streams }) => {
   logger.info('[ExportGameHistory] Exporting game history', { query: req.queryParams })
 
@@ -83,22 +92,22 @@ export const handler: Handlers['ExportGameHistory'] = async (req, { logger, stre
     ]
 
     const rows = filtered.map((game) => [
-      game.id,
-      new Date(game.startedAt).toISOString(),
-      new Date(game.endedAt).toISOString(),
-      game.duration,
-      game.variant,
-      game.status,
-      game.winner || '',
-      game.endGameReason || '',
-      game.totalMoves,
-      game.whitePlayer.provider || 'human',
-      game.whitePlayer.model || '',
-      game.whiteIllegalMoves,
-      game.blackPlayer.provider || 'human',
-      game.blackPlayer.model || '',
-      game.blackIllegalMoves,
-      `"${(game.pgn || '').replace(/"/g, '""')}"`,
+      escapeCsvField(game.id),
+      escapeCsvField(new Date(game.startedAt).toISOString()),
+      escapeCsvField(new Date(game.endedAt).toISOString()),
+      escapeCsvField(game.duration),
+      escapeCsvField(game.variant),
+      escapeCsvField(game.status),
+      escapeCsvField(game.winner),
+      escapeCsvField(game.endGameReason),
+      escapeCsvField(game.totalMoves),
+      escapeCsvField(game.whitePlayer.provider || 'human'),
+      escapeCsvField(game.whitePlayer.model),
+      escapeCsvField(game.whiteIllegalMoves),
+      escapeCsvField(game.blackPlayer.provider || 'human'),
+      escapeCsvField(game.blackPlayer.model),
+      escapeCsvField(game.blackIllegalMoves),
+      escapeCsvField(game.pgn),
     ])
 
     const csv = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n')

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { GameSchema, ScoreboardSchema, BenchmarkVariantSchema } from './game'
+import { ScoreboardSchema, BenchmarkVariantSchema } from './game'
 import { GameMoveSchema } from './game-move'
 import { GameMessageSchema } from './game-message'
 import { AiModelProviderSchema } from './ai-models'

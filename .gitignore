@@ -12,3 +12,4 @@ dist
 .env.production
 api/lib/*
 deploy.sh
+MOTIA_DOCS.md

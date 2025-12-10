@@ -12,6 +12,8 @@ import { LoginPage } from './pages/login-page'
 import { AuthProvider } from './components/auth/auth-provider'
 import { PrivacyPage } from './pages/privacy-page'
 import { MethodologyPage } from './pages/methodology-page'
+import { GameHistoryPage } from './pages/game-history-page'
+import { GameReplayPage } from './pages/game-replay-page'
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
             <Route path="/game/:gameId" element={<ChessGamePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/methodology" element={<MethodologyPage />} />
+            <Route path="/history" element={<GameHistoryPage />} />
+            <Route path="/history/:gameId" element={<GameReplayPage />} />
             <Route path="/privacy-policy" element={<PrivacyPage />} />
           </Routes>
         </AuthProvider>

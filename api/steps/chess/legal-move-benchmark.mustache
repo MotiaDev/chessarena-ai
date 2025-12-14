@@ -1,0 +1,23 @@
+You are a chess expert. Given the following game, list ALL legal moves available for the current player.
+
+## Game (PGN)
+{{pgn}}
+
+## Current Position
+It is {{turn}}'s turn to move.
+FEN: {{fen}}
+
+## Task
+List ALL legal moves for {{turn}} in Standard Algebraic Notation (SAN).
+
+## Response Format
+Return ONLY a JSON object with no additional text:
+{
+  "moves": ["move1", "move2", "move3", ...]
+}
+
+Important:
+- Include ALL legal moves, not just good moves
+- Use standard algebraic notation (e.g., Nf3, e4, O-O, Bxc6)
+- Do not include move numbers
+- Do not include any explanation

@@ -2,7 +2,7 @@ import { Chess } from 'chess.js'
 import { Logger } from 'motia'
 import { LichessPuzzle, PuzzleTheme } from '@chessarena/types/puzzle-benchmark'
 
-type LichessApiResponse = {
+type LichessBatchPuzzle = {
   game: {
     id: string
     pgn: string
@@ -14,6 +14,10 @@ type LichessApiResponse = {
     solution: string[]
     initialPly: number
   }
+}
+
+type LichessBatchResponse = {
+  puzzles: LichessBatchPuzzle[]
 }
 
 /**
@@ -37,36 +41,10 @@ const uciToSan = (chess: Chess, uci: string): string | null => {
 }
 
 /**
- * Fetch a single puzzle from Lichess API with retry on rate limit
+ * Parse a single puzzle from Lichess batch response
  */
-const fetchSinglePuzzle = async (
-  theme: PuzzleTheme,
-  logger: Logger,
-  retryCount = 0,
-): Promise<LichessPuzzle | null> => {
+const parsePuzzle = (data: LichessBatchPuzzle, logger: Logger): LichessPuzzle | null => {
   try {
-    const response = await fetch(`https://lichess.org/api/puzzle/next?angle=${theme}`)
-
-    if (response.status === 429) {
-      // Rate limited - wait and retry
-      if (retryCount < 3) {
-        const waitTime = (retryCount + 1) * 5000 // 5s, 10s, 15s
-        logger.warn('Rate limited by Lichess, waiting...', { waitTime, retryCount })
-        await new Promise((resolve) => setTimeout(resolve, waitTime))
-        return fetchSinglePuzzle(theme, logger, retryCount + 1)
-      }
-      logger.error('Max retries reached for rate limit')
-      return null
-    }
-
-    if (!response.ok) {
-      logger.error('Lichess API error', { status: response.status })
-      return null
-    }
-
-    const data: LichessApiResponse = await response.json()
-
-    // Replay the game to get the puzzle position
     const chess = new Chess()
     const moves = data.game.pgn.split(' ').filter((m) => !m.includes('.') && m.length > 0)
 
@@ -111,43 +89,52 @@ const fetchSinglePuzzle = async (
       solutionSan,
     }
   } catch (error) {
-    logger.error('Failed to fetch puzzle', { error })
+    logger.error('Failed to parse puzzle', { error, puzzleId: data.puzzle.id })
     return null
   }
 }
 
 /**
- * Fetch multiple unique puzzles from Lichess
+ * Fetch puzzles from Lichess using batch API
  */
 export const fetchPuzzles = async (theme: PuzzleTheme, count: number, logger: Logger): Promise<LichessPuzzle[]> => {
-  const puzzles: LichessPuzzle[] = []
-  const seenIds = new Set<string>()
+  logger.info('Fetching puzzles from Lichess batch API', { theme, count })
 
-  let attempts = 0
-  const maxAttempts = count * 3
+  try {
+    // Use batch API - fetch more than needed to filter by theme
+    const url = `https://lichess.org/api/puzzle/batch/${theme}?nb=${Math.min(count, 50)}`
+    logger.info('Fetching from', { url })
 
-  logger.info('Fetching puzzles from Lichess', { theme, targetCount: count })
+    const response = await fetch(url)
 
-  while (puzzles.length < count && attempts < maxAttempts) {
-    attempts++
+    if (!response.ok) {
+      logger.error('Lichess batch API error', { status: response.status })
+      // Fallback: try the mix endpoint
+      const mixUrl = `https://lichess.org/api/puzzle/batch/mix?nb=${Math.min(count, 50)}`
+      logger.info('Trying mix endpoint', { mixUrl })
+      const mixResponse = await fetch(mixUrl)
 
-    const puzzle = await fetchSinglePuzzle(theme, logger)
+      if (!mixResponse.ok) {
+        logger.error('Lichess mix API also failed', { status: mixResponse.status })
+        return []
+      }
 
-    if (puzzle && !seenIds.has(puzzle.id)) {
-      seenIds.add(puzzle.id)
-      puzzles.push(puzzle)
-      logger.info('Fetched puzzle', {
-        puzzleId: puzzle.id,
-        progress: `${puzzles.length}/${count}`,
-      })
+      const mixData: LichessBatchResponse = await mixResponse.json()
+      // Filter by theme
+      const filtered = mixData.puzzles.filter((p) => p.puzzle.themes.includes(theme))
+      const puzzles = filtered.map((p) => parsePuzzle(p, logger)).filter((p): p is LichessPuzzle => p !== null)
+
+      logger.info('Fetched puzzles from mix endpoint', { total: puzzles.length })
+      return puzzles.slice(0, count)
     }
 
-    // Rate limiting - wait 1.5s between requests to avoid 429
-    if (puzzles.length < count) {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-    }
+    const data: LichessBatchResponse = await response.json()
+    const puzzles = data.puzzles.map((p) => parsePuzzle(p, logger)).filter((p): p is LichessPuzzle => p !== null)
+
+    logger.info('Fetched puzzles from batch API', { total: puzzles.length })
+    return puzzles.slice(0, count)
+  } catch (error) {
+    logger.error('Failed to fetch puzzles', { error })
+    return []
   }
-
-  logger.info('Finished fetching puzzles', { theme, fetched: puzzles.length })
-  return puzzles
 }

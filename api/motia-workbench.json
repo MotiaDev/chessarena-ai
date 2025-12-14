@@ -88,5 +88,42 @@
         "y": 680
       }
     }
+  },
+  {
+    "id": "benchmark",
+    "config": {
+      "steps/benchmark/08-get-puzzle-sets.step.ts": {
+        "x": 33,
+        "y": 0
+      },
+      "steps/benchmark/07-get-puzzle-leaderboard.step.ts": {
+        "x": 3,
+        "y": 204
+      },
+      "steps/benchmark/06-run-puzzle-benchmark.step.ts": {
+        "x": 33,
+        "y": 408
+      },
+      "steps/benchmark/05-fetch-puzzle-set.step.ts": {
+        "x": 0,
+        "y": 612
+      },
+      "steps/benchmark/04-get-benchmark-leaderboard.step.ts": {
+        "x": 0,
+        "y": 816
+      },
+      "steps/benchmark/03-get-benchmark-run-detail.step.ts": {
+        "x": 0,
+        "y": 1060
+      },
+      "steps/benchmark/02-get-benchmark-runs.step.ts": {
+        "x": 0,
+        "y": 1304
+      },
+      "steps/benchmark/01-run-legal-move-benchmark.step.ts": {
+        "x": 0,
+        "y": 1528
+      }
+    }
   }
 ]

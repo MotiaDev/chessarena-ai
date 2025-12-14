@@ -16,8 +16,14 @@ Return ONLY a JSON object with no additional text:
   "moves": ["move1", "move2", "move3", ...]
 }
 
-Important:
+## CRITICAL - Use Standard Algebraic Notation (SAN):
+CORRECT format examples: Nf3, e4, O-O, Bxc6, Qd7, Rfe1, exd5, h4
+WRONG format (do NOT use): Ng1f3, e2e4, Bf1c4, Ke1g1
+
+Rules:
+- Pawns: just the destination square (e4) or capture (exd5)
+- Pieces: piece letter + destination (Nf3, Bc4, Qd1)
+- Captures: add 'x' (Bxc6, Nxe5, exd5)
+- Castling: O-O (kingside) or O-O-O (queenside)
+- Do NOT include starting square (Ng1f3 is WRONG, Nf3 is CORRECT)
 - Include ALL legal moves, not just good moves
-- Use standard algebraic notation (e.g., Nf3, e4, O-O, Bxc6)
-- Do not include move numbers
-- Do not include any explanation

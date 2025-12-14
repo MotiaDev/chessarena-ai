@@ -51,5 +51,6 @@ declare module 'motia' {
     'GetUser': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, { id: string; name: string; profilePic: string }> | ApiResponse<404, { message: string }>, never>
     'Auth': ApiRouteHandler<{ authToken: string }, ApiResponse<200, { accessToken: string; user: { id: string; name: string; profilePic: string; email: string } }> | ApiResponse<401, { error: string }> | ApiResponse<500, { error: string }>, never>
     'EvaluatePlayerMove': EventHandler<{ fenBefore: string; fenAfter: string; gameId: string; moveId: string; player: string }, never>
+    'RunAllBenchmarks': ApiRouteHandler<{ positionCount?: number; force?: boolean }, ApiResponse<200, { message: string; positionCount: number; modelsQueued: number; models: Array<{ provider: string; model: string }> }> | ApiResponse<400, { message: string }>, never>
   }
 }

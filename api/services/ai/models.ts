@@ -12,24 +12,24 @@ export const models: AiProviderDefaultModel = {
 export const supportedModelsByProvider: AiModels = {
   openai: [
     // https://platform.openai.com/docs/models
+    'gpt-5.2-high',
     'gpt-5-2025-08-07',
     'gpt-5-mini-2025-08-07',
     'gpt-5-nano-2025-08-07',
-    'gpt-4.1-nano-2025-04-14',
     'gpt-4.1-mini-2025-04-14',
-    'gpt-4o-mini-2024-07-18',
+    'gpt-3.5-turbo-instruct',
     'o4-mini-2025-04-16',
   ],
   gemini: [
     // https://ai.google.dev/gemini-api/docs/models
+    'gemini-3.0-pro-preview',
+    'gemini-2.5-pro',
     'gemini-2.5-flash',
     'gemini-2.5-flash-lite',
-    'gemini-2.0-flash-001',
-    'gemini-2.0-flash-lite-001',
   ],
   claude: [
     // https://docs.anthropic.com/en/docs/about-claude/models/overview
-    'claude-opus-4-1-20250805',
+    'claude-opus-4.5',
     'claude-opus-4-20250514',
     'claude-sonnet-4-5-20250929',
     'claude-sonnet-4-20250514',

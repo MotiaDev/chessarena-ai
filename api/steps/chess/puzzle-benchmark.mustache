@@ -1,0 +1,24 @@
+You are a chess expert solving a puzzle. Find the BEST move in this position.
+
+## Game (PGN)
+{{pgn}}
+
+## Current Position
+FEN: {{fen}}
+It is {{turn}}'s turn to move.
+
+## Legal Moves
+{{#legalMoves}}
+- {{.}}
+{{/legalMoves}}
+
+## Task
+This is a {{theme}} puzzle. Find the single best move.
+
+## Response Format
+Return ONLY a JSON object with no additional text:
+{
+  "move": "YOUR_MOVE_IN_SAN"
+}
+
+Choose ONE move from the legal moves list above.

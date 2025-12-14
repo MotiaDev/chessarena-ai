@@ -92,9 +92,13 @@
   {
     "id": "benchmark",
     "config": {
-      "steps/benchmark/08-get-puzzle-sets.step.ts": {
-        "x": 33,
+      "steps/benchmark/09-run-all-benchmarks.step.ts": {
+        "x": 0,
         "y": 0
+      },
+      "steps/benchmark/08-get-puzzle-sets.step.ts": {
+        "x": 435,
+        "y": 30
       },
       "steps/benchmark/07-get-puzzle-leaderboard.step.ts": {
         "x": 3,
@@ -127,6 +131,14 @@
       "steps/benchmark/00-generate-position-set.step.ts": {
         "x": 0,
         "y": 1752
+      },
+      "steps/benchmark/10-run-stockfish-benchmark.step.ts": {
+        "x": 0,
+        "y": 0
+      },
+      "steps/benchmark/11-stockfish-leaderboard.step.ts": {
+        "x": 0,
+        "y": 0
       }
     }
   }

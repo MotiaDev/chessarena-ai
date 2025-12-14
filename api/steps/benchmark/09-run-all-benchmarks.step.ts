@@ -9,10 +9,7 @@ import fs from 'fs'
 import path from 'path'
 import mustache from 'mustache'
 
-const promptTemplate = fs.readFileSync(
-  path.join(__dirname, '../chess/legal-move-benchmark.mustache'),
-  'utf8'
-)
+const promptTemplate = fs.readFileSync(path.join(__dirname, '../chess/legal-move-benchmark.mustache'), 'utf8')
 
 const bodySchema = z.object({
   positionCount: z.number().min(1).max(50).default(20),
@@ -57,13 +54,13 @@ const benchmarkSinglePosition = async (
   position: TestPosition,
   provider: AiModelProvider,
   model: string,
-  logger: Logger
+  logger: Logger,
 ): Promise<ModelBenchmarkResult> => {
   const prompt = mustache.render(
     promptTemplate,
     { pgn: position.pgn, fen: position.fen, turn: position.turn.toUpperCase() },
     {},
-    { escape: (v: string) => v }
+    { escape: (v: string) => v },
   )
 
   const startTime = Date.now()
@@ -168,9 +165,11 @@ export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, strea
         const results = await Promise.all(
           currentBatch.map(async ({ provider, model }) => {
             const result = await benchmarkSinglePosition(position, provider, model, logger)
-            logger.info(`  ${provider}/${model}: ${result.correctMoves.length}/${position.legalMoveCount} correct, ${result.illegalMoves.length} illegal, score=${result.finalScore.toFixed(1)}%`)
+            logger.info(
+              `  ${provider}/${model}: ${result.correctMoves.length}/${position.legalMoveCount} correct, ${result.illegalMoves.length} illegal, score=${result.finalScore.toFixed(1)}%`,
+            )
             return { provider, model, result }
-          })
+          }),
         )
 
         // Store results
@@ -200,9 +199,18 @@ export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, strea
           positionCount: positions.length,
           positions,
           results,
-          averageAccuracy: completedResults.length > 0 ? completedResults.reduce((s, r) => s + r.accuracy, 0) / completedResults.length : 0,
-          averagePenalty: completedResults.length > 0 ? completedResults.reduce((s, r) => s + r.penalty, 0) / completedResults.length : 0,
-          averageFinalScore: completedResults.length > 0 ? completedResults.reduce((s, r) => s + r.finalScore, 0) / completedResults.length : 0,
+          averageAccuracy:
+            completedResults.length > 0
+              ? completedResults.reduce((s, r) => s + r.accuracy, 0) / completedResults.length
+              : 0,
+          averagePenalty:
+            completedResults.length > 0
+              ? completedResults.reduce((s, r) => s + r.penalty, 0) / completedResults.length
+              : 0,
+          averageFinalScore:
+            completedResults.length > 0
+              ? completedResults.reduce((s, r) => s + r.finalScore, 0) / completedResults.length
+              : 0,
           totalCorrectMoves: completedResults.reduce((s, r) => s + r.correctMoves.length, 0),
           totalIllegalMoves: completedResults.reduce((s, r) => s + r.illegalMoves.length, 0),
           totalMissedMoves: completedResults.reduce((s, r) => s + r.missedMoves.length, 0),
@@ -220,7 +228,9 @@ export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, strea
           runsCompleted: (existing?.runsCompleted ?? 0) + 1,
           averageScore: run.averageFinalScore ?? 0,
           bestScore: Math.max(existing?.bestScore ?? 0, run.averageFinalScore ?? 0),
-          worstScore: existing ? Math.min(existing.worstScore, run.averageFinalScore ?? 0) : (run.averageFinalScore ?? 0),
+          worstScore: existing
+            ? Math.min(existing.worstScore, run.averageFinalScore ?? 0)
+            : (run.averageFinalScore ?? 0),
           lastRunAt: Date.now(),
         })
 

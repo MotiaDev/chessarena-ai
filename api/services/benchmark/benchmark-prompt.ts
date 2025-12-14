@@ -3,7 +3,7 @@ import { createOpenAI } from '@ai-sdk/openai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createXai } from '@ai-sdk/xai'
-import { generateObject } from 'ai'
+import { streamObject } from 'ai'
 import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
 
@@ -80,23 +80,32 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
 
   try {
     const providerModel = createProviderModel(provider, model)
-    logger.info(`[${label}] Provider model created, calling generateObject...`)
+    logger.info(`[${label}] Provider model created, calling streamObject...`)
 
-    const apiCall = generateObject({
+    const { partialObjectStream, object } = streamObject({
       model: providerModel,
       prompt,
       schema: LegalMovesResponseSchema,
-      maxRetries: 1,
+      maxRetries: 0,
+      abortSignal: AbortSignal.timeout(TIMEOUT_MS),
     })
 
-    const { object } = await withTimeout(apiCall, TIMEOUT_MS, label)
+    // Consume stream (required for streamObject to complete)
+    for await (const partial of partialObjectStream) {
+      // Just consume, we only care about final result
+      if (partial.moves?.length) {
+        logger.info(`[${label}] Streaming... ${partial.moves.length} moves so far`)
+      }
+    }
+
+    const result = await withTimeout(object, TIMEOUT_MS, label)
 
     const elapsed = Date.now() - startTime
-    logger.info(`[${label}] SUCCESS in ${elapsed}ms - ${object.moves?.length ?? 0} moves returned`)
+    logger.info(`[${label}] SUCCESS in ${elapsed}ms - ${result.moves?.length ?? 0} moves returned`)
 
     return {
-      moves: object.moves ?? [],
-      rawResponse: JSON.stringify(object),
+      moves: result.moves ?? [],
+      rawResponse: JSON.stringify(result),
     }
   } catch (error) {
     const elapsed = Date.now() - startTime

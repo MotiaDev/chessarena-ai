@@ -84,6 +84,9 @@ export const generateTestPositions = (options: Partial<GeneratePositionsOptions>
 
 /**
  * Calculate benchmark score for a single position
+ * Uses F1-style scoring: harmonic mean of recall and precision
+ * - Recall: what % of legal moves did you find
+ * - Precision: what % of your answers were correct
  */
 const calculateScore = (
   legalMoves: string[],
@@ -103,9 +106,18 @@ const calculateScore = (
   const illegal = modelMoves.filter((m) => !legalSet.has(m))
   const missed = legalMoves.filter((m) => !modelSet.has(m))
 
-  const accuracy = legalMoves.length > 0 ? (correct.length / legalMoves.length) * 100 : 0
-  const penalty = illegal.length * 5
-  const finalScore = Math.max(0, accuracy - penalty)
+  // Recall: how many legal moves did you find
+  const recall = legalMoves.length > 0 ? (correct.length / legalMoves.length) * 100 : 0
+
+  // Precision: how many of your answers were correct
+  const precision = modelMoves.length > 0 ? (correct.length / modelMoves.length) * 100 : 0
+
+  // F1 score: harmonic mean of precision and recall
+  const finalScore = precision + recall > 0 ? (2 * precision * recall) / (precision + recall) : 0
+
+  // Keep accuracy as recall for backwards compatibility, penalty as inverse of precision
+  const accuracy = recall
+  const penalty = 100 - precision
 
   return { correct, illegal, missed, accuracy, penalty, finalScore }
 }

@@ -123,6 +123,10 @@
       "steps/benchmark/01-run-legal-move-benchmark.step.ts": {
         "x": 0,
         "y": 1528
+      },
+      "steps/benchmark/00-generate-position-set.step.ts": {
+        "x": 0,
+        "y": 1752
       }
     }
   }

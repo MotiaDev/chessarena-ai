@@ -25,7 +25,7 @@ const createProviderModel = (provider: AiModelProvider, model: string) => {
       return openai(model)
     }
     case 'gemini': {
-      const google = createGoogleGenerativeAI({ apiKey: process.env.GOOGLE_API_KEY })
+      const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY })
       return google(model)
     }
     case 'claude': {

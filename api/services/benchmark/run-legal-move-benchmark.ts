@@ -169,17 +169,16 @@ const benchmarkPosition = async (
 }
 
 /**
- * Run full benchmark for a model
+ * Run full benchmark for a model using provided positions
  */
 export const runLegalMoveBenchmark = async (
+  positions: TestPosition[],
   provider: AiModelProvider,
   model: string,
   logger: Logger,
-  positionCount: number = 20,
   onProgress?: (completed: number, total: number) => void,
 ): Promise<LegalMoveBenchmarkRun> => {
   const runId = crypto.randomUUID()
-  const positions = generateTestPositions({ count: positionCount })
 
   logger.info('Starting legal move benchmark', {
     runId,

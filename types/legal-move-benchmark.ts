@@ -62,7 +62,15 @@ export const LegalMoveBenchmarkSummarySchema = z.object({
   lastRunAt: z.number(),
 })
 
+export const PositionSetSchema = z.object({
+  id: z.string(),
+  createdAt: z.number(),
+  count: z.number(),
+  positions: z.array(TestPositionSchema),
+})
+
 export type TestPosition = z.infer<typeof TestPositionSchema>
 export type ModelBenchmarkResult = z.infer<typeof ModelBenchmarkResultSchema>
 export type LegalMoveBenchmarkRun = z.infer<typeof LegalMoveBenchmarkRunSchema>
 export type LegalMoveBenchmarkSummary = z.infer<typeof LegalMoveBenchmarkSummarySchema>
+export type PositionSet = z.infer<typeof PositionSetSchema>

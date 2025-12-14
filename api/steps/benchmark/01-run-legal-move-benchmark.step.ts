@@ -2,13 +2,12 @@ import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { AiModelProviderSchema } from '@chessarena/types/ai-models'
 import { LegalMoveBenchmarkRunSchema } from '@chessarena/types/legal-move-benchmark'
-import { runLegalMoveBenchmark } from '../../services/benchmark/run-legal-move-benchmark'
+import { runLegalMoveBenchmark, generateTestPositions } from '../../services/benchmark/run-legal-move-benchmark'
 import { supportedModelsByProvider } from '../../services/ai/models'
 
 const bodySchema = z.object({
   provider: AiModelProviderSchema(),
   model: z.string(),
-  positionCount: z.number().min(1).max(50).default(20),
 })
 
 export const config: ApiRouteConfig = {
@@ -27,7 +26,7 @@ export const config: ApiRouteConfig = {
 }
 
 export const handler: Handlers['RunLegalMoveBenchmark'] = async (req, { logger, streams }) => {
-  const { provider, model, positionCount } = req.body
+  const { provider, model } = req.body
 
   // Validate model exists for provider
   const supportedModels = supportedModelsByProvider[provider]
@@ -38,10 +37,24 @@ export const handler: Handlers['RunLegalMoveBenchmark'] = async (req, { logger, 
     }
   }
 
-  logger.info('Starting legal move benchmark', { provider, model, positionCount })
+  // Get or create position set
+  let positionSet = await streams.positionSet.get('sets', 'default')
+  if (!positionSet || positionSet.positions.length === 0) {
+    logger.info('No position set found, generating new one')
+    const positions = generateTestPositions({ count: 20 })
+    positionSet = {
+      id: `positions-${Date.now()}`,
+      createdAt: Date.now(),
+      count: positions.length,
+      positions,
+    }
+    await streams.positionSet.set('sets', 'default', positionSet)
+  }
+
+  logger.info('Starting legal move benchmark', { provider, model, positionCount: positionSet.positions.length })
 
   try {
-    const run = await runLegalMoveBenchmark(provider, model, logger, positionCount)
+    const run = await runLegalMoveBenchmark(positionSet.positions, provider, model, logger)
 
     // Store the run result
     await streams.legalMoveBenchmark.set('runs', run.id, run)

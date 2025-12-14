@@ -98,13 +98,30 @@ export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, strea
     }
   }
 
-  // Fire all benchmarks in parallel (don't await)
-  Promise.all(allModels.map(({ provider, model }) => runBenchmark(provider, model)))
+  // Run benchmarks in batches of 3 to avoid rate limits
+  const BATCH_SIZE = 3
+  const runInBatches = async () => {
+    for (let i = 0; i < allModels.length; i += BATCH_SIZE) {
+      const batch = allModels.slice(i, i + BATCH_SIZE)
+      logger.info('Running batch', { batchIndex: Math.floor(i / BATCH_SIZE) + 1, models: batch.map(m => m.model) })
+      
+      await Promise.all(batch.map(({ provider, model }) => runBenchmark(provider, model)))
+      
+      // Wait 5 seconds between batches to avoid rate limits
+      if (i + BATCH_SIZE < allModels.length) {
+        await new Promise(resolve => setTimeout(resolve, 5000))
+      }
+    }
+    logger.info('All benchmarks completed!')
+  }
+
+  // Fire and forget - runs in background
+  runInBatches()
 
   return {
     status: 200,
     body: {
-      message: 'Benchmarks started for all models in parallel',
+      message: `Benchmarks started for ${allModels.length} models in batches of ${BATCH_SIZE}`,
       positionCount: positionSet.positions.length,
       modelsQueued: allModels.length,
       models: allModels,

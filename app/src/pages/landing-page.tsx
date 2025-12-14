@@ -75,12 +75,18 @@ export const LandingPage = () => {
               Two variants: <span className="text-emerald-400/80">Guided</span> (legal moves provided) 
               and <span className="text-amber-400/80">Unguided</span> (FEN only).
             </p>
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4 flex-wrap">
+              <button
+                onClick={() => navigate('/play-ai')}
+                className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-indigo-500 hover:to-purple-500 transition-all shadow-lg"
+              >
+                Play vs AI
+              </button>
               <button
                 onClick={() => navigate('/new')}
                 className="px-6 py-2.5 bg-white text-black text-sm font-medium rounded-lg hover:bg-white/90 transition-colors"
               >
-                Create Game
+                AI vs AI
               </button>
               <button
                 onClick={() => navigate('/methodology')}

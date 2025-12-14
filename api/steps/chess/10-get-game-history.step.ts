@@ -1,6 +1,6 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
-import { GameHistorySchema, GameHistoryFilterSchema } from '@chessarena/types/game-history'
+import { GameHistorySchema } from '@chessarena/types/game-history'
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -10,7 +10,17 @@ export const config: ApiRouteConfig = {
   method: 'GET',
   emits: [],
   flows: ['chess'],
-  querySchema: GameHistoryFilterSchema,
+  queryParams: [
+    { name: 'provider', description: 'Filter by AI provider' },
+    { name: 'model', description: 'Filter by model name' },
+    { name: 'variant', description: 'Filter by game variant' },
+    { name: 'winner', description: 'Filter by winner' },
+    { name: 'status', description: 'Filter by game status' },
+    { name: 'startDate', description: 'Filter by start date (timestamp)' },
+    { name: 'endDate', description: 'Filter by end date (timestamp)' },
+    { name: 'limit', description: 'Pagination limit' },
+    { name: 'offset', description: 'Pagination offset' },
+  ],
   responseSchema: {
     200: z.object({
       games: z.array(GameHistorySchema.omit({ moves: true, messages: true })),
@@ -24,17 +34,16 @@ export const config: ApiRouteConfig = {
 export const handler: Handlers['GetGameHistory'] = async (req, { logger, streams }) => {
   logger.info('[GetGameHistory] Fetching game history', { query: req.queryParams })
 
-  const {
-    provider,
-    model,
-    variant,
-    winner,
-    status,
-    startDate,
-    endDate,
-    limit = 50,
-    offset = 0,
-  } = req.queryParams as z.infer<typeof GameHistoryFilterSchema>
+  const params = req.queryParams as Record<string, string | undefined>
+  const provider = params.provider
+  const model = params.model
+  const variant = params.variant as 'guided' | 'unguided' | undefined
+  const winner = params.winner as 'white' | 'black' | undefined
+  const status = params.status
+  const startDate = params.startDate ? parseInt(params.startDate) : undefined
+  const endDate = params.endDate ? parseInt(params.endDate) : undefined
+  const limit = params.limit ? parseInt(params.limit) : 50
+  const offset = params.offset ? parseInt(params.offset) : 0
 
   const allGames = await streams.chessGameHistory.getGroup('all')
 

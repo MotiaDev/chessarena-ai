@@ -1,14 +1,6 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
-import { AiModelProviderSchema } from '@chessarena/types/ai-models'
 import { LegalMoveBenchmarkRunSchema } from '@chessarena/types/legal-move-benchmark'
-
-const querySchema = z.object({
-  provider: AiModelProviderSchema().optional(),
-  model: z.string().optional(),
-  limit: z.coerce.number().default(20),
-  offset: z.coerce.number().default(0),
-})
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -18,7 +10,12 @@ export const config: ApiRouteConfig = {
   method: 'GET',
   emits: [],
   flows: ['benchmark'],
-  querySchema,
+  queryParams: [
+    { name: 'provider', description: 'Filter by AI provider' },
+    { name: 'model', description: 'Filter by model name' },
+    { name: 'limit', description: 'Pagination limit' },
+    { name: 'offset', description: 'Pagination offset' },
+  ],
   responseSchema: {
     200: z.object({
       runs: z.array(
@@ -32,7 +29,11 @@ export const config: ApiRouteConfig = {
 }
 
 export const handler: Handlers['GetBenchmarkRuns'] = async (req, { logger, streams }) => {
-  const { provider, model, limit, offset } = req.queryParams as z.infer<typeof querySchema>
+  const params = req.queryParams as Record<string, string | undefined>
+  const provider = params.provider
+  const model = params.model
+  const limit = params.limit ? parseInt(params.limit) : 20
+  const offset = params.offset ? parseInt(params.offset) : 0
 
   logger.info('Fetching benchmark runs', { provider, model, limit, offset })
 

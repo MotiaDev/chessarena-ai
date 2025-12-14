@@ -1,10 +1,5 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
-import { GameHistoryFilterSchema } from '@chessarena/types/game-history'
-
-const ExportQuerySchema = GameHistoryFilterSchema.extend({
-  format: z.enum(['json', 'csv']).default('json'),
-})
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -14,7 +9,16 @@ export const config: ApiRouteConfig = {
   method: 'GET',
   emits: [],
   flows: ['chess'],
-  querySchema: ExportQuerySchema,
+  queryParams: [
+    { name: 'provider', description: 'Filter by AI provider' },
+    { name: 'model', description: 'Filter by model name' },
+    { name: 'variant', description: 'Filter by game variant' },
+    { name: 'winner', description: 'Filter by winner' },
+    { name: 'status', description: 'Filter by game status' },
+    { name: 'startDate', description: 'Filter by start date (timestamp)' },
+    { name: 'endDate', description: 'Filter by end date (timestamp)' },
+    { name: 'format', description: 'Export format: json or csv' },
+  ],
   responseSchema: {
     200: z.any(),
   },
@@ -32,16 +36,15 @@ const escapeCsvField = (value: string | number | undefined | null): string => {
 export const handler: Handlers['ExportGameHistory'] = async (req, { logger, streams }) => {
   logger.info('[ExportGameHistory] Exporting game history', { query: req.queryParams })
 
-  const {
-    provider,
-    model,
-    variant,
-    winner,
-    status,
-    startDate,
-    endDate,
-    format = 'json',
-  } = req.queryParams as z.infer<typeof ExportQuerySchema>
+  const params = req.queryParams as Record<string, string | undefined>
+  const provider = params.provider
+  const model = params.model
+  const variant = params.variant as 'guided' | 'unguided' | undefined
+  const winner = params.winner as 'white' | 'black' | undefined
+  const status = params.status
+  const startDate = params.startDate ? parseInt(params.startDate) : undefined
+  const endDate = params.endDate ? parseInt(params.endDate) : undefined
+  const format = (params.format as 'json' | 'csv') || 'json'
 
   const allGames = await streams.chessGameHistory.getGroup('all')
 

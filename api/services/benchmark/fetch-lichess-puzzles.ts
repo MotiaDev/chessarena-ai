@@ -52,7 +52,7 @@ const fetchSinglePuzzle = async (theme: PuzzleTheme, logger: Logger): Promise<Li
 
     // Replay the game to get the puzzle position
     const chess = new Chess()
-    const moves = data.game.pgn.split(' ').filter((m) => !m.includes('.'))
+    const moves = data.game.pgn.split(' ').filter((m) => !m.includes('.') && m.length > 0)
 
     // Play moves up to initialPly
     for (let i = 0; i < data.puzzle.initialPly && i < moves.length; i++) {
@@ -60,6 +60,16 @@ const fetchSinglePuzzle = async (theme: PuzzleTheme, logger: Logger): Promise<Li
         chess.move(moves[i])
       } catch {
         // Some moves might be invalid, skip
+      }
+    }
+
+    // Play one more move (the setup move) - this is the opponent's last move before the puzzle
+    if (moves.length > data.puzzle.initialPly) {
+      try {
+        chess.move(moves[data.puzzle.initialPly])
+      } catch {
+        logger.warn('Could not play setup move', { puzzleId: data.puzzle.id })
+        return null
       }
     }
 

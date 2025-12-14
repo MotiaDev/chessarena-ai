@@ -1,7 +1,8 @@
 import { StreamConfig } from 'motia'
+import { PositionSetSchema } from '@chessarena/types/legal-move-benchmark'
 
 export const config: StreamConfig = {
-  type: 'stream',
   name: 'positionSet',
-  storageType: 'default',
+  schema: PositionSetSchema,
+  baseConfig: { storageType: 'default' },
 }

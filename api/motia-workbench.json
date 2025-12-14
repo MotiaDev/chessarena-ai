@@ -134,11 +134,11 @@
       },
       "steps/benchmark/10-run-stockfish-benchmark.step.ts": {
         "x": 0,
-        "y": 0
+        "y": 2220
       },
       "steps/benchmark/11-stockfish-leaderboard.step.ts": {
         "x": 0,
-        "y": 0
+        "y": 2444
       }
     }
   }

@@ -59,7 +59,7 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
       prompt,
       schema: LegalMovesResponseSchema,
       maxRetries: 1,
-      abortSignal: AbortSignal.timeout(120000), // 2 minute timeout
+      abortSignal: AbortSignal.timeout(60000), // 1 minute timeout
     })
 
     logger.info('Benchmark prompt completed', {

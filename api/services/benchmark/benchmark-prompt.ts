@@ -49,7 +49,22 @@ const createProviderModel = (provider: AiModelProvider, model: string) => {
 export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<BenchmarkPromptResult> => {
   const { prompt, provider, model, logger } = input
 
-  logger.info('Making benchmark prompt', { provider, model })
+  const startTime = Date.now()
+  logger.info(`[${provider}/${model}] Starting API call...`)
+
+  // Check API key
+  const apiKeyEnvVar = {
+    openai: 'OPENAI_API_KEY',
+    gemini: 'GEMINI_API_KEY',
+    claude: 'ANTHROPIC_API_KEY',
+    grok: 'XAI_API_KEY',
+  }[provider]
+
+  const apiKey = process.env[apiKeyEnvVar]
+  if (!apiKey) {
+    logger.error(`[${provider}/${model}] MISSING API KEY: ${apiKeyEnvVar} not set`)
+    return { moves: [], rawResponse: `Missing ${apiKeyEnvVar}` }
+  }
 
   try {
     const providerModel = createProviderModel(provider, model)
@@ -62,27 +77,36 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
       abortSignal: AbortSignal.timeout(60000), // 1 minute timeout
     })
 
-    logger.info('Benchmark prompt completed', {
-      provider,
-      model,
-      movesCount: object.moves?.length ?? 0,
-    })
+    const elapsed = Date.now() - startTime
+    logger.info(`[${provider}/${model}] SUCCESS in ${elapsed}ms - ${object.moves?.length ?? 0} moves returned`)
 
     return {
       moves: object.moves ?? [],
       rawResponse: JSON.stringify(object),
     }
   } catch (error) {
-    logger.error('Benchmark prompt failed', {
-      provider,
-      model,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    })
+    const elapsed = Date.now() - startTime
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+    const errorName = error instanceof Error ? error.name : 'Error'
 
-    // Return empty result on error
+    logger.error(`[${provider}/${model}] FAILED after ${elapsed}ms`)
+    logger.error(`[${provider}/${model}] Error type: ${errorName}`)
+    logger.error(`[${provider}/${model}] Error message: ${errorMsg}`)
+
+    // Check for common issues
+    if (errorMsg.includes('401') || errorMsg.includes('Unauthorized')) {
+      logger.error(`[${provider}/${model}] Invalid API key for ${apiKeyEnvVar}`)
+    } else if (errorMsg.includes('404') || errorMsg.includes('not found')) {
+      logger.error(`[${provider}/${model}] Model "${model}" not found - check model name`)
+    } else if (errorMsg.includes('429') || errorMsg.includes('rate')) {
+      logger.error(`[${provider}/${model}] Rate limited`)
+    } else if (errorMsg.includes('timeout') || errorMsg.includes('abort')) {
+      logger.error(`[${provider}/${model}] Request timed out after 60s`)
+    }
+
     return {
       moves: [],
-      rawResponse: error instanceof Error ? error.message : 'Unknown error',
+      rawResponse: errorMsg,
     }
   }
 }

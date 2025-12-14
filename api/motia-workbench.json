@@ -20,6 +20,18 @@
   {
     "id": "chess",
     "config": {
+      "steps/chess/11-get-game-history-detail.step.ts": {
+        "x": 0,
+        "y": 0
+      },
+      "steps/chess/10b-export-game-history.step.ts": {
+        "x": 6,
+        "y": 224
+      },
+      "steps/chess/10-get-game-history.step.ts": {
+        "x": 26,
+        "y": 428
+      },
       "steps/chess/09-purge-stuck-games.step.ts": {
         "x": -237,
         "y": 580
@@ -59,8 +71,8 @@
         "targetHandlePosition": "left"
       },
       "steps/chess/00-available-models-api.step.ts": {
-        "x": -209,
-        "y": 86,
+        "x": -460,
+        "y": 111,
         "sourceHandlePosition": "right"
       },
       "steps/chess/access/request-access.step.ts": {

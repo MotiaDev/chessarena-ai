@@ -37,11 +37,27 @@ const uciToSan = (chess: Chess, uci: string): string | null => {
 }
 
 /**
- * Fetch a single puzzle from Lichess API
+ * Fetch a single puzzle from Lichess API with retry on rate limit
  */
-const fetchSinglePuzzle = async (theme: PuzzleTheme, logger: Logger): Promise<LichessPuzzle | null> => {
+const fetchSinglePuzzle = async (
+  theme: PuzzleTheme,
+  logger: Logger,
+  retryCount = 0,
+): Promise<LichessPuzzle | null> => {
   try {
     const response = await fetch(`https://lichess.org/api/puzzle/next?angle=${theme}`)
+
+    if (response.status === 429) {
+      // Rate limited - wait and retry
+      if (retryCount < 3) {
+        const waitTime = (retryCount + 1) * 5000 // 5s, 10s, 15s
+        logger.warn('Rate limited by Lichess, waiting...', { waitTime, retryCount })
+        await new Promise((resolve) => setTimeout(resolve, waitTime))
+        return fetchSinglePuzzle(theme, logger, retryCount + 1)
+      }
+      logger.error('Max retries reached for rate limit')
+      return null
+    }
 
     if (!response.ok) {
       logger.error('Lichess API error', { status: response.status })
@@ -126,9 +142,9 @@ export const fetchPuzzles = async (theme: PuzzleTheme, count: number, logger: Lo
       })
     }
 
-    // Rate limiting - wait 500ms between requests
+    // Rate limiting - wait 1.5s between requests to avoid 429
     if (puzzles.length < count) {
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      await new Promise((resolve) => setTimeout(resolve, 1500))
     }
   }
 

@@ -39,6 +39,7 @@ declare module 'motia' {
     'AvailableModels': ApiRouteHandler<{}, ApiResponse<200, { models: { openai: Array<string>; gemini: Array<string>; claude: Array<string>; grok: Array<string> } }> | ApiResponse<400, { message: string }> | ApiResponse<404, { message: string }>, never>
     'RequestAccess': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, {}> | ApiResponse<400, { message: string }> | ApiResponse<404, { message: string }>, never>
     'AcceptRequestAccess': ApiRouteHandler<{ userId: string }, ApiResponse<200, {}> | ApiResponse<400, { message: string }> | ApiResponse<404, { message: string }>, never>
+    'RunAllBenchmarks': ApiRouteHandler<{ positionCount?: number; force?: boolean }, ApiResponse<200, { message: string; positionCount: number; modelsQueued: number; models: Array<{ provider: string; model: string }> }> | ApiResponse<400, { message: string }>, never>
     'GetPuzzleSets': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, { sets: Array<{ id: string; theme: 'mateIn1' | 'oneMove'; createdAt: number; count: number; puzzleCount: number }> }>, never>
     'GetPuzzleLeaderboard': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, { leaderboard: Array<{ id: string; provider: 'openai' | 'gemini' | 'claude' | 'grok'; model: string; mateIn1Accuracy?: number; oneMoveAccuracy?: number; overallAccuracy?: number; runsCompleted: number; lastRunAt: number }> }>, never>
     'RunPuzzleBenchmark': ApiRouteHandler<{ provider: 'openai' | 'gemini' | 'claude' | 'grok'; model: string; theme: 'mateIn1' | 'oneMove' }, ApiResponse<200, { id: string; createdAt: number; completedAt?: number; status: 'pending' | 'running' | 'completed' | 'failed'; provider: 'openai' | 'gemini' | 'claude' | 'grok'; model: string; puzzleSetId: string; theme: 'mateIn1' | 'oneMove'; results: Array<{ puzzleId: string; modelMove?: string; correctMove: string; isCorrect: boolean; responseTime: number; rawResponse: string; error?: string }>; totalPuzzles: number; correctCount?: number; accuracy?: number }> | ApiResponse<400, { message: string }>, never>
@@ -51,6 +52,5 @@ declare module 'motia' {
     'GetUser': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, { id: string; name: string; profilePic: string }> | ApiResponse<404, { message: string }>, never>
     'Auth': ApiRouteHandler<{ authToken: string }, ApiResponse<200, { accessToken: string; user: { id: string; name: string; profilePic: string; email: string } }> | ApiResponse<401, { error: string }> | ApiResponse<500, { error: string }>, never>
     'EvaluatePlayerMove': EventHandler<{ fenBefore: string; fenAfter: string; gameId: string; moveId: string; player: string }, never>
-    'RunAllBenchmarks': ApiRouteHandler<{ positionCount?: number; force?: boolean }, ApiResponse<200, { message: string; positionCount: number; modelsQueued: number; models: Array<{ provider: string; model: string }> }> | ApiResponse<400, { message: string }>, never>
   }
 }

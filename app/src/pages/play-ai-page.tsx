@@ -2,15 +2,15 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Page } from '@/components/page'
 import { usePageTitle } from '@/lib/use-page-title'
-import { useAuth } from '@/components/auth/auth-provider'
-import { apiUrl } from '@/lib/env'
+import { useAuth } from '@/lib/auth/use-auth'
+import { apiClient } from '@/lib/auth/api-client'
 import { cn } from '@/lib/utils'
 
 type ColorChoice = 'white' | 'black' | 'random'
 
 export const PlayAIPage = () => {
   const navigate = useNavigate()
-  const { token, isLoggedIn } = useAuth()
+  const { isAuthenticated } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [selectedColor, setSelectedColor] = useState<ColorChoice>('random')
   const [error, setError] = useState<string | null>(null)
@@ -18,7 +18,8 @@ export const PlayAIPage = () => {
   usePageTitle('Play vs AI')
 
   const handlePlay = async () => {
-    if (!isLoggedIn) {
+    if (!isAuthenticated) {
+      localStorage.setItem('chessarena-redirect', '/play-ai')
       navigate('/login')
       return
     }
@@ -27,24 +28,15 @@ export const PlayAIPage = () => {
     setError(null)
 
     try {
-      const response = await fetch(`${apiUrl}/chess/play-vs-ai`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ playerColor: selectedColor }),
-      })
+      const { data } = await apiClient.post<{ game: { id: string }; opponent: { provider: string; model: string } }>(
+        '/chess/play-vs-ai',
+        { playerColor: selectedColor }
+      )
 
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.message || 'Failed to create game')
-      }
-
-      const data = await response.json()
       navigate(`/game/${data.game.id}`)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      const message = err instanceof Error ? err.message : 'Something went wrong'
+      setError(message)
       setIsLoading(false)
     }
   }

@@ -158,6 +158,9 @@ const benchmarkPosition = async (
 
     rawResponse = response.rawResponse
     modelMoves = response.moves
+    if (response.error) {
+      error = response.error
+    }
   } catch (e) {
     error = e instanceof Error ? e.message : 'Unknown error'
     logger.error('Benchmark position failed', { error, positionId: position.id })
@@ -239,7 +242,7 @@ export const runLegalMoveBenchmark = async (
   }
 
   run.completedAt = Date.now()
-  run.status = 'completed'
+  run.status = completedResults.length > 0 ? 'completed' : 'failed'
 
   logger.info('Legal move benchmark completed', {
     runId,

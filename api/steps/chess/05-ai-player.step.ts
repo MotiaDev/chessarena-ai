@@ -64,25 +64,17 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       timestamp: Date.now(),
     })
 
-    const isUnguided = game.variant === 'unguided'
-    const template = isUnguided ? unguidedTemplate : guidedTemplate
-    const templateData = isUnguided
-      ? {
-          fenBefore: input.fenBefore,
-          fen: input.fen,
-          inCheck: input.check,
-          player: input.player,
-          lastInvalidMove,
-        }
-      : {
-          fenBefore: input.fenBefore,
-          fen: input.fen,
-          inCheck: input.check,
-          player: input.player,
-          lastInvalidMove,
-          validMoves,
-          totalMoves: validMoves.length,
-        }
+    // Arena games always run guided. Rule understanding is benchmarked separately via legal-move bench.
+    const template = guidedTemplate
+    const templateData = {
+      fenBefore: input.fenBefore,
+      fen: input.fen,
+      inCheck: input.check,
+      player: input.player,
+      lastInvalidMove,
+      validMoves,
+      totalMoves: validMoves.length,
+    }
 
     const prompt = mustache.render(template, templateData, {}, { escape: (value: string) => value })
     logger.info('Prompt', { prompt, variant: game.variant })

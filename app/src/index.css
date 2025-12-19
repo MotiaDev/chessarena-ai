@@ -167,9 +167,10 @@
   body,
   #root {
     width: 100dvw;
-    height: 100dvh;
+    min-height: 100dvh;
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   strong {

@@ -19,7 +19,7 @@ import { useGameHistoryDetail } from '@/lib/use-game-history'
 import { AiIcon } from '@/components/chess/ai-icon'
 import { cn } from '@/lib/utils'
 import type { AiModelProvider } from '@chessarena/types/ai-models'
-import type { Key } from 'chessground/types'
+import type { Key } from '@lichess-org/chessground/types'
 
 const INITIAL_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 

@@ -15,6 +15,8 @@ import { MethodologyPage } from './pages/methodology-page'
 import { GameHistoryPage } from './pages/game-history-page'
 import { GameReplayPage } from './pages/game-replay-page'
 import { PlayAIPage } from './pages/play-ai-page'
+import { BenchPage } from './pages/bench-page'
+import { ArenaPage } from './pages/arena-page'
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
             <Route path="/history" element={<GameHistoryPage />} />
             <Route path="/history/:gameId" element={<GameReplayPage />} />
             <Route path="/play-ai" element={<PlayAIPage />} />
+            <Route path="/bench" element={<BenchPage />} />
+            <Route path="/arena" element={<ArenaPage />} />
             <Route path="/privacy-policy" element={<PrivacyPage />} />
           </Routes>
         </AuthProvider>

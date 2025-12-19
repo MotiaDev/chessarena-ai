@@ -46,8 +46,6 @@ export const supportedModelsByProvider: AiModels = {
     'gemini-2.5-flash',         // Fast
     'gemini-2.5-flash-lite',    // Ultra fast
     'gemini-2.0-flash',         // Stable flash
-    'gemini-1.5-pro',           // Previous pro
-    'gemini-1.5-flash',         // Previous flash
   ],
   // From AI SDK docs: https://sdk.vercel.ai/providers/ai-sdk-providers/anthropic
   claude: [

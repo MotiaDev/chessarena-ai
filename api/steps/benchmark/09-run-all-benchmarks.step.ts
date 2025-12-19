@@ -15,6 +15,7 @@ const promptTemplate = fs.readFileSync(path.join(__dirname, '../chess/legal-move
 const bodySchema = z.object({
   positionCount: z.number().min(1).max(50).default(20),
   force: z.boolean().default(false),
+  rerunCompleted: z.boolean().default(false),
 })
 
 export const config: ApiRouteConfig = {
@@ -96,7 +97,7 @@ const benchmarkSinglePosition = async (
 }
 
 export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, streams }) => {
-  const { positionCount, force } = req.body
+  const { positionCount, force, rerunCompleted } = req.body
 
   logger.info('=== STARTING FULL BENCHMARK ===', { positionCount, force })
 
@@ -120,14 +121,19 @@ export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, strea
   // Get all models to benchmark using the helper function
   const allModels = getAllModels()
 
-  const totalModels = allModels.length
+  const existingSummaries = await streams.legalMoveBenchmarkSummary.getGroup('models')
+  const completedSet = new Set(existingSummaries.map((s) => `${s.provider}:${s.model}`))
+
+  const modelsToBenchmark = rerunCompleted ? allModels : allModels.filter((m) => !completedSet.has(`${m.provider}:${m.model}`))
+
+  const totalModels = modelsToBenchmark.length
   logger.info('Models to benchmark', { totalModels })
 
   const runAllBenchmarks = async () => {
     const providerConcurrency = parsePositiveInt(process.env.BENCHMARK_PROVIDER_CONCURRENCY, 4)
     const modelConcurrencyPerProvider = parsePositiveInt(process.env.BENCHMARK_MODEL_CONCURRENCY_PER_PROVIDER, 1)
 
-    const modelsByProvider = allModels.reduce<Record<AiModelProvider, { provider: AiModelProvider; model: string }[]>>(
+    const modelsByProvider = modelsToBenchmark.reduce<Record<AiModelProvider, { provider: AiModelProvider; model: string }[]>>(
       (acc, entry) => {
         acc[entry.provider].push(entry)
         return acc
@@ -147,21 +153,23 @@ export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, strea
         await streams.legalMoveBenchmark.set('runs', run.id, run)
 
         const key = `${provider}:${model}`
-        const existing = await streams.legalMoveBenchmarkSummary.get('models', key)
-        await streams.legalMoveBenchmarkSummary.set('models', key, {
-          id: key,
-          provider,
-          model,
-          runsCompleted: (existing?.runsCompleted ?? 0) + 1,
-          averageScore: existing
-            ? (existing.averageScore * existing.runsCompleted + (run.averageFinalScore ?? 0)) / (existing.runsCompleted + 1)
-            : (run.averageFinalScore ?? 0),
-          bestScore: Math.max(existing?.bestScore ?? 0, run.averageFinalScore ?? 0),
-          worstScore: existing
-            ? Math.min(existing.worstScore, run.averageFinalScore ?? 0)
-            : (run.averageFinalScore ?? 0),
-          lastRunAt: Date.now(),
-        })
+        if (run.status === 'completed' && run.averageFinalScore !== undefined) {
+          const existing = await streams.legalMoveBenchmarkSummary.get('models', key)
+          await streams.legalMoveBenchmarkSummary.set('models', key, {
+            id: key,
+            provider,
+            model,
+            runsCompleted: (existing?.runsCompleted ?? 0) + 1,
+            averageScore: existing
+              ? (existing.averageScore * existing.runsCompleted + run.averageFinalScore) / (existing.runsCompleted + 1)
+              : run.averageFinalScore,
+            bestScore: Math.max(existing?.bestScore ?? 0, run.averageFinalScore),
+            worstScore: existing ? Math.min(existing.worstScore, run.averageFinalScore) : run.averageFinalScore,
+            lastRunAt: Date.now(),
+          })
+        } else {
+          logger.warn('Skipping summary update for failed run', { provider, model, runId: run.id })
+        }
       })
     })
 

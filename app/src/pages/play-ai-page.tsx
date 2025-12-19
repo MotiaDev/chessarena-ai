@@ -28,9 +28,9 @@ export const PlayAIPage = () => {
     setError(null)
 
     try {
-      const { data } = await apiClient.post<{ game: { id: string }; opponent: { provider: string; model: string } }>(
+      const data = await apiClient.post<{ game: { id: string }; opponent: { provider: string; model: string } }>(
         '/chess/play-vs-ai',
-        { playerColor: selectedColor }
+        { playerColor: selectedColor },
       )
 
       navigate(`/game/${data.game.id}`)

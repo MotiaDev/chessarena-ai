@@ -22,6 +22,7 @@ type BenchmarkPromptInput = {
 type BenchmarkPromptResult = {
   moves: string[]
   rawResponse: string
+  error?: string
 }
 
 const createProviderModel = (provider: AiModelProvider, model: string) => {
@@ -47,7 +48,7 @@ const createProviderModel = (provider: AiModelProvider, model: string) => {
   }
 }
 
-const TIMEOUT_MS = 180000 // 3 minutes
+const TIMEOUT_MS = Number.parseInt(process.env.BENCHMARK_REQUEST_TIMEOUT_MS ?? '180000', 10) || 180000
 
 export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<BenchmarkPromptResult> => {
   const { prompt, provider, model, logger } = input
@@ -66,7 +67,7 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
   const apiKey = process.env[apiKeyEnvVar]
   if (!apiKey) {
     logger.error(`[${label}] Missing ${apiKeyEnvVar}`)
-    return { moves: [], rawResponse: `Missing ${apiKeyEnvVar}` }
+    return { moves: [], rawResponse: `Missing ${apiKeyEnvVar}`, error: `Missing ${apiKeyEnvVar}` }
   }
 
   try {
@@ -92,16 +93,16 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
           try {
             parsed = JSON.parse(text.slice(start, end + 1))
           } catch {
-            return { moves: [], rawResponse: text }
+            return { moves: [], rawResponse: text, error: 'Could not parse JSON response' }
           }
         } else {
-          return { moves: [], rawResponse: text }
+          return { moves: [], rawResponse: text, error: 'Could not parse JSON response' }
         }
       }
 
       const validated = LegalMovesResponseSchema.safeParse(parsed)
       if (!validated.success) {
-        return { moves: [], rawResponse: text }
+        return { moves: [], rawResponse: text, error: 'Response did not match schema' }
       }
 
       return { moves: validated.data.moves, rawResponse: text }
@@ -113,7 +114,7 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
       schema: LegalMovesResponseSchema,
       maxRetries: 0,
       abortSignal: AbortSignal.timeout(TIMEOUT_MS),
-      providerOptions,
+      providerOptions: providerOptions as any,
     })
 
     // Consume stream silently (no per-chunk logging to avoid memory issues)
@@ -125,7 +126,7 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
 
     if (!result.moves) {
       logger.error(`[${label}] Invalid response - no moves`)
-      return { moves: [], rawResponse: 'No moves returned' }
+      return { moves: [], rawResponse: 'No moves returned', error: 'No moves returned' }
     }
 
     return {
@@ -144,6 +145,7 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
     return {
       moves: [],
       rawResponse: errorMsg,
+      error: errorMsg,
     }
   }
 }

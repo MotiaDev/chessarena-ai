@@ -28,39 +28,44 @@ export const models: AiProviderDefaultModel = {
  * - Grok: https://docs.x.ai/docs/models
  */
 export const supportedModelsByProvider: AiModels = {
+  // From AI SDK docs: https://sdk.vercel.ai/providers/ai-sdk-providers/openai
   openai: [
-    'gpt-5.2',
-    'gpt-5.1-thinking',
-    'gpt-5-2025-08-07',
-    'gpt-5-mini-2025-08-07',
-    'gpt-4.1-mini-2025-04-14',
-    'gpt-3.5-turbo-instruct',
-    'o4-mini-2025-04-16',
+    'gpt-5.2',                  // Latest
+    'gpt-5.1',                  // Previous flagship
+    'gpt-5',                    // GPT-5
+    'gpt-5-mini',               // Fast
+    'gpt-4.1',                  // GPT-4.1
+    'gpt-4.1-mini',             // Fast GPT-4.1
+    'gpt-4o',                   // GPT-4o
+    'gpt-4o-mini',              // Fast GPT-4o
   ],
+  // From AI SDK docs: https://sdk.vercel.ai/providers/ai-sdk-providers/google-generative-ai
   gemini: [
-    // Latest Gemini models
-    'gemini-3.0-pro-preview',
-    'gemini-3-flash',
-    'gemini-2.5-pro',
-    'gemini-2.5-flash',
-    'gemini-2.5-flash-lite',
+    'gemini-3-pro-preview',     // Latest preview
+    'gemini-2.5-pro',           // Latest pro
+    'gemini-2.5-flash',         // Fast
+    'gemini-2.5-flash-lite',    // Ultra fast
+    'gemini-2.0-flash',         // Stable flash
+    'gemini-1.5-pro',           // Previous pro
+    'gemini-1.5-flash',         // Previous flash
   ],
+  // From AI SDK docs: https://sdk.vercel.ai/providers/ai-sdk-providers/anthropic
   claude: [
-    // Latest Claude models
-    'claude-opus-4.5',
-    'claude-opus-4-20250514',
-    'claude-sonnet-4-5-20250929',
-    'claude-sonnet-4-20250514',
-    'claude-3-7-sonnet-20250219',
-    'claude-haiku-4-5-20251001',
-    'claude-3-5-haiku-20241022',
+    'claude-opus-4-5',          // Latest opus (no dot!)
+    'claude-sonnet-4-5',        // Latest sonnet (no dot!)
+    'claude-haiku-4-5',         // Latest haiku (no dot!)
+    'claude-opus-4-0',          // Opus 4.0
+    'claude-sonnet-4-0',        // Sonnet 4.0
+    'claude-3-7-sonnet-latest', // Claude 3.7
+    'claude-3-5-haiku-latest',  // Claude 3.5 Haiku
   ],
+  // From AI SDK docs: https://sdk.vercel.ai/providers/ai-sdk-providers/xai
   grok: [
-    // Latest Grok models
-    'grok-4-fast',
     'grok-4-fast-non-reasoning',
-    'grok-3-mini',
+    'grok-4-fast-reasoning',
+    'grok-4',
     'grok-3',
+    'grok-3-fast',
   ],
 }
 

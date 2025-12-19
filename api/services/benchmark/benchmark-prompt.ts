@@ -6,6 +6,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { createXai } from '@ai-sdk/xai'
 import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
+import { getMaxReasoningProviderOptions } from '../ai/provider-options'
 
 const LegalMovesResponseSchema = z.object({
   moves: z.array(z.string()).describe('Array of legal moves in Standard Algebraic Notation'),
@@ -75,8 +76,11 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
       model: providerModel,
       prompt,
       schema: LegalMovesResponseSchema,
+      mode: provider === 'grok' ? 'json' : undefined,
       maxRetries: 0,
       abortSignal: AbortSignal.timeout(TIMEOUT_MS),
+      providerOptions: getMaxReasoningProviderOptions(provider, model),
+      experimental_structuredOutputWithThinking: provider === 'claude',
     })
 
     // Consume stream silently (no per-chunk logging to avoid memory issues)
@@ -90,9 +94,6 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
       logger.error(`[${label}] Invalid response - no moves`)
       return { moves: [], rawResponse: 'No moves returned' }
     }
-
-    const elapsed = Date.now() - startTime
-    logger.info(`[${label}] OK ${elapsed}ms - ${result.moves.length} moves`)
 
     return {
       moves: result.moves,

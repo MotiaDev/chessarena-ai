@@ -2,6 +2,7 @@ import { streamObject } from 'ai'
 import { createXai } from '@ai-sdk/xai'
 import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { models } from './models'
+import { getMaxReasoningProviderOptions } from './provider-options'
 import { Handler } from './types'
 
 export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) => {
@@ -9,12 +10,15 @@ export const grok: Handler = async ({ prompt, logger, model, onThoughtUpdate }) 
     apiKey: process.env.XAI_API_KEY,
   })
 
+  const modelId = model ?? models.grok
   const { partialObjectStream, object } = streamObject({
-    model: xai(model ?? models.grok),
+    model: xai(modelId),
     prompt,
     schema: AiPlayerPromptSchema,
+    mode: 'json',
     maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
+    providerOptions: getMaxReasoningProviderOptions('grok', modelId),
   })
 
   for await (const partialObject of partialObjectStream) {

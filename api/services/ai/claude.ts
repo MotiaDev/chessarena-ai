@@ -2,6 +2,7 @@ import { streamObject } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { models } from './models'
+import { getMaxReasoningProviderOptions } from './provider-options'
 import { Handler } from './types'
 
 export const claude: Handler = async ({ prompt, logger, model, onThoughtUpdate }) => {
@@ -9,12 +10,15 @@ export const claude: Handler = async ({ prompt, logger, model, onThoughtUpdate }
     apiKey: process.env.ANTHROPIC_API_KEY,
   })
 
+  const modelId = model ?? models.claude
   const { partialObjectStream, object } = streamObject({
-    model: anthropic(model ?? models.claude),
+    model: anthropic(modelId),
     prompt,
     schema: AiPlayerPromptSchema,
     maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
+    providerOptions: getMaxReasoningProviderOptions('claude', modelId),
+    experimental_structuredOutputWithThinking: true,
   })
 
   for await (const partialObject of partialObjectStream) {

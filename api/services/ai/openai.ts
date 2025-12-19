@@ -2,6 +2,7 @@ import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { createOpenAI } from '@ai-sdk/openai'
 import { streamObject } from 'ai'
 import { models } from './models'
+import { getMaxReasoningProviderOptions } from './provider-options'
 import { Handler } from './types'
 
 export const openai: Handler = async ({ model, logger, prompt, onThoughtUpdate }) => {
@@ -9,12 +10,14 @@ export const openai: Handler = async ({ model, logger, prompt, onThoughtUpdate }
     apiKey: process.env.OPENAI_API_KEY,
   })
 
+  const modelId = model ?? models.openai
   const { partialObjectStream, object } = streamObject({
-    model: openai(model ?? models.openai),
+    model: openai(modelId),
     prompt,
     schema: AiPlayerPromptSchema,
     maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
+    providerOptions: getMaxReasoningProviderOptions('openai', modelId),
   })
 
   for await (const partialObject of partialObjectStream) {

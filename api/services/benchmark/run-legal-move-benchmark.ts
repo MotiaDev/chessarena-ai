@@ -6,6 +6,7 @@ import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
 import { TestPosition, ModelBenchmarkResult, LegalMoveBenchmarkRun } from '@chessarena/types/legal-move-benchmark'
 import { makeBenchmarkPrompt } from './benchmark-prompt'
+import { mapWithConcurrency, parsePositiveInt } from './concurrency'
 
 const promptTemplate = fs.readFileSync(path.join(__dirname, '../../steps/chess/legal-move-benchmark.mustache'), 'utf8')
 
@@ -210,23 +211,21 @@ export const runLegalMoveBenchmark = async (
     results: [],
   }
 
-  // Run benchmark for each position sequentially
-  for (let i = 0; i < positions.length; i++) {
-    const position = positions[i]
-    logger.info('Benchmarking position', { runId, positionIndex: i + 1, total: positions.length })
+  const positionConcurrency = parsePositiveInt(process.env.BENCHMARK_POSITION_CONCURRENCY, 1)
+  let completed = 0
 
-    const result = await benchmarkPosition(position, provider, model, logger)
-    run.results.push(result)
-
-    if (onProgress) {
-      onProgress(i + 1, positions.length)
-    }
-
-    // Small delay between requests to avoid rate limiting
-    if (i < positions.length - 1) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    }
-  }
+  run.results = await mapWithConcurrency(
+    positions,
+    positionConcurrency,
+    async (position) => benchmarkPosition(position, provider, model, logger),
+    () => {
+      completed++
+      onProgress?.(completed, positions.length)
+      if (completed === positions.length || completed % 5 === 0) {
+        logger.info('Legal move benchmark progress', { runId, provider, model, completed, total: positions.length })
+      }
+    },
+  )
 
   // Calculate aggregate scores
   const completedResults = run.results.filter((r) => !r.error)

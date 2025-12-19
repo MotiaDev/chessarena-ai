@@ -11,6 +11,8 @@ import { createXai } from '@ai-sdk/xai'
 import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
 import { LichessPuzzle, PuzzleResult, PuzzleBenchmarkRun, PuzzleTheme } from '@chessarena/types/puzzle-benchmark'
+import { getMaxReasoningProviderOptions } from '../ai/provider-options'
+import { mapWithConcurrency, parsePositiveInt } from './concurrency'
 
 const promptTemplate = fs.readFileSync(path.join(__dirname, '../../steps/chess/puzzle-benchmark.mustache'), 'utf8')
 
@@ -92,6 +94,8 @@ const benchmarkPuzzle = async (
       schema: PuzzleMoveResponseSchema,
       maxRetries: 1,
       abortSignal: AbortSignal.timeout(60000),
+      providerOptions: getMaxReasoningProviderOptions(provider, model),
+      experimental_structuredOutputWithThinking: provider === 'claude',
     })
 
     rawResponse = JSON.stringify(object)
@@ -149,27 +153,21 @@ export const runPuzzleBenchmark = async (
     totalPuzzles: puzzles.length,
   }
 
-  for (let i = 0; i < puzzles.length; i++) {
-    const puzzle = puzzles[i]
-    logger.info('Benchmarking puzzle', {
-      runId,
-      puzzleIndex: i + 1,
-      total: puzzles.length,
-      puzzleId: puzzle.id,
-    })
+  const puzzleConcurrency = parsePositiveInt(process.env.BENCHMARK_PUZZLE_CONCURRENCY, 1)
+  let completed = 0
 
-    const result = await benchmarkPuzzle(puzzle, theme, provider, model, logger)
-    run.results.push(result)
-
-    if (onProgress) {
-      onProgress(i + 1, puzzles.length)
-    }
-
-    // Rate limiting
-    if (i < puzzles.length - 1) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    }
-  }
+  run.results = await mapWithConcurrency(
+    puzzles,
+    puzzleConcurrency,
+    async (puzzle) => benchmarkPuzzle(puzzle, theme, provider, model, logger),
+    () => {
+      completed++
+      onProgress?.(completed, puzzles.length)
+      if (completed === puzzles.length || completed % 10 === 0) {
+        logger.info('Puzzle benchmark progress', { runId, provider, model, theme, completed, total: puzzles.length })
+      }
+    },
+  )
 
   // Calculate aggregate scores
   const correctCount = run.results.filter((r) => r.isCorrect).length

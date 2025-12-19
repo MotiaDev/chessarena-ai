@@ -1,8 +1,6 @@
 import { AiModelProvider } from '@chessarena/types/ai-models'
 import type { JSONValue } from 'ai'
 
-if (process.env.AI_SDK_LOG_WARNINGS === undefined) process.env.AI_SDK_LOG_WARNINGS = 'false'
-
 export const getMaxReasoningProviderOptions = (
   provider: AiModelProvider,
   model: string,

@@ -15,10 +15,10 @@ export const claude: Handler = async ({ prompt, logger, model, onThoughtUpdate }
     model: anthropic(modelId),
     prompt,
     schema: AiPlayerPromptSchema,
+    mode: 'json',
     maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
     providerOptions: getMaxReasoningProviderOptions('claude', modelId),
-    experimental_structuredOutputWithThinking: true,
   })
 
   for await (const partialObject of partialObjectStream) {

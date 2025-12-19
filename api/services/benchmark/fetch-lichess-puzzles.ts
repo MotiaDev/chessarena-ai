@@ -2,6 +2,10 @@ import { Chess } from 'chess.js'
 import { Logger } from 'motia'
 import { LichessPuzzle, PuzzleTheme } from '@chessarena/types/puzzle-benchmark'
 
+const LICHESS_BASE_URL = 'https://lichess.org'
+const MAX_BATCH_SIZE = 50
+const REQUEST_TIMEOUT_MS = 30000
+
 type LichessBatchPuzzle = {
   game: {
     id: string
@@ -18,6 +22,59 @@ type LichessBatchPuzzle = {
 
 type LichessBatchResponse = {
   puzzles: LichessBatchPuzzle[]
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+const parseRetryAfterMs = (value: string | null): number | null => {
+  if (!value) return null
+  const seconds = Number.parseInt(value, 10)
+  if (Number.isFinite(seconds)) return seconds * 1000
+  const dateMs = Date.parse(value)
+  if (Number.isFinite(dateMs)) return Math.max(0, dateMs - Date.now())
+  return null
+}
+
+const fetchJsonWithRetry = async <T>(
+  url: string,
+  logger: Logger,
+  label: string,
+  maxRetries = 6,
+): Promise<T> => {
+  const token = process.env.LICHESS_TOKEN
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+  }
+  if (token) headers.Authorization = `Bearer ${token}`
+
+  let attempt = 0
+  let backoffMs = 1000
+
+  while (true) {
+    attempt++
+    const response = await fetch(url, {
+      headers,
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    })
+
+    if (response.ok) {
+      return (await response.json()) as T
+    }
+
+    const retryAfterMs = parseRetryAfterMs(response.headers.get('retry-after'))
+    const shouldRetry =
+      attempt <= maxRetries && (response.status === 429 || response.status === 408 || (response.status >= 500 && response.status <= 599))
+
+    if (!shouldRetry) {
+      logger.error('Lichess API request failed', { label, url, status: response.status })
+      throw new Error(`Lichess API error (${response.status})`)
+    }
+
+    const waitMs = retryAfterMs ?? backoffMs
+    logger.warn('Lichess API rate limited / transient error, retrying', { label, url, status: response.status, attempt, waitMs })
+    await sleep(waitMs + Math.floor(Math.random() * 250))
+    backoffMs = Math.min(backoffMs * 2, 30000)
+  }
 }
 
 /**
@@ -95,46 +152,58 @@ const parsePuzzle = (data: LichessBatchPuzzle, logger: Logger): LichessPuzzle | 
 }
 
 /**
- * Fetch puzzles from Lichess using batch API
+ * Fetch puzzles from Lichess using batch API.
+ * Uses /api/puzzle/batch/mix and filters by theme to avoid enumerating.
  */
 export const fetchPuzzles = async (theme: PuzzleTheme, count: number, logger: Logger): Promise<LichessPuzzle[]> => {
-  logger.info('Fetching puzzles from Lichess batch API', { theme, count })
+  const nb = Math.min(MAX_BATCH_SIZE, Math.max(1, Math.max(15, count)))
+  const target = Math.max(1, count)
 
-  try {
-    // Use batch API - fetch more than needed to filter by theme
-    const url = `https://lichess.org/api/puzzle/batch/${theme}?nb=${Math.min(count, 50)}`
-    logger.info('Fetching from', { url })
+  const seenIds = new Set<string>()
+  const results: LichessPuzzle[] = []
 
-    const response = await fetch(url)
+  const maxRequests = Math.max(3, Math.ceil((target / Math.max(1, nb)) * 6))
+  logger.info('Fetching puzzles from Lichess', { theme, count: target, nb, maxRequests, authenticated: Boolean(process.env.LICHESS_TOKEN) })
 
-    if (!response.ok) {
-      logger.error('Lichess batch API error', { status: response.status })
-      // Fallback: try the mix endpoint
-      const mixUrl = `https://lichess.org/api/puzzle/batch/mix?nb=${Math.min(count, 50)}`
-      logger.info('Trying mix endpoint', { mixUrl })
-      const mixResponse = await fetch(mixUrl)
+  for (let req = 1; req <= maxRequests && results.length < target; req++) {
+    // Prefer the themed endpoint (faster to hit the theme we want).
+    // Fallback to mix if it fails (e.g. unknown angle).
+    const themedUrl = `${LICHESS_BASE_URL}/api/puzzle/batch/${theme}?nb=${nb}`
+    const mixUrl = `${LICHESS_BASE_URL}/api/puzzle/batch/mix?nb=${nb}`
 
-      if (!mixResponse.ok) {
-        logger.error('Lichess mix API also failed', { status: mixResponse.status })
-        return []
+    let data: LichessBatchResponse
+    try {
+      data = await fetchJsonWithRetry<LichessBatchResponse>(themedUrl, logger, 'puzzle-batch-themed')
+    } catch (error) {
+      logger.warn('Themed puzzle batch failed, falling back to mix', { theme, error })
+      try {
+        data = await fetchJsonWithRetry<LichessBatchResponse>(mixUrl, logger, 'puzzle-batch-mix')
+      } catch (error2) {
+        logger.error('Failed to fetch puzzles batch', { error: error2 })
+        break
       }
-
-      const mixData: LichessBatchResponse = await mixResponse.json()
-      // Filter by theme
-      const filtered = mixData.puzzles.filter((p) => p.puzzle.themes.includes(theme))
-      const puzzles = filtered.map((p) => parsePuzzle(p, logger)).filter((p): p is LichessPuzzle => p !== null)
-
-      logger.info('Fetched puzzles from mix endpoint', { total: puzzles.length })
-      return puzzles.slice(0, count)
     }
 
-    const data: LichessBatchResponse = await response.json()
-    const puzzles = data.puzzles.map((p) => parsePuzzle(p, logger)).filter((p): p is LichessPuzzle => p !== null)
+    const candidates = data.puzzles
 
-    logger.info('Fetched puzzles from batch API', { total: puzzles.length })
-    return puzzles.slice(0, count)
-  } catch (error) {
-    logger.error('Failed to fetch puzzles', { error })
-    return []
+    for (const item of candidates) {
+      if (seenIds.has(item.puzzle.id)) continue
+      seenIds.add(item.puzzle.id)
+
+      // When we fall back to mix, keep filtering by theme.
+      if (data !== undefined && item.puzzle.themes && item.puzzle.themes.length > 0) {
+        // If the response came from the themed endpoint, it should already match. Filtering is harmless.
+        if (!item.puzzle.themes.includes(theme)) continue
+      }
+
+      const parsed = parsePuzzle(item, logger)
+      if (!parsed) continue
+      results.push(parsed)
+      if (results.length >= target) break
+    }
+
+    logger.info('Fetched puzzles batch', { theme, req, got: results.length, target })
   }
+
+  return results.slice(0, target)
 }

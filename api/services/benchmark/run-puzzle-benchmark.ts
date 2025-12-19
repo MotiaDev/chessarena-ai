@@ -92,10 +92,10 @@ const benchmarkPuzzle = async (
       model: providerModel,
       prompt,
       schema: PuzzleMoveResponseSchema,
+      mode: provider === 'claude' || provider === 'grok' ? 'json' : undefined,
       maxRetries: 1,
       abortSignal: AbortSignal.timeout(60000),
       providerOptions: getMaxReasoningProviderOptions(provider, model),
-      experimental_structuredOutputWithThinking: provider === 'claude',
     })
 
     rawResponse = JSON.stringify(object)

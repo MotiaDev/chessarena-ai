@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { streamObject } from 'ai'
+import { generateText, streamObject } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
@@ -71,16 +71,49 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
 
   try {
     const providerModel = createProviderModel(provider, model)
+    const providerOptions = getMaxReasoningProviderOptions(provider, model)
+
+    if (provider === 'claude' || provider === 'grok') {
+      const { text } = await generateText({
+        model: providerModel,
+        prompt,
+        maxRetries: 0,
+        abortSignal: AbortSignal.timeout(TIMEOUT_MS),
+        providerOptions,
+      })
+
+      let parsed: unknown
+      try {
+        parsed = JSON.parse(text)
+      } catch {
+        const start = text.indexOf('{')
+        const end = text.lastIndexOf('}')
+        if (start !== -1 && end !== -1 && end > start) {
+          try {
+            parsed = JSON.parse(text.slice(start, end + 1))
+          } catch {
+            return { moves: [], rawResponse: text }
+          }
+        } else {
+          return { moves: [], rawResponse: text }
+        }
+      }
+
+      const validated = LegalMovesResponseSchema.safeParse(parsed)
+      if (!validated.success) {
+        return { moves: [], rawResponse: text }
+      }
+
+      return { moves: validated.data.moves, rawResponse: text }
+    }
 
     const { partialObjectStream, object } = streamObject({
       model: providerModel,
       prompt,
       schema: LegalMovesResponseSchema,
-      mode: provider === 'grok' ? 'json' : undefined,
       maxRetries: 0,
       abortSignal: AbortSignal.timeout(TIMEOUT_MS),
-      providerOptions: getMaxReasoningProviderOptions(provider, model),
-      experimental_structuredOutputWithThinking: provider === 'claude',
+      providerOptions,
     })
 
     // Consume stream silently (no per-chunk logging to avoid memory issues)

@@ -36,7 +36,13 @@ export const handler: Handlers['FetchPuzzleSet'] = async (req, { logger, streams
   }
 
   try {
-    const puzzles = await fetchPuzzles(theme, count, logger)
+    const existingIds = new Set<string>(existingSet?.puzzles.map((p) => p.id) ?? [])
+    const needed = existingSet ? Math.max(0, count - existingSet.puzzles.length) : count
+
+    const fetched = needed > 0 ? await fetchPuzzles(theme, needed, logger) : []
+    const newUnique = fetched.filter((p) => !existingIds.has(p.id))
+
+    const puzzles = existingSet ? [...existingSet.puzzles, ...newUnique] : newUnique
 
     if (puzzles.length === 0) {
       return { status: 400, body: { message: 'Failed to fetch any puzzles' } }

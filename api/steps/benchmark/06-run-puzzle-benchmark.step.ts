@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { AiModelProviderSchema } from '@chessarena/types/ai-models'
 import { PuzzleBenchmarkRunSchema, PuzzleThemeSchema } from '@chessarena/types/puzzle-benchmark'
 import { runPuzzleBenchmark } from '../../services/benchmark/run-puzzle-benchmark'
-import { supportedModelsByProvider } from '../../services/ai/models'
+import { getModelsForProvider } from '../../services/ai/models'
 
 const bodySchema = z.object({
   provider: AiModelProviderSchema(),
@@ -30,8 +30,8 @@ export const handler: Handlers['RunPuzzleBenchmark'] = async (req, { logger, str
   const { provider, model, theme } = req.body
 
   // Validate model exists
-  const supportedModels = supportedModelsByProvider[provider]
-  if (!supportedModels?.includes(model)) {
+  const supportedModels = getModelsForProvider(provider)
+  if (!supportedModels.includes(model)) {
     return {
       status: 400,
       body: { message: `Model ${model} is not supported for provider ${provider}` },

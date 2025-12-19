@@ -1,4 +1,4 @@
-import { AiModels, AiProviderDefaultModel } from '@chessarena/types/ai-models'
+import { AiModels, AiModelProvider, AiProviderDefaultModel } from '@chessarena/types/ai-models'
 
 // NOTE: these are the models used for AI vs AI games, it is also used for backwards compatibility for existing games that don't have a model assigned to a player
 export const models: AiProviderDefaultModel = {
@@ -8,27 +8,45 @@ export const models: AiProviderDefaultModel = {
   grok: 'grok-4-fast',
 }
 
-// NOTE: these are all the models supported by provider that users can pick in order to play human vs AI games
+/**
+ * ============================================
+ * BENCHMARK MODELS - Add new models here!
+ * ============================================
+ * 
+ * To add a new model for benchmarking:
+ * 1. Add it to the appropriate provider array below
+ * 2. Restart the dev server
+ * 3. Run the benchmark: POST /benchmark/legal-moves/run-all
+ * 
+ * To run benchmark for a single model:
+ * POST /benchmark/legal-moves/run { "provider": "claude", "model": "claude-3-5-haiku-20241022" }
+ * 
+ * Provider documentation:
+ * - OpenAI: https://platform.openai.com/docs/models
+ * - Gemini: https://ai.google.dev/gemini-api/docs/models
+ * - Claude: https://docs.anthropic.com/en/docs/about-claude/models/overview
+ * - Grok: https://docs.x.ai/docs/models
+ */
 export const supportedModelsByProvider: AiModels = {
   openai: [
-    // https://platform.openai.com/docs/models
-    'gpt-5.2-high',
+    'gpt-5.2',
+    'gpt-5.1-thinking',
     'gpt-5-2025-08-07',
     'gpt-5-mini-2025-08-07',
-    'gpt-5-nano-2025-08-07',
     'gpt-4.1-mini-2025-04-14',
     'gpt-3.5-turbo-instruct',
     'o4-mini-2025-04-16',
   ],
   gemini: [
-    // https://ai.google.dev/gemini-api/docs/models
+    // Latest Gemini models
     'gemini-3.0-pro-preview',
+    'gemini-3-flash',
     'gemini-2.5-pro',
     'gemini-2.5-flash',
     'gemini-2.5-flash-lite',
   ],
   claude: [
-    // https://docs.anthropic.com/en/docs/about-claude/models/overview
+    // Latest Claude models
     'claude-opus-4.5',
     'claude-opus-4-20250514',
     'claude-sonnet-4-5-20250929',
@@ -38,10 +56,31 @@ export const supportedModelsByProvider: AiModels = {
     'claude-3-5-haiku-20241022',
   ],
   grok: [
-    // https://docs.x.ai/docs/models
+    // Latest Grok models
     'grok-4-fast',
     'grok-4-fast-non-reasoning',
     'grok-3-mini',
     'grok-3',
   ],
+}
+
+/**
+ * Helper to get all models as a flat array with provider info
+ * Used by benchmarks
+ */
+export const getAllModels = (): { provider: AiModelProvider; model: string }[] => {
+  const allModels: { provider: AiModelProvider; model: string }[] = []
+  for (const [provider, models] of Object.entries(supportedModelsByProvider)) {
+    for (const model of models) {
+      allModels.push({ provider: provider as AiModelProvider, model })
+    }
+  }
+  return allModels
+}
+
+/**
+ * Get models for a specific provider
+ */
+export const getModelsForProvider = (provider: AiModelProvider): string[] => {
+  return supportedModelsByProvider[provider] || []
 }

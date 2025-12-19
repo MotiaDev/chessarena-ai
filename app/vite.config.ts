@@ -33,5 +33,8 @@ export default defineConfig({
       },
     },
     allowedHosts: true,
+    fs: {
+      allow: ['..'],
+    },
   },
 })

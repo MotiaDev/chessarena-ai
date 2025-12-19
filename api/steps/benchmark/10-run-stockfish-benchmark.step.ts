@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { AiModelProviderSchema } from '@chessarena/types/ai-models'
 import { StockfishBenchmarkRunSchema } from '@chessarena/types/stockfish-benchmark'
 import { playGameAgainstStockfish } from '../../services/benchmark/stockfish-game'
-import { supportedModelsByProvider } from '../../services/ai/models'
+import { getModelsForProvider } from '../../services/ai/models'
 
 const bodySchema = z.object({
   provider: AiModelProviderSchema(),
@@ -30,8 +30,8 @@ export const handler: Handlers['RunStockfishBenchmark'] = async (req, { logger, 
   const { provider, model, stockfishLevel } = req.body
 
   // Validate model
-  const supportedModels = supportedModelsByProvider[provider]
-  if (!supportedModels?.includes(model)) {
+  const supportedModels = getModelsForProvider(provider)
+  if (!supportedModels.includes(model)) {
     return {
       status: 400,
       body: { message: `Model ${model} is not supported for provider ${provider}` },
@@ -123,8 +123,8 @@ export const handler: Handlers['RunStockfishBenchmark'] = async (req, { logger, 
     }
   }
 
-  // Fire and forget
-  runBenchmark()
+  // Await the benchmark (fire-and-forget causes streaming issues)
+  await runBenchmark()
 
   return {
     status: 200,

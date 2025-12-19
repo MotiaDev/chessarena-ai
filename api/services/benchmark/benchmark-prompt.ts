@@ -1,9 +1,9 @@
 import { z } from 'zod'
+import { streamObject } from 'ai'
+import { createAnthropic } from '@ai-sdk/anthropic'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
-import { createAnthropic } from '@ai-sdk/anthropic'
 import { createXai } from '@ai-sdk/xai'
-import { streamObject } from 'ai'
 import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
 
@@ -46,21 +46,13 @@ const createProviderModel = (provider: AiModelProvider, model: string) => {
   }
 }
 
-const TIMEOUT_MS = 60000 // 1 minute
-
-const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise<T> => {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`TIMEOUT after ${ms}ms: ${label}`)), ms)),
-  ])
-}
+const TIMEOUT_MS = 180000 // 3 minutes
 
 export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<BenchmarkPromptResult> => {
   const { prompt, provider, model, logger } = input
 
   const startTime = Date.now()
   const label = `${provider}/${model}`
-  logger.info(`[${label}] Starting API call...`)
 
   // Check API key
   const apiKeyEnvVar = {
@@ -72,15 +64,12 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
 
   const apiKey = process.env[apiKeyEnvVar]
   if (!apiKey) {
-    logger.error(`[${label}] MISSING API KEY: ${apiKeyEnvVar} not set`)
+    logger.error(`[${label}] Missing ${apiKeyEnvVar}`)
     return { moves: [], rawResponse: `Missing ${apiKeyEnvVar}` }
   }
 
-  logger.info(`[${label}] API key present, creating provider model...`)
-
   try {
     const providerModel = createProviderModel(provider, model)
-    logger.info(`[${label}] Provider model created, calling streamObject...`)
 
     const { partialObjectStream, object } = streamObject({
       model: providerModel,
@@ -90,21 +79,23 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
       abortSignal: AbortSignal.timeout(TIMEOUT_MS),
     })
 
-    // Consume stream (required for streamObject to complete)
-    for await (const partial of partialObjectStream) {
-      // Just consume, we only care about final result
-      if (partial.moves?.length) {
-        logger.info(`[${label}] Streaming... ${partial.moves.length} moves so far`)
-      }
+    // Consume stream silently (no per-chunk logging to avoid memory issues)
+    for await (const _partial of partialObjectStream) {
+      // Just consume, no logging
     }
 
-    const result = await withTimeout(object, TIMEOUT_MS, label)
+    const result = await object
+
+    if (!result.moves) {
+      logger.error(`[${label}] Invalid response - no moves`)
+      return { moves: [], rawResponse: 'No moves returned' }
+    }
 
     const elapsed = Date.now() - startTime
-    logger.info(`[${label}] SUCCESS in ${elapsed}ms - ${result.moves?.length ?? 0} moves returned`)
+    logger.info(`[${label}] OK ${elapsed}ms - ${result.moves.length} moves`)
 
     return {
-      moves: result.moves ?? [],
+      moves: result.moves,
       rawResponse: JSON.stringify(result),
     }
   } catch (error) {
@@ -115,17 +106,6 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
     logger.error(`[${label}] FAILED after ${elapsed}ms`)
     logger.error(`[${label}] Error type: ${errorName}`)
     logger.error(`[${label}] Error message: ${errorMsg}`)
-
-    // Check for common issues
-    if (errorMsg.includes('TIMEOUT')) {
-      logger.error(`[${label}] Request timed out after ${TIMEOUT_MS}ms`)
-    } else if (errorMsg.includes('401') || errorMsg.includes('Unauthorized')) {
-      logger.error(`[${label}] Invalid API key for ${apiKeyEnvVar}`)
-    } else if (errorMsg.includes('404') || errorMsg.includes('not found')) {
-      logger.error(`[${label}] Model "${model}" not found - check model name`)
-    } else if (errorMsg.includes('429') || errorMsg.includes('rate')) {
-      logger.error(`[${label}] Rate limited`)
-    }
 
     return {
       moves: [],

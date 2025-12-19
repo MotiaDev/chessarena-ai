@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { AiModelProviderSchema } from '@chessarena/types/ai-models'
 import { LegalMoveBenchmarkRunSchema } from '@chessarena/types/legal-move-benchmark'
 import { runLegalMoveBenchmark, generateTestPositions } from '../../services/benchmark/run-legal-move-benchmark'
-import { supportedModelsByProvider } from '../../services/ai/models'
+import { getModelsForProvider } from '../../services/ai/models'
 
 const bodySchema = z.object({
   provider: AiModelProviderSchema(),
@@ -29,8 +29,8 @@ export const handler: Handlers['RunLegalMoveBenchmark'] = async (req, { logger, 
   const { provider, model } = req.body
 
   // Validate model exists for provider
-  const supportedModels = supportedModelsByProvider[provider]
-  if (!supportedModels?.includes(model)) {
+  const supportedModels = getModelsForProvider(provider)
+  if (!supportedModels.includes(model)) {
     return {
       status: 400,
       body: { message: `Model ${model} is not supported for provider ${provider}` },
@@ -70,7 +70,7 @@ export const handler: Handlers['RunLegalMoveBenchmark'] = async (req, { logger, 
       runsCompleted: (existingSummary?.runsCompleted ?? 0) + 1,
       averageScore: existingSummary
         ? (existingSummary.averageScore * existingSummary.runsCompleted + (run.averageFinalScore ?? 0)) /
-          (existingSummary.runsCompleted + 1)
+        (existingSummary.runsCompleted + 1)
         : (run.averageFinalScore ?? 0),
       bestScore: Math.max(existingSummary?.bestScore ?? 0, run.averageFinalScore ?? 0),
       worstScore: existingSummary

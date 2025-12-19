@@ -20,6 +20,10 @@
   {
     "id": "chess",
     "config": {
+      "steps/chess/12-play-vs-ai.step.ts": {
+        "x": 350,
+        "y": 1056
+      },
       "steps/chess/11-get-game-history-detail.step.ts": {
         "x": 0,
         "y": 0
@@ -101,8 +105,8 @@
         "y": 2220
       },
       "steps/benchmark/09-run-all-benchmarks.step.ts": {
-        "x": 0,
-        "y": 468
+        "x": -282,
+        "y": 337
       },
       "steps/benchmark/08-get-puzzle-sets.step.ts": {
         "x": 435,
@@ -113,8 +117,8 @@
         "y": 204
       },
       "steps/benchmark/06-run-puzzle-benchmark.step.ts": {
-        "x": 33,
-        "y": 408
+        "x": 465,
+        "y": 360
       },
       "steps/benchmark/05-fetch-puzzle-set.step.ts": {
         "x": 0,

@@ -5,7 +5,7 @@ import { fetchPuzzles } from '../../services/benchmark/fetch-lichess-puzzles'
 
 const bodySchema = z.object({
   theme: PuzzleThemeSchema,
-  count: z.number().min(1).max(100).default(50),
+  count: z.number().min(1).max(100).default(10),
 })
 
 export const config: ApiRouteConfig = {

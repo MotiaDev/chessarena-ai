@@ -61,8 +61,6 @@ export const supportedModelsByProvider: AiModels = {
   grok: [
     'grok-4-fast-non-reasoning',
     'grok-4-fast-reasoning',
-    'grok-4',
-    'grok-3',
     'grok-3-fast',
   ],
 }

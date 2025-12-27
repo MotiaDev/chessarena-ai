@@ -116,6 +116,10 @@
         "x": 3,
         "y": 204
       },
+      "steps/benchmark/06b-run-all-puzzle-benchmarks.step.ts": {
+        "x": 0,
+        "y": 1120
+      },
       "steps/benchmark/06-run-puzzle-benchmark.step.ts": {
         "x": 465,
         "y": 360

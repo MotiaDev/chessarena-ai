@@ -1,12 +1,14 @@
 import { z } from 'zod'
-import { generateText, streamObject } from 'ai'
+import { generateText } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { createXai } from '@ai-sdk/xai'
 import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
-import { getMaxReasoningProviderOptions } from '../ai/provider-options'
+import { getBenchmarkProviderOptions } from '../ai/provider-options'
+import { getBenchmarkConfig } from './benchmark-config'
+import { withRetries, withRetriesNoTimeout } from './retry'
 
 const LegalMovesResponseSchema = z.object({
   moves: z.array(z.string()).describe('Array of legal moves in Standard Algebraic Notation'),
@@ -23,6 +25,13 @@ type BenchmarkPromptResult = {
   moves: string[]
   rawResponse: string
   error?: string
+}
+
+const shouldDisableTimeout = (provider: AiModelProvider, model: string): boolean => {
+  if (provider !== 'grok') return false
+  const enabled = (process.env.BENCHMARK_GROK_DISABLE_TIMEOUT ?? 'true') === 'true'
+  if (!enabled) return false
+  return model.startsWith('grok-3') || model.startsWith('grok-4')
 }
 
 const createProviderModel = (provider: AiModelProvider, model: string) => {
@@ -48,11 +57,10 @@ const createProviderModel = (provider: AiModelProvider, model: string) => {
   }
 }
 
-const TIMEOUT_MS = Number.parseInt(process.env.BENCHMARK_REQUEST_TIMEOUT_MS ?? '180000', 10) || 180000
-
 export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<BenchmarkPromptResult> => {
   const { prompt, provider, model, logger } = input
 
+  const cfg = getBenchmarkConfig()
   const startTime = Date.now()
   const label = `${provider}/${model}`
 
@@ -72,70 +80,85 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
 
   try {
     const providerModel = createProviderModel(provider, model)
-    const providerOptions = getMaxReasoningProviderOptions(provider, model)
-
-    if (provider === 'claude' || provider === 'grok') {
-      const { text } = await generateText({
-        model: providerModel,
-        prompt,
-        maxRetries: 0,
-        abortSignal: AbortSignal.timeout(TIMEOUT_MS),
-        providerOptions,
-      })
-
-      let parsed: unknown
-      try {
-        parsed = JSON.parse(text)
-      } catch {
-        const start = text.indexOf('{')
-        const end = text.lastIndexOf('}')
-        if (start !== -1 && end !== -1 && end > start) {
-          try {
-            parsed = JSON.parse(text.slice(start, end + 1))
-          } catch {
-            return { moves: [], rawResponse: text, error: 'Could not parse JSON response' }
+    const disableTimeout = shouldDisableTimeout(provider, model)
+    const providerOptionsBase = getBenchmarkProviderOptions(provider, model)
+    const providerOptions =
+      provider === 'gemini'
+        ? {
+            ...providerOptionsBase,
+            google: { ...(providerOptionsBase as any)?.google, responseMimeType: 'application/json' },
           }
-        } else {
+        : providerOptionsBase
+
+    const runGenerateText = async (opts: { providerOptions: Record<string, any> }) => {
+      if (disableTimeout) {
+        return await withRetriesNoTimeout(label, cfg.transientRetries, cfg.retryBaseBackoffMs, async () => {
+          return await generateText({
+            model: providerModel,
+            prompt,
+            maxRetries: 0,
+            maxOutputTokens: cfg.maxOutputTokens,
+            providerOptions: opts.providerOptions,
+          })
+        })
+      }
+
+      const deadlineMs = startTime + cfg.perItemTimeoutMs
+      return await withRetries(label, deadlineMs, cfg.transientRetries, cfg.retryBaseBackoffMs, async (abortSignal) => {
+        return await generateText({
+          model: providerModel,
+          prompt,
+          maxRetries: 0,
+          abortSignal,
+          maxOutputTokens: cfg.maxOutputTokens,
+          providerOptions: opts.providerOptions,
+        })
+      })
+    }
+
+    let text: string
+    try {
+      ;({ text } = await runGenerateText({ providerOptions }))
+    } catch (e) {
+      if (provider === 'grok') {
+        ;({ text } = await runGenerateText({ providerOptions: {} }))
+      } else {
+        throw e
+      }
+    }
+
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(text)
+    } catch {
+      const start = text.indexOf('{')
+      const end = text.lastIndexOf('}')
+      if (start !== -1 && end !== -1 && end > start) {
+        try {
+          parsed = JSON.parse(text.slice(start, end + 1))
+        } catch {
           return { moves: [], rawResponse: text, error: 'Could not parse JSON response' }
         }
+      } else {
+        return { moves: [], rawResponse: text, error: 'Could not parse JSON response' }
       }
-
-      const validated = LegalMovesResponseSchema.safeParse(parsed)
-      if (!validated.success) {
-        return { moves: [], rawResponse: text, error: 'Response did not match schema' }
-      }
-
-      return { moves: validated.data.moves, rawResponse: text }
     }
 
-    const { partialObjectStream, object } = streamObject({
-      model: providerModel,
-      prompt,
-      schema: LegalMovesResponseSchema,
-      maxRetries: 0,
-      abortSignal: AbortSignal.timeout(TIMEOUT_MS),
-      providerOptions: providerOptions as any,
-    })
-
-    // Consume stream silently (no per-chunk logging to avoid memory issues)
-    for await (const _partial of partialObjectStream) {
-      // Just consume, no logging
+    const validated = LegalMovesResponseSchema.safeParse(parsed)
+    if (!validated.success) {
+      return { moves: [], rawResponse: text, error: 'Response did not match schema' }
     }
 
-    const result = await object
-
-    if (!result.moves) {
-      logger.error(`[${label}] Invalid response - no moves`)
-      return { moves: [], rawResponse: 'No moves returned', error: 'No moves returned' }
-    }
-
-    return {
-      moves: result.moves,
-      rawResponse: JSON.stringify(result),
-    }
+    return { moves: validated.data.moves, rawResponse: text }
   } catch (error) {
     const elapsed = Date.now() - startTime
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+    const anyErr = error as any
+    const statusCode = typeof anyErr?.statusCode === 'number' ? anyErr.statusCode : undefined
+    const errorMsgBase = error instanceof Error ? error.message : 'Unknown error'
+    const errorMsg =
+      statusCode != null
+        ? `${errorMsgBase} (status ${statusCode})`
+        : errorMsgBase
     const errorName = error instanceof Error ? error.name : 'Error'
 
     logger.error(`[${label}] FAILED after ${elapsed}ms`)

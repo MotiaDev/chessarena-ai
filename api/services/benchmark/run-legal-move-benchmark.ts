@@ -6,6 +6,7 @@ import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
 import { TestPosition, ModelBenchmarkResult, LegalMoveBenchmarkRun } from '@chessarena/types/legal-move-benchmark'
 import { makeBenchmarkPrompt } from './benchmark-prompt'
+import { getBenchmarkConfig } from './benchmark-config'
 import { mapWithConcurrency, parsePositiveInt } from './concurrency'
 
 const promptTemplate = fs.readFileSync(path.join(__dirname, '../../steps/chess/legal-move-benchmark.mustache'), 'utf8')
@@ -214,7 +215,8 @@ export const runLegalMoveBenchmark = async (
     results: [],
   }
 
-  const positionConcurrency = parsePositiveInt(process.env.BENCHMARK_POSITION_CONCURRENCY, 1)
+  const cfg = getBenchmarkConfig()
+  const positionConcurrency = cfg.itemConcurrency
   let completed = 0
 
   run.results = await mapWithConcurrency(

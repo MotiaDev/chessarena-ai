@@ -9,6 +9,7 @@ const bodySchema = z.object({
   provider: AiModelProviderSchema(),
   model: z.string(),
   theme: PuzzleThemeSchema,
+  count: z.number().min(1).max(100).default(10),
 })
 
 export const config: ApiRouteConfig = {
@@ -27,7 +28,7 @@ export const config: ApiRouteConfig = {
 }
 
 export const handler: Handlers['RunPuzzleBenchmark'] = async (req, { logger, streams }) => {
-  const { provider, model, theme } = req.body
+  const { provider, model, theme, count } = req.body
 
   // Validate model exists
   const supportedModels = getModelsForProvider(provider)
@@ -47,10 +48,11 @@ export const handler: Handlers['RunPuzzleBenchmark'] = async (req, { logger, str
     }
   }
 
-  logger.info('Starting puzzle benchmark', { provider, model, theme, puzzleCount: puzzleSet.puzzles.length })
+  const puzzles = puzzleSet.puzzles.slice(0, count)
+  logger.info('Starting puzzle benchmark', { provider, model, theme, puzzleCount: puzzles.length })
 
   try {
-    const run = await runPuzzleBenchmark(puzzleSet.puzzles, puzzleSet.id, theme, provider, model, logger)
+    const run = await runPuzzleBenchmark(puzzles, puzzleSet.id, theme, provider, model, logger)
 
     // Store the run
     await streams.puzzleBenchmark.set('runs', run.id, run)

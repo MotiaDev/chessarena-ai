@@ -25,10 +25,11 @@ export const config: EventConfig = {
     check: z.boolean({ description: 'Whether the move is a check' }),
     gameId: z.string({ description: 'The ID of the game' }),
   }),
-  includeFiles: ['05-ai-player.mustache'],
+  includeFiles: ['05-ai-player.mustache', '05-ai-player-unguided.mustache'],
 }
 
-const template = fs.readFileSync(path.join(__dirname, '05-ai-player.mustache'), 'utf8')
+const guidedTemplate = fs.readFileSync(path.join(__dirname, '05-ai-player.mustache'), 'utf8')
+const unguidedTemplate = fs.readFileSync(path.join(__dirname, '05-ai-player-unguided.mustache'), 'utf8')
 
 export const handler: Handlers['AI_Player'] = async (input, { logger, emit, streams }) => {
   logger.info('Received ai-move event', { gameId: input.gameId })
@@ -63,21 +64,20 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
       timestamp: Date.now(),
     })
 
-    const prompt = mustache.render(
-      template,
-      {
-        fenBefore: input.fenBefore,
-        fen: input.fen,
-        inCheck: input.check,
-        player: input.player,
-        lastInvalidMove,
-        validMoves,
-        totalMoves: validMoves.length,
-      },
-      {},
-      { escape: (value: string) => value },
-    )
-    logger.info('Prompt', { prompt })
+    // Arena games always run guided. Rule understanding is benchmarked separately via legal-move bench.
+    const template = guidedTemplate
+    const templateData = {
+      fenBefore: input.fenBefore,
+      fen: input.fen,
+      inCheck: input.check,
+      player: input.player,
+      lastInvalidMove,
+      validMoves,
+      totalMoves: validMoves.length,
+    }
+
+    const prompt = mustache.render(template, templateData, {}, { escape: (value: string) => value })
+    logger.info('Prompt', { prompt, variant: game.variant })
 
     let action: AiPlayerPrompt | undefined
 

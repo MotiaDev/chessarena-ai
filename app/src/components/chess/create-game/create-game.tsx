@@ -23,8 +23,11 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
 
     try {
       const game = await createGame({
-        white: { ai: whitePlayer.ai, model: whitePlayer.model },
-        black: { ai: blackPlayer.ai, model: blackPlayer.model },
+        players: {
+          white: { ai: whitePlayer.ai, model: whitePlayer.model },
+          black: { ai: blackPlayer.ai, model: blackPlayer.model },
+        },
+        variant: 'guided', // Always use guided mode (with legal moves)
       })
 
       onGameCreated(game.id)
@@ -66,13 +69,15 @@ export const CreateGame: React.FC<Props> = ({ onGameCreated, onCancel }) => {
   return (
     <div className="flex flex-col flex-1 gap-14 items-center justify-between w-full">
       <TopBar onBack={onBack} />
-      <CreateGamePlayerForm
-        player={selectedPlayer}
-        color={selectedPlayerColor}
-        onSubmit={handlePlayerSubmit}
-        isAiEnabled
-        isLoading={isLoading}
-      />
+      <div className="flex flex-col gap-6 w-full items-center">
+        <CreateGamePlayerForm
+          player={selectedPlayer}
+          color={selectedPlayerColor}
+          onSubmit={handlePlayerSubmit}
+          isAiEnabled
+          isLoading={isLoading}
+        />
+      </div>
     </div>
   )
 }

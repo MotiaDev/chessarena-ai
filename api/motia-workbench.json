@@ -20,6 +20,22 @@
   {
     "id": "chess",
     "config": {
+      "steps/chess/12-play-vs-ai.step.ts": {
+        "x": 350,
+        "y": 1056
+      },
+      "steps/chess/11-get-game-history-detail.step.ts": {
+        "x": 0,
+        "y": 0
+      },
+      "steps/chess/10b-export-game-history.step.ts": {
+        "x": 6,
+        "y": 224
+      },
+      "steps/chess/10-get-game-history.step.ts": {
+        "x": 26,
+        "y": 428
+      },
       "steps/chess/09-purge-stuck-games.step.ts": {
         "x": -237,
         "y": 580
@@ -50,8 +66,8 @@
         "y": 112
       },
       "steps/chess/02-get-game.step.ts": {
-        "x": 1045,
-        "y": 114
+        "x": 1019,
+        "y": 92
       },
       "steps/chess/01-create-game.step.ts": {
         "x": 432,
@@ -59,8 +75,8 @@
         "targetHandlePosition": "left"
       },
       "steps/chess/00-available-models-api.step.ts": {
-        "x": -209,
-        "y": 86,
+        "x": -460,
+        "y": 111,
         "sourceHandlePosition": "right"
       },
       "steps/chess/access/request-access.step.ts": {
@@ -74,6 +90,63 @@
       "steps/chess/evaluate_player_move_step.py": {
         "x": 157,
         "y": 680
+      }
+    }
+  },
+  {
+    "id": "benchmark",
+    "config": {
+      "steps/benchmark/11-stockfish-leaderboard.step.ts": {
+        "x": 0,
+        "y": 2444
+      },
+      "steps/benchmark/10-run-stockfish-benchmark.step.ts": {
+        "x": 0,
+        "y": 2220
+      },
+      "steps/benchmark/09-run-all-benchmarks.step.ts": {
+        "x": -282,
+        "y": 337
+      },
+      "steps/benchmark/08-get-puzzle-sets.step.ts": {
+        "x": 435,
+        "y": 30
+      },
+      "steps/benchmark/07-get-puzzle-leaderboard.step.ts": {
+        "x": 3,
+        "y": 204
+      },
+      "steps/benchmark/06b-run-all-puzzle-benchmarks.step.ts": {
+        "x": 0,
+        "y": 1120
+      },
+      "steps/benchmark/06-run-puzzle-benchmark.step.ts": {
+        "x": 465,
+        "y": 360
+      },
+      "steps/benchmark/05-fetch-puzzle-set.step.ts": {
+        "x": 0,
+        "y": 612
+      },
+      "steps/benchmark/04-get-benchmark-leaderboard.step.ts": {
+        "x": 0,
+        "y": 816
+      },
+      "steps/benchmark/03-get-benchmark-run-detail.step.ts": {
+        "x": 0,
+        "y": 1060
+      },
+      "steps/benchmark/02-get-benchmark-runs.step.ts": {
+        "x": 0,
+        "y": 1304
+      },
+      "steps/benchmark/01-run-legal-move-benchmark.step.ts": {
+        "x": 0,
+        "y": 1528
+      },
+      "steps/benchmark/00-generate-position-set.step.ts": {
+        "x": 0,
+        "y": 1752
       }
     }
   }

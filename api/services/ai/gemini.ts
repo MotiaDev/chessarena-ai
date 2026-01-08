@@ -2,6 +2,7 @@ import { streamObject } from 'ai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { models } from './models'
+import { getMaxReasoningProviderOptions } from './provider-options'
 import { Handler } from './types'
 
 export const gemini: Handler = async ({ prompt, logger, model, onThoughtUpdate }) => {
@@ -9,12 +10,14 @@ export const gemini: Handler = async ({ prompt, logger, model, onThoughtUpdate }
     apiKey: process.env.GEMINI_API_KEY,
   })
 
+  const modelId = model ?? models.gemini
   const { partialObjectStream, object } = streamObject({
-    model: googleAI(model ?? models.gemini),
+    model: googleAI(modelId),
     prompt,
     schema: AiPlayerPromptSchema,
     maxRetries: 0,
     abortSignal: AbortSignal.timeout(180000),
+    providerOptions: getMaxReasoningProviderOptions('gemini', modelId),
   })
 
   for await (const partialObject of partialObjectStream) {

@@ -4,10 +4,6 @@ import mustache from 'mustache'
 import { Chess } from 'chess.js'
 import { z } from 'zod'
 import { generateText } from 'ai'
-import { createOpenAI } from '@ai-sdk/openai'
-import { createGoogleGenerativeAI } from '@ai-sdk/google'
-import { createAnthropic } from '@ai-sdk/anthropic'
-import { createXai } from '@ai-sdk/xai'
 import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
 import { LichessPuzzle, PuzzleResult, PuzzleBenchmarkRun, PuzzleTheme } from '@chessarena/types/puzzle-benchmark'
@@ -15,6 +11,7 @@ import { getBenchmarkProviderOptions } from '../ai/provider-options'
 import { getBenchmarkConfig } from './benchmark-config'
 import { withRetries, withRetriesNoTimeout } from './retry'
 import { mapWithConcurrency, parsePositiveInt } from './concurrency'
+import { createProviderModel, shouldDisableTimeout } from './shared-utils'
 
 const promptTemplate = fs.readFileSync(path.join(__dirname, '../../steps/chess/puzzle-benchmark.mustache'), 'utf8')
 
@@ -22,7 +19,9 @@ const PuzzleMoveResponseSchema = z.object({
   move: z.string().describe('The best move in Standard Algebraic Notation'),
 })
 
-const extractMoveFromText = (text: string, legalMoves: string[]): { move: string } | null => {
+type ProviderOptions = Record<string, unknown>
+
+const extractMoveFromText = (text: string, legalMoves: string[], logger?: Logger): { move: string } | null => {
   const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i)
   const candidate = fenceMatch?.[1] ?? text
 
@@ -31,8 +30,11 @@ const extractMoveFromText = (text: string, legalMoves: string[]): { move: string
     const parsed = JSON.parse(candidate)
     const validated = PuzzleMoveResponseSchema.safeParse(parsed)
     if (validated.success) return { move: validated.data.move.trim() }
-  } catch {
-    // continue
+  } catch (e) {
+    // JSON parsing failed, will try other extraction methods
+    logger?.debug('JSON parsing failed, trying alternative extraction', {
+      error: e instanceof Error ? e.message : 'unknown',
+    })
   }
 
   // Try extracting JSON object substring
@@ -44,8 +46,9 @@ const extractMoveFromText = (text: string, legalMoves: string[]): { move: string
       const parsed = JSON.parse(slice)
       const validated = PuzzleMoveResponseSchema.safeParse(parsed)
       if (validated.success) return { move: validated.data.move.trim() }
-    } catch {
-      // continue
+    } catch (e) {
+      // Substring JSON parsing also failed
+      logger?.debug('Substring JSON parsing failed', { error: e instanceof Error ? e.message : 'unknown' })
     }
   }
 
@@ -67,40 +70,10 @@ const extractMoveFromText = (text: string, legalMoves: string[]): { move: string
   return null
 }
 
-const shouldDisableTimeout = (provider: AiModelProvider, model: string): boolean => {
-  if (provider !== 'grok') return false
-  const enabled = (process.env.BENCHMARK_GROK_DISABLE_TIMEOUT ?? 'true') === 'true'
-  if (!enabled) return false
-  return model.startsWith('grok-3') || model.startsWith('grok-4')
-}
-
 const getPuzzleMaxOutputTokens = (provider: AiModelProvider, model: string, base: number): number => {
   if (provider === 'openai' && model.startsWith('gpt-5')) return Math.max(base, 384)
   if (provider === 'gemini' && model.startsWith('gemini-3')) return Math.max(base, 384)
   return base
-}
-
-const createProviderModel = (provider: AiModelProvider, model: string) => {
-  switch (provider) {
-    case 'openai': {
-      const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY })
-      return openai(model)
-    }
-    case 'gemini': {
-      const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY })
-      return google(model)
-    }
-    case 'claude': {
-      const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-      return anthropic(model)
-    }
-    case 'grok': {
-      const xai = createXai({ apiKey: process.env.XAI_API_KEY })
-      return xai(model)
-    }
-    default:
-      throw new Error(`Unsupported provider: ${provider}`)
-  }
 }
 
 const getThemeDescription = (theme: PuzzleTheme): string => {
@@ -112,6 +85,40 @@ const getThemeDescription = (theme: PuzzleTheme): string => {
     default:
       return theme
   }
+}
+
+/**
+ * Build provider-specific options for puzzle benchmarks
+ */
+const buildProviderOptions = (
+  provider: AiModelProvider,
+  model: string,
+  providerOptionsBase: ProviderOptions,
+): ProviderOptions => {
+  if (provider === 'gemini') {
+    const googleBase = (providerOptionsBase?.google ?? {}) as Record<string, unknown>
+    return {
+      ...providerOptionsBase,
+      google: {
+        ...googleBase,
+        responseMimeType: 'text/plain',
+        thinkingConfig: { thinkingBudget: model.includes('pro') ? 128 : 0 },
+      },
+    }
+  }
+
+  if (provider === 'openai' && (model === 'gpt-5' || model === 'gpt-5.1' || model === 'gpt-5.2')) {
+    const openaiBase = (providerOptionsBase?.openai ?? {}) as Record<string, unknown>
+    return {
+      ...providerOptionsBase,
+      openai: {
+        ...openaiBase,
+        reasoningEffort: model === 'gpt-5' ? 'minimal' : 'none',
+      },
+    }
+  }
+
+  return providerOptionsBase
 }
 
 /**
@@ -149,28 +156,8 @@ const benchmarkPuzzle = async (
     const cfg = getBenchmarkConfig()
     const providerModel = createProviderModel(provider, model)
     const disableTimeout = shouldDisableTimeout(provider, model)
-
     const providerOptionsBase = getBenchmarkProviderOptions(provider, model)
-    const providerOptions =
-      provider === 'gemini'
-        ? {
-            ...providerOptionsBase,
-            google: {
-              ...(providerOptionsBase as any)?.google,
-              responseMimeType: 'text/plain',
-              thinkingConfig: { thinkingBudget: model.includes('pro') ? 128 : 0 },
-            },
-          }
-        : provider === 'openai' && (model === 'gpt-5' || model === 'gpt-5.1' || model === 'gpt-5.2')
-          ? {
-              ...providerOptionsBase,
-              openai: {
-                ...(providerOptionsBase as any)?.openai,
-                reasoningEffort: model === 'gpt-5' ? 'minimal' : 'none',
-              },
-            }
-          : providerOptionsBase
-
+    const providerOptions = buildProviderOptions(provider, model, providerOptionsBase)
     const maxOutputTokens = getPuzzleMaxOutputTokens(provider, model, cfg.maxOutputTokens)
 
     const label = `${provider}/${model}`
@@ -184,19 +171,28 @@ const benchmarkPuzzle = async (
             providerOptions,
           })
         })
-      : await withRetries(label, startTime + cfg.perItemTimeoutMs, cfg.transientRetries, cfg.retryBaseBackoffMs, async (abortSignal) => {
-          return await generateText({
-            model: providerModel,
-            prompt,
-            maxRetries: 0,
-            abortSignal,
-            maxOutputTokens,
-            providerOptions,
-          })
-        })
+      : await withRetries(
+          label,
+          startTime + cfg.perItemTimeoutMs,
+          cfg.transientRetries,
+          cfg.retryBaseBackoffMs,
+          async (abortSignal) => {
+            return await generateText({
+              model: providerModel,
+              prompt,
+              maxRetries: 0,
+              abortSignal,
+              maxOutputTokens,
+              providerOptions,
+            })
+          },
+        )
 
     const text = result.text ?? ''
-    const responseFallback = !text.trim() && (result as any)?.response ? JSON.stringify((result as any).response) : ''
+    // Handle cases where response might be in a different property
+    const resultWithResponse = result as { response?: unknown }
+    const responseFallback =
+      !text.trim() && resultWithResponse?.response ? JSON.stringify(resultWithResponse.response) : ''
     const candidate = text.trim() ? text : responseFallback
 
     rawResponse = candidate.slice(0, 20_000)
@@ -204,7 +200,7 @@ const benchmarkPuzzle = async (
     if (!candidate.trim()) {
       error = 'Empty response'
     } else {
-      const extracted = extractMoveFromText(candidate, puzzle.legalMoves)
+      const extracted = extractMoveFromText(candidate, puzzle.legalMoves, logger)
       if (extracted) {
         modelMove = extracted.move
       } else {

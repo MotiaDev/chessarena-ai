@@ -1,7 +1,7 @@
 import React from 'react'
 import { usePageTitle } from '@/lib/use-page-title'
 import { Layout } from '@/components/layout'
-import { ShieldCheck, Brain, Activity } from 'lucide-react'
+import { ShieldCheck, Brain, Activity, ArrowRight, FileText, Cpu, MessageSquare, CheckCircle, BarChart3 } from 'lucide-react'
 
 const DetailSection = ({ title, icon, children }: { title: string, icon: React.ReactNode, children: React.ReactNode }) => (
   <div className="mb-12">
@@ -13,6 +13,111 @@ const DetailSection = ({ title, icon, children }: { title: string, icon: React.R
     </div>
     <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 md:p-8">
       {children}
+    </div>
+  </div>
+)
+
+// Visual flow diagram component
+const FlowStep = ({ icon, label, description, isLast = false }: { icon: React.ReactNode, label: string, description: string, isLast?: boolean }) => (
+  <div className="flex items-center gap-2">
+    <div className="flex flex-col items-center">
+      <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/80">
+        {icon}
+      </div>
+      <div className="mt-2 text-center">
+        <div className="text-xs font-semibold text-white">{label}</div>
+        <div className="text-[10px] text-white/40 max-w-[80px]">{description}</div>
+      </div>
+    </div>
+    {!isLast && (
+      <ArrowRight className="text-white/20 mx-1 shrink-0" size={16} />
+    )}
+  </div>
+)
+
+const BenchmarkFlowDiagram = () => (
+  <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 mb-12">
+    <h3 className="text-lg font-semibold text-white mb-6 text-center">How Benchmarks Work</h3>
+    <div className="flex flex-wrap items-start justify-center gap-2 md:gap-4">
+      <FlowStep
+        icon={<FileText size={20} />}
+        label="Prompt"
+        description="FEN + context sent to model"
+      />
+      <FlowStep
+        icon={<Cpu size={20} />}
+        label="Model"
+        description="LLM processes the request"
+      />
+      <FlowStep
+        icon={<MessageSquare size={20} />}
+        label="Response"
+        description="JSON output parsed"
+      />
+      <FlowStep
+        icon={<CheckCircle size={20} />}
+        label="Validation"
+        description="Checked against rules"
+      />
+      <FlowStep
+        icon={<BarChart3 size={20} />}
+        label="Score"
+        description="Metrics calculated"
+        isLast
+      />
+    </div>
+  </div>
+)
+
+// Benchmark comparison with other LLM benchmarks
+const BenchmarkComparisonSection = () => (
+  <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 md:p-8 mb-12">
+    <h3 className="text-lg font-semibold text-white mb-4">Why Chess Benchmarks?</h3>
+    <p className="text-sm text-white/60 leading-relaxed mb-6">
+      While benchmarks like MMLU measure general knowledge and HumanEval measures coding ability,
+      chess provides a unique lens into <strong className="text-white">spatial reasoning</strong>,
+      <strong className="text-white"> rule adherence</strong>, and <strong className="text-white">strategic planning</strong>.
+    </p>
+
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-white/10">
+            <th className="text-left py-3 px-4 text-white/60 font-medium">Benchmark</th>
+            <th className="text-left py-3 px-4 text-white/60 font-medium">Measures</th>
+            <th className="text-left py-3 px-4 text-white/60 font-medium">Limitation</th>
+          </tr>
+        </thead>
+        <tbody className="text-white/50">
+          <tr className="border-b border-white/5">
+            <td className="py-3 px-4 text-white font-medium">MMLU</td>
+            <td className="py-3 px-4">General knowledge (57 subjects)</td>
+            <td className="py-3 px-4">Multiple choice format, memorization</td>
+          </tr>
+          <tr className="border-b border-white/5">
+            <td className="py-3 px-4 text-white font-medium">HumanEval</td>
+            <td className="py-3 px-4">Code generation from docstrings</td>
+            <td className="py-3 px-4">Python-focused, short functions</td>
+          </tr>
+          <tr className="border-b border-white/5">
+            <td className="py-3 px-4 text-white font-medium">ARC</td>
+            <td className="py-3 px-4">Science reasoning (grade school)</td>
+            <td className="py-3 px-4">Limited to science domain</td>
+          </tr>
+          <tr className="border-b border-white/5 bg-emerald-500/5">
+            <td className="py-3 px-4 text-emerald-400 font-semibold">Motia Chess Index</td>
+            <td className="py-3 px-4 text-white/70">Rule adherence, tactics, strategy</td>
+            <td className="py-3 px-4 text-white/70">Chess-specific domain</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div className="mt-6 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+      <p className="text-sm text-emerald-400/80">
+        <strong>Key insight:</strong> Chess requires strict rule following with zero tolerance for errors —
+        a single illegal move loses the game. This makes it an excellent test for LLM reliability and precision.
+      </p>
     </div>
   </div>
 )
@@ -30,6 +135,12 @@ export const MethodologyPage = () => {
             Technical details on how the Motia Chess Index and component scores are calculated.
           </p>
         </div>
+
+        {/* Visual flow diagram */}
+        <BenchmarkFlowDiagram />
+
+        {/* Comparison with other benchmarks */}
+        <BenchmarkComparisonSection />
 
         <DetailSection 
           title="1. Legal Move Benchmark" 

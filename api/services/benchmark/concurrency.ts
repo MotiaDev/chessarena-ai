@@ -3,6 +3,11 @@ export const parsePositiveInt = (value: string | undefined, fallback: number) =>
   return Number.isFinite(n) && n > 0 ? n : fallback
 }
 
+/**
+ * Maps items with limited concurrency.
+ * Note: This is safe in JavaScript's single-threaded event loop because
+ * synchronous operations (like incrementing nextIndex) are atomic between await points.
+ */
 export const mapWithConcurrency = async <T, R>(
   items: T[],
   concurrency: number,
@@ -12,12 +17,14 @@ export const mapWithConcurrency = async <T, R>(
   const results = new Array<R>(items.length)
   const limit = Math.max(1, Math.min(concurrency, items.length))
 
-  let nextIndex = 0
+  // Use a queue-based approach that's more explicit about concurrency control
+  const queue = items.map((_, i) => i)
 
   const worker = async () => {
-    while (true) {
-      const index = nextIndex++
-      if (index >= items.length) return
+    while (queue.length > 0) {
+      const index = queue.shift()
+      if (index === undefined) return
+
       const result = await mapper(items[index], index)
       results[index] = result
       onComplete?.(index, result)

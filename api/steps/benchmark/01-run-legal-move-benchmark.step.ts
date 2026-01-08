@@ -70,7 +70,7 @@ export const handler: Handlers['RunLegalMoveBenchmark'] = async (req, { logger, 
       runsCompleted: (existingSummary?.runsCompleted ?? 0) + 1,
       averageScore: existingSummary
         ? (existingSummary.averageScore * existingSummary.runsCompleted + (run.averageFinalScore ?? 0)) /
-        (existingSummary.runsCompleted + 1)
+          (existingSummary.runsCompleted + 1)
         : (run.averageFinalScore ?? 0),
       bestScore: Math.max(existingSummary?.bestScore ?? 0, run.averageFinalScore ?? 0),
       worstScore: existingSummary

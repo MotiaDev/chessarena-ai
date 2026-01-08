@@ -145,3 +145,6 @@ export const ArenaPage = () => {
     </Layout>
   )
 }
+
+
+

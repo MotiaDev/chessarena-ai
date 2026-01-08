@@ -33,10 +33,7 @@ export const config: ApiRouteConfig = {
   },
 }
 
-const shouldSkipModel = (
-  theme: z.infer<typeof PuzzleThemeSchema>,
-  existing: any | undefined,
-): boolean => {
+const shouldSkipModel = (theme: z.infer<typeof PuzzleThemeSchema>, existing: any | undefined): boolean => {
   if (!existing) return false
   if (theme === 'mateIn1') return typeof existing.mateIn1Accuracy === 'number'
   if (theme === 'oneMove') return typeof existing.oneMoveAccuracy === 'number'
@@ -94,7 +91,9 @@ export const handler: Handlers['RunAllPuzzleBenchmarks'] = async (req, { logger,
   const providerConcurrency = parsePositiveInt(process.env.BENCHMARK_PROVIDER_CONCURRENCY, 4)
   const modelConcurrencyPerProvider = parsePositiveInt(process.env.BENCHMARK_MODEL_CONCURRENCY_PER_PROVIDER, 1)
 
-  const modelsByProvider = modelsToBenchmark.reduce<Record<AiModelProvider, { provider: AiModelProvider; model: string }[]>>(
+  const modelsByProvider = modelsToBenchmark.reduce<
+    Record<AiModelProvider, { provider: AiModelProvider; model: string }[]>
+  >(
     (acc, entry) => {
       acc[entry.provider].push(entry)
       return acc
@@ -146,6 +145,3 @@ export const handler: Handlers['RunAllPuzzleBenchmarks'] = async (req, { logger,
     },
   }
 }
-
-
-

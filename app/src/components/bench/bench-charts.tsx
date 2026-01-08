@@ -9,9 +9,6 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  RadialBarChart,
-  RadialBar,
-  PolarAngleAxis,
 } from 'recharts'
 
 type MiniAreaProps = {
@@ -45,7 +42,7 @@ export const MiniArea: React.FC<MiniAreaProps> = ({ points, className, stroke = 
               borderRadius: 12,
               color: 'rgba(255,255,255,0.85)',
             }}
-            labelFormatter={(t) => new Date(Number(t)).toLocaleDateString()}
+            labelFormatter={(t) => new Date(Number(t)).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             formatter={(v) => [Number(v).toFixed(1), '']}
           />
           <Area
@@ -60,39 +57,3 @@ export const MiniArea: React.FC<MiniAreaProps> = ({ points, className, stroke = 
     </div>
   )
 }
-
-type ScoreGaugeProps = {
-  value: number
-  label: string
-  hint?: string
-  className?: string
-  color?: string
-  unit?: string
-}
-
-export const ScoreGauge: React.FC<ScoreGaugeProps> = ({ value, label, hint, className, color = '#34d399', unit = '%' }) => {
-  const clamped = Math.max(0, Math.min(100, value))
-  const data = [{ name: label, value: clamped }]
-
-  return (
-    <div className={cn('rounded-xl border border-white/10 bg-black/30 p-4', className)}>
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-white/70">{label}</div>
-        <div className="text-sm font-semibold text-white">
-          {clamped.toFixed(0)}
-          {unit}
-        </div>
-      </div>
-      <div className="mt-3 h-[92px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <RadialBarChart cx="50%" cy="70%" innerRadius="70%" outerRadius="100%" startAngle={180} endAngle={0} data={data}>
-            <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-            <RadialBar dataKey="value" cornerRadius={10} fill={color} background={{ fill: 'rgba(255,255,255,0.08)' }} />
-          </RadialBarChart>
-        </ResponsiveContainer>
-      </div>
-      {hint ? <div className="mt-2 text-xs text-white/40">{hint}</div> : null}
-    </div>
-  )
-}
-

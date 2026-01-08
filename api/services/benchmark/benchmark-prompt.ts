@@ -1,14 +1,11 @@
 import { z } from 'zod'
 import { generateText } from 'ai'
-import { createAnthropic } from '@ai-sdk/anthropic'
-import { createOpenAI } from '@ai-sdk/openai'
-import { createGoogleGenerativeAI } from '@ai-sdk/google'
-import { createXai } from '@ai-sdk/xai'
 import { Logger } from 'motia'
 import { AiModelProvider } from '@chessarena/types/ai-models'
 import { getBenchmarkProviderOptions } from '../ai/provider-options'
 import { getBenchmarkConfig } from './benchmark-config'
 import { withRetries, withRetriesNoTimeout } from './retry'
+import { createProviderModel, shouldDisableTimeout, getApiKeyEnvVar } from './shared-utils'
 
 const LegalMovesResponseSchema = z.object({
   moves: z.array(z.string()).describe('Array of legal moves in Standard Algebraic Notation'),
@@ -27,35 +24,7 @@ type BenchmarkPromptResult = {
   error?: string
 }
 
-const shouldDisableTimeout = (provider: AiModelProvider, model: string): boolean => {
-  if (provider !== 'grok') return false
-  const enabled = (process.env.BENCHMARK_GROK_DISABLE_TIMEOUT ?? 'true') === 'true'
-  if (!enabled) return false
-  return model.startsWith('grok-3') || model.startsWith('grok-4')
-}
-
-const createProviderModel = (provider: AiModelProvider, model: string) => {
-  switch (provider) {
-    case 'openai': {
-      const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY })
-      return openai(model)
-    }
-    case 'gemini': {
-      const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY })
-      return google(model)
-    }
-    case 'claude': {
-      const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-      return anthropic(model)
-    }
-    case 'grok': {
-      const xai = createXai({ apiKey: process.env.XAI_API_KEY })
-      return xai(model)
-    }
-    default:
-      throw new Error(`Unsupported provider: ${provider}`)
-  }
-}
+type ProviderOptions = Record<string, unknown>
 
 export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<BenchmarkPromptResult> => {
   const { prompt, provider, model, logger } = input
@@ -65,13 +34,7 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
   const label = `${provider}/${model}`
 
   // Check API key
-  const apiKeyEnvVar = {
-    openai: 'OPENAI_API_KEY',
-    gemini: 'GEMINI_API_KEY',
-    claude: 'ANTHROPIC_API_KEY',
-    grok: 'XAI_API_KEY',
-  }[provider]
-
+  const apiKeyEnvVar = getApiKeyEnvVar(provider)
   const apiKey = process.env[apiKeyEnvVar]
   if (!apiKey) {
     logger.error(`[${label}] Missing ${apiKeyEnvVar}`)
@@ -82,15 +45,20 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
     const providerModel = createProviderModel(provider, model)
     const disableTimeout = shouldDisableTimeout(provider, model)
     const providerOptionsBase = getBenchmarkProviderOptions(provider, model)
-    const providerOptions =
+
+    // Add JSON response format for Gemini
+    const providerOptions: ProviderOptions =
       provider === 'gemini'
         ? {
             ...providerOptionsBase,
-            google: { ...(providerOptionsBase as any)?.google, responseMimeType: 'application/json' },
+            google: {
+              ...(providerOptionsBase?.google as Record<string, unknown> | undefined),
+              responseMimeType: 'application/json',
+            },
           }
         : providerOptionsBase
 
-    const runGenerateText = async (opts: { providerOptions: Record<string, any> }) => {
+    const runGenerateText = async (opts: { providerOptions: ProviderOptions }) => {
       if (disableTimeout) {
         return await withRetriesNoTimeout(label, cfg.transientRetries, cfg.retryBaseBackoffMs, async () => {
           return await generateText({
@@ -120,7 +88,10 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
     try {
       ;({ text } = await runGenerateText({ providerOptions }))
     } catch (e) {
+      // Retry Grok with empty provider options if initial request fails
+      // This is a workaround for Grok API compatibility issues
       if (provider === 'grok') {
+        logger.warn(`[${label}] Initial request failed, retrying with empty provider options`)
         ;({ text } = await runGenerateText({ providerOptions: {} }))
       } else {
         throw e
@@ -131,34 +102,35 @@ export const makeBenchmarkPrompt = async (input: BenchmarkPromptInput): Promise<
     try {
       parsed = JSON.parse(text)
     } catch {
+      // Try to extract JSON from the response
       const start = text.indexOf('{')
       const end = text.lastIndexOf('}')
       if (start !== -1 && end !== -1 && end > start) {
         try {
           parsed = JSON.parse(text.slice(start, end + 1))
         } catch {
+          logger.warn(`[${label}] Could not parse extracted JSON from response`)
           return { moves: [], rawResponse: text, error: 'Could not parse JSON response' }
         }
       } else {
+        logger.warn(`[${label}] No JSON found in response`)
         return { moves: [], rawResponse: text, error: 'Could not parse JSON response' }
       }
     }
 
     const validated = LegalMovesResponseSchema.safeParse(parsed)
     if (!validated.success) {
+      logger.warn(`[${label}] Response did not match schema: ${validated.error.message}`)
       return { moves: [], rawResponse: text, error: 'Response did not match schema' }
     }
 
     return { moves: validated.data.moves, rawResponse: text }
   } catch (error) {
     const elapsed = Date.now() - startTime
-    const anyErr = error as any
-    const statusCode = typeof anyErr?.statusCode === 'number' ? anyErr.statusCode : undefined
+    const errorWithStatus = error as { statusCode?: number }
+    const statusCode = typeof errorWithStatus?.statusCode === 'number' ? errorWithStatus.statusCode : undefined
     const errorMsgBase = error instanceof Error ? error.message : 'Unknown error'
-    const errorMsg =
-      statusCode != null
-        ? `${errorMsgBase} (status ${statusCode})`
-        : errorMsgBase
+    const errorMsg = statusCode != null ? `${errorMsgBase} (status ${statusCode})` : errorMsgBase
     const errorName = error instanceof Error ? error.name : 'Error'
 
     logger.error(`[${label}] FAILED after ${elapsed}ms`)

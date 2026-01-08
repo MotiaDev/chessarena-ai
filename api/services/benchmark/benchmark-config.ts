@@ -23,6 +23,3 @@ export const getBenchmarkConfig = (): BenchmarkConfig => {
     itemConcurrency,
   }
 }
-
-
-

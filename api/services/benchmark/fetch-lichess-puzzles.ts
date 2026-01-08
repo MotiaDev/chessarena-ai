@@ -35,12 +35,7 @@ const parseRetryAfterMs = (value: string | null): number | null => {
   return null
 }
 
-const fetchJsonWithRetry = async <T>(
-  url: string,
-  logger: Logger,
-  label: string,
-  maxRetries = 6,
-): Promise<T> => {
+const fetchJsonWithRetry = async <T>(url: string, logger: Logger, label: string, maxRetries = 6): Promise<T> => {
   const token = process.env.LICHESS_TOKEN
   const headers: Record<string, string> = {
     Accept: 'application/json',
@@ -63,7 +58,8 @@ const fetchJsonWithRetry = async <T>(
 
     const retryAfterMs = parseRetryAfterMs(response.headers.get('retry-after'))
     const shouldRetry =
-      attempt <= maxRetries && (response.status === 429 || response.status === 408 || (response.status >= 500 && response.status <= 599))
+      attempt <= maxRetries &&
+      (response.status === 429 || response.status === 408 || (response.status >= 500 && response.status <= 599))
 
     if (!shouldRetry) {
       logger.error('Lichess API request failed', { label, url, status: response.status })
@@ -71,7 +67,13 @@ const fetchJsonWithRetry = async <T>(
     }
 
     const waitMs = retryAfterMs ?? backoffMs
-    logger.warn('Lichess API rate limited / transient error, retrying', { label, url, status: response.status, attempt, waitMs })
+    logger.warn('Lichess API rate limited / transient error, retrying', {
+      label,
+      url,
+      status: response.status,
+      attempt,
+      waitMs,
+    })
     await sleep(waitMs + Math.floor(Math.random() * 250))
     backoffMs = Math.min(backoffMs * 2, 30000)
   }
@@ -163,7 +165,13 @@ export const fetchPuzzles = async (theme: PuzzleTheme, count: number, logger: Lo
   const results: LichessPuzzle[] = []
 
   const maxRequests = Math.max(3, Math.ceil((target / Math.max(1, nb)) * 6))
-  logger.info('Fetching puzzles from Lichess', { theme, count: target, nb, maxRequests, authenticated: Boolean(process.env.LICHESS_TOKEN) })
+  logger.info('Fetching puzzles from Lichess', {
+    theme,
+    count: target,
+    nb,
+    maxRequests,
+    authenticated: Boolean(process.env.LICHESS_TOKEN),
+  })
 
   for (let req = 1; req <= maxRequests && results.length < target; req++) {
     // Prefer the themed endpoint (faster to hit the theme we want).

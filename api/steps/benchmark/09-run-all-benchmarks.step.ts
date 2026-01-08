@@ -124,7 +124,9 @@ export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, strea
   const existingSummaries = await streams.legalMoveBenchmarkSummary.getGroup('models')
   const completedSet = new Set(existingSummaries.map((s) => `${s.provider}:${s.model}`))
 
-  const modelsToBenchmark = rerunCompleted ? allModels : allModels.filter((m) => !completedSet.has(`${m.provider}:${m.model}`))
+  const modelsToBenchmark = rerunCompleted
+    ? allModels
+    : allModels.filter((m) => !completedSet.has(`${m.provider}:${m.model}`))
 
   const totalModels = modelsToBenchmark.length
   logger.info('Models to benchmark', { totalModels })
@@ -133,7 +135,9 @@ export const handler: Handlers['RunAllBenchmarks'] = async (req, { logger, strea
     const providerConcurrency = parsePositiveInt(process.env.BENCHMARK_PROVIDER_CONCURRENCY, 4)
     const modelConcurrencyPerProvider = parsePositiveInt(process.env.BENCHMARK_MODEL_CONCURRENCY_PER_PROVIDER, 1)
 
-    const modelsByProvider = modelsToBenchmark.reduce<Record<AiModelProvider, { provider: AiModelProvider; model: string }[]>>(
+    const modelsByProvider = modelsToBenchmark.reduce<
+      Record<AiModelProvider, { provider: AiModelProvider; model: string }[]>
+    >(
       (acc, entry) => {
         acc[entry.provider].push(entry)
         return acc

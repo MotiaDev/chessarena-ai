@@ -9,34 +9,36 @@ type ModelWithWeight = {
 }
 
 // Define model tiers and weights (cheaper = higher weight)
+// IMPORTANT: Model names must match exactly with supportedModelsByProvider in models.ts
 const MODEL_WEIGHTS: ModelWithWeight[] = [
   // Cheap tier (weight: 10) - highest chance
   { provider: 'gemini', model: 'gemini-2.5-flash-lite', weight: 10, tier: 'cheap' },
   { provider: 'gemini', model: 'gemini-2.5-flash', weight: 10, tier: 'cheap' },
-  { provider: 'claude', model: 'claude-3-5-haiku-20241022', weight: 10, tier: 'cheap' },
-  { provider: 'claude', model: 'claude-haiku-4-5-20251001', weight: 10, tier: 'cheap' },
-  { provider: 'grok', model: 'grok-3-mini', weight: 10, tier: 'cheap' },
-  { provider: 'openai', model: 'gpt-4.1-mini-2025-04-14', weight: 10, tier: 'cheap' },
-  { provider: 'openai', model: 'gpt-5-nano-2025-08-07', weight: 10, tier: 'cheap' },
+  { provider: 'gemini', model: 'gemini-2.0-flash', weight: 10, tier: 'cheap' },
+  { provider: 'claude', model: 'claude-3-5-haiku-latest', weight: 10, tier: 'cheap' },
+  { provider: 'claude', model: 'claude-haiku-4-5', weight: 10, tier: 'cheap' },
+  { provider: 'openai', model: 'gpt-4o-mini', weight: 10, tier: 'cheap' },
+  { provider: 'openai', model: 'gpt-4.1-mini', weight: 10, tier: 'cheap' },
+  { provider: 'grok', model: 'grok-3-fast', weight: 10, tier: 'cheap' },
 
   // Mid tier (weight: 5)
   { provider: 'gemini', model: 'gemini-2.5-pro', weight: 5, tier: 'mid' },
-  { provider: 'claude', model: 'claude-sonnet-4-20250514', weight: 5, tier: 'mid' },
-  { provider: 'claude', model: 'claude-3-7-sonnet-20250219', weight: 5, tier: 'mid' },
-  { provider: 'grok', model: 'grok-3', weight: 5, tier: 'mid' },
+  { provider: 'claude', model: 'claude-sonnet-4-0', weight: 5, tier: 'mid' },
+  { provider: 'claude', model: 'claude-3-7-sonnet-latest', weight: 5, tier: 'mid' },
   { provider: 'grok', model: 'grok-4-fast-non-reasoning', weight: 5, tier: 'mid' },
-  { provider: 'openai', model: 'gpt-5-mini-2025-08-07', weight: 5, tier: 'mid' },
-  { provider: 'openai', model: 'o4-mini-2025-04-16', weight: 5, tier: 'mid' },
+  { provider: 'openai', model: 'gpt-5-mini', weight: 5, tier: 'mid' },
+  { provider: 'openai', model: 'gpt-4o', weight: 5, tier: 'mid' },
+  { provider: 'openai', model: 'gpt-4.1', weight: 5, tier: 'mid' },
 
   // Expensive tier (weight: 2) - lowest chance
-  { provider: 'gemini', model: 'gemini-3.0-pro-preview', weight: 2, tier: 'expensive' },
-  { provider: 'claude', model: 'claude-sonnet-4-5-20250929', weight: 2, tier: 'expensive' },
-  { provider: 'claude', model: 'claude-opus-4-20250514', weight: 2, tier: 'expensive' },
-  { provider: 'claude', model: 'claude-opus-4.5', weight: 1, tier: 'expensive' },
-  { provider: 'grok', model: 'grok-4-fast', weight: 2, tier: 'expensive' },
-  { provider: 'openai', model: 'gpt-5-2025-08-07', weight: 2, tier: 'expensive' },
-  { provider: 'openai', model: 'gpt-5.2-high', weight: 1, tier: 'expensive' },
-  { provider: 'openai', model: 'gpt-3.5-turbo-instruct', weight: 3, tier: 'mid' }, // Legacy, cheap
+  { provider: 'gemini', model: 'gemini-3-pro-preview', weight: 2, tier: 'expensive' },
+  { provider: 'claude', model: 'claude-sonnet-4-5', weight: 2, tier: 'expensive' },
+  { provider: 'claude', model: 'claude-opus-4-0', weight: 2, tier: 'expensive' },
+  { provider: 'claude', model: 'claude-opus-4-5', weight: 1, tier: 'expensive' },
+  { provider: 'grok', model: 'grok-4-fast-reasoning', weight: 2, tier: 'expensive' },
+  { provider: 'openai', model: 'gpt-5', weight: 2, tier: 'expensive' },
+  { provider: 'openai', model: 'gpt-5.1', weight: 2, tier: 'expensive' },
+  { provider: 'openai', model: 'gpt-5.2', weight: 1, tier: 'expensive' },
 ]
 
 // Filter to only include models that are actually supported

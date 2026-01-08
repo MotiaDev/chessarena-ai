@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Layout } from '@/components/layout'
 import { usePageTitle } from '@/lib/use-page-title'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -9,10 +9,93 @@ import { mockBenchLeaderboard, mockBenchTimeseries, mockPrompts } from '@/compon
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { BarChart3, ShieldCheck, Swords, Brain } from 'lucide-react'
+import { useStreamGroup } from '@motiadev/stream-client-react'
+import type { LegalMoveBenchmarkSummary } from '@chessarena/types/legal-move-benchmark'
+import type { PuzzleBenchmarkSummary } from '@chessarena/types/puzzle-benchmark'
+import type { StockfishBenchmarkSummary } from '@chessarena/types/stockfish-benchmark'
 
 export const BenchPage = () => {
-  usePageTitle('Moita Chess Bench')
+  usePageTitle('Motia Chess Bench')
   const [promptTab, setPromptTab] = useState('legal')
+
+  // Stream data for real-time benchmarks
+  const { data: legalSummaries } = useStreamGroup<LegalMoveBenchmarkSummary>({
+    streamName: 'legalMoveBenchmarkSummary',
+    groupId: 'models',
+  })
+  const { data: puzzleSummaries } = useStreamGroup<PuzzleBenchmarkSummary>({
+    streamName: 'puzzleBenchmarkSummary',
+    groupId: 'models',
+  })
+  const { data: stockfishSummaries } = useStreamGroup<StockfishBenchmarkSummary>({
+    streamName: 'stockfishBenchmarkSummary',
+    groupId: 'models',
+  })
+
+  // Merge real stream data with mock data as fallback
+  const benchRows = useMemo(() => {
+    const legalById = new Map(legalSummaries.map((s) => [`${s.provider}:${s.model}`, s]))
+    const puzzleById = new Map(puzzleSummaries.map((s) => [`${s.provider}:${s.model}`, s]))
+    const stockfishById = new Map(stockfishSummaries.map((s) => [`${s.provider}:${s.model}`, s]))
+
+    return mockBenchLeaderboard.map((row) => {
+      const legal = legalById.get(row.id)
+      const puzzle = puzzleById.get(row.id)
+      const stockfish = stockfishById.get(row.id)
+
+      const legalMoveScore = legal?.averageScore ?? row.legalMoveScore
+      const puzzleScore = puzzle?.overallAccuracy ?? row.puzzleScore
+      const acpl = stockfish?.averageAcpl ?? row.acpl
+      const acplScore = Math.max(0, 100 - acpl)
+      const motiaChessIndex = Number((0.4 * legalMoveScore + 0.3 * puzzleScore + 0.3 * acplScore).toFixed(1))
+      const lastUpdatedAt = Math.max(
+        legal?.lastRunAt ?? 0,
+        puzzle?.lastRunAt ?? 0,
+        stockfish?.lastRunAt ?? 0,
+        row.lastUpdatedAt
+      )
+
+      return {
+        ...row,
+        legalMoveScore,
+        puzzleScore,
+        acpl,
+        motiaChessIndex,
+        lastUpdatedAt,
+      }
+    })
+  }, [legalSummaries, puzzleSummaries, stockfishSummaries])
+
+  // Calculate global averages from stream data
+  const globalAverages = useMemo(() => {
+    const hasRealData = legalSummaries.length > 0 || puzzleSummaries.length > 0 || stockfishSummaries.length > 0
+
+    if (!hasRealData) {
+      return {
+        legalMoveScore: mockBenchTimeseries.legalMoveScore.at(-1)?.v ?? 0,
+        puzzleScore: mockBenchTimeseries.puzzleScore.at(-1)?.v ?? 0,
+        acpl: mockBenchTimeseries.acpl.at(-1)?.v ?? 0,
+      }
+    }
+
+    const avgLegal = legalSummaries.length > 0
+      ? legalSummaries.reduce((sum, s) => sum + s.averageScore, 0) / legalSummaries.length
+      : mockBenchTimeseries.legalMoveScore.at(-1)?.v ?? 0
+
+    const avgPuzzle = puzzleSummaries.length > 0
+      ? puzzleSummaries.reduce((sum, s) => sum + (s.overallAccuracy ?? 0), 0) / puzzleSummaries.length
+      : mockBenchTimeseries.puzzleScore.at(-1)?.v ?? 0
+
+    const avgAcpl = stockfishSummaries.length > 0
+      ? stockfishSummaries.reduce((sum, s) => sum + s.averageAcpl, 0) / stockfishSummaries.length
+      : mockBenchTimeseries.acpl.at(-1)?.v ?? 0
+
+    return {
+      legalMoveScore: Math.round(avgLegal),
+      puzzleScore: Math.round(avgPuzzle),
+      acpl: Math.round(avgAcpl),
+    }
+  }, [legalSummaries, puzzleSummaries, stockfishSummaries])
 
   return (
     <Layout>
@@ -83,7 +166,7 @@ export const BenchPage = () => {
               </div>
               <div className="font-semibold text-white">Legal Move Gen</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">{mockBenchTimeseries.legalMoveScore.at(-1)?.v ?? 0}%</div>
+            <div className="text-3xl font-bold text-white mb-1">{globalAverages.legalMoveScore}%</div>
             <div className="text-sm text-white/40 mb-6">Global Average (7d)</div>
             <MiniArea points={mockBenchTimeseries.legalMoveScore} stroke="#34d399" height={48} className="opacity-50 group-hover:opacity-100 transition-opacity" />
           </div>
@@ -95,7 +178,7 @@ export const BenchPage = () => {
               </div>
               <div className="font-semibold text-white">Puzzle Solving</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">{mockBenchTimeseries.puzzleScore.at(-1)?.v ?? 0}%</div>
+            <div className="text-3xl font-bold text-white mb-1">{globalAverages.puzzleScore}%</div>
             <div className="text-sm text-white/40 mb-6">Global Average (7d)</div>
             <MiniArea points={mockBenchTimeseries.puzzleScore} stroke="#38bdf8" height={48} className="opacity-50 group-hover:opacity-100 transition-opacity" />
           </div>
@@ -107,7 +190,7 @@ export const BenchPage = () => {
               </div>
               <div className="font-semibold text-white">Move Quality</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">{mockBenchTimeseries.acpl.at(-1)?.v ?? 0}</div>
+            <div className="text-3xl font-bold text-white mb-1">{globalAverages.acpl}</div>
             <div className="text-sm text-white/40 mb-6">Avg ACPL (7d)</div>
             <MiniArea points={mockBenchTimeseries.acpl} stroke="#fbbf24" height={48} className="opacity-50 group-hover:opacity-100 transition-opacity" />
           </div>
@@ -124,26 +207,26 @@ export const BenchPage = () => {
               <BenchBarChart
                 title="Motia Chess Index"
                 description="Aggregated score combining accuracy, puzzle solving, and legality."
-                rows={mockBenchLeaderboard}
+                rows={benchRows}
                 metric="motiaChessIndex"
               />
               <BenchBarChart
                 title="Legal vs Illegal Moves"
                 description="Percentage of strictly legal moves generated vs illegal/missed attempts."
-                rows={mockBenchLeaderboard}
+                rows={benchRows}
                 metric="legalVsIllegal"
               />
               <BenchBarChart
                 title="Puzzle Solving Accuracy"
                 description="Success rate on standard mate-in-1 and tactics puzzles."
-                rows={mockBenchLeaderboard}
+                rows={benchRows}
                 metric="puzzleScore"
                 unit="%"
               />
               <BenchBarChart
                 title="Move Quality (ACPL)"
                 description="Average Centipawn Loss against Stockfish 16 (lower is better)."
-                rows={mockBenchLeaderboard}
+                rows={benchRows}
                 metric="acplScore"
               />
            </div>
@@ -153,3 +236,6 @@ export const BenchPage = () => {
     </Layout>
   )
 }
+
+
+

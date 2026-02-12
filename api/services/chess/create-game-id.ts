@@ -1,12 +1,12 @@
-import { FlowContextStateStreams, Logger } from 'motia'
+import { getContext, type Streams } from 'motia'
 import { isProfane } from 'no-profanity'
 
 type Args = {
-  streams: FlowContextStateStreams
-  logger: Logger
+  streams: Streams
 }
 
-export const createGameId = async ({ streams, logger }: Args): Promise<string> => {
+export const createGameId = async ({ streams }: Args): Promise<string> => {
+  const { logger } = getContext()
   const chars = 'abcdefghijklmnopqrstuvwxyz'
   const segments = Array.from({ length: 3 }, () => {
     return Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
@@ -16,12 +16,12 @@ export const createGameId = async ({ streams, logger }: Args): Promise<string> =
 
   if (isProfane(gameId)) {
     logger.info('[CreateGame] Game ID is profane', { gameId })
-    return createGameId({ streams, logger })
+    return createGameId({ streams })
   }
 
   if (result?.id) {
     logger.info('[CreateGame] Game ID already exists', { gameId })
-    return createGameId({ streams, logger })
+    return createGameId({ streams })
   }
 
   return gameId

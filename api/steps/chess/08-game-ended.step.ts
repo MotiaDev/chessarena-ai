@@ -1,9 +1,9 @@
-import { EventConfig, Handlers } from 'motia'
+import type { Scoreboard } from '@chessarena/types/game'
+import type { Leaderboard } from '@chessarena/types/leaderboard'
+import { type Handlers, queue, type StepConfig } from 'motia'
 import { z } from 'zod'
 import { models } from '../../services/ai/models'
 import { generateGameScore } from '../../services/chess/generate-game-score'
-import { Scoreboard } from '@chessarena/types/game'
-import { Leaderboard } from '@chessarena/types/leaderboard'
 import { isAiGame } from '../../services/chess/utils'
 
 /*
@@ -11,19 +11,20 @@ import { isAiGame } from '../../services/chess/utils'
  *
  * We need to support FIFO queueing system in Motia to avoid this.
  */
-export const config: EventConfig = {
-  type: 'event',
+const inputSchema = z.object({
+  gameId: z.string().describe('The ID of the game'),
+})
+
+export const config = {
   name: 'GameEnded',
   description: 'GameEnded',
-  subscribes: ['chess-game-ended'],
-  emits: [],
   flows: ['chess'],
-  input: z.object({
-    gameId: z.string({ description: 'The ID of the game' }),
-  }),
-}
+  triggers: [queue('chess-game-ended', { input: inputSchema })],
+  enqueues: [],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
-export const handler: Handlers['GameEnded'] = async (input, { logger, streams }) => {
+export const handler: Handlers<typeof config> = async (input, { logger, streams }) => {
   logger.info('Received chess-game-ended event', { gameId: input.gameId })
 
   // We need to wait a few seconds to make sure the moves are evaluated

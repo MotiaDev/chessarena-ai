@@ -1,19 +1,27 @@
-import { FlowContextStateStreams, Logger } from 'motia'
-import { createGameId } from './create-game-id'
-import { Game } from '@chessarena/types/game'
+import type { Game } from '@chessarena/types/game'
+import type { User } from '@chessarena/types/user'
+import { getContext, type Streams } from 'motia'
 import { models } from '../ai/models'
+import { createGameId } from './create-game-id'
 import { isAiGame } from './utils'
-import { User } from '@chessarena/types/user'
 
-export const createGame = async (
-  players: Game['players'],
-  streams: FlowContextStateStreams,
-  logger: Logger,
-  user?: User,
-): Promise<Game> => {
-  const gameId = await createGameId({ streams, logger })
+export const createGame = async (players: Game['players'], streams: Streams, user?: User): Promise<Game> => {
+  const gameId = await createGameId({ streams })
+  const { logger } = getContext()
 
-  const game = await streams.chessGame.set('game', gameId, {
+  logger.info('[CreateGame] Creating game', {
+    id: gameId,
+    fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+    turn: 'white',
+    status: 'pending',
+    players: {
+      white: { ...players.white, userId: players.white.ai ? undefined : user?.id },
+      black: { ...players.black, userId: players.black.ai },
+    },
+    check: false,
+  })
+
+  const { new_value: game } = await streams.chessGame.set('game', gameId, {
     id: gameId,
     fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
     turn: 'white',

@@ -1,7 +1,7 @@
 import { AiModelProviderSchema } from '@chessarena/types/ai-models'
-import { GameSchema, Player } from '@chessarena/types/game'
-import { ApiRouteConfig, Handlers } from 'motia'
-import { RefinementCtx, z } from 'zod'
+import { GameSchema, type Player } from '@chessarena/types/game'
+import { api, type Handlers, type StepConfig } from 'motia'
+import { type RefinementCtx, z } from 'zod'
 import { supportedModelsByProvider } from '../../services/ai/models'
 import { createGame } from '../../services/chess/create-game'
 import { auth } from '../middlewares/auth.middleware'
@@ -41,7 +41,7 @@ const refine = (data: Player, ctx: RefinementCtx) => {
 const playerSchema = () => {
   return z
     .object({
-      ai: AiModelProviderSchema().optional(),
+      ai: AiModelProviderSchema.optional(),
       model: z.string().optional(),
     })
     .superRefine(refine)
@@ -54,28 +54,30 @@ const bodySchema = z.object({
   }),
 })
 
-export const config: ApiRouteConfig = {
-  type: 'api',
+export const config = {
   name: 'CreateGame',
   description: 'Create a new game',
-  path: '/chess/create-game',
-  method: 'POST',
-  emits: ['chess-game-created'],
-  virtualSubscribes: ['api:create-game'],
   flows: ['chess'],
-  bodySchema,
-  middleware: [auth({ required: true })],
-  responseSchema: {
-    200: GameSchema,
-    400: z.object(
-      { message: z.string(), errors: z.array(z.object({ message: z.string() })) },
-      { description: 'Validation issue' },
-    ),
-    401: z.object({ message: z.string() }, { description: 'User is not found' }),
-  },
-}
+  triggers: [
+    api('POST', '/chess/create-game', {
+      bodySchema,
+      responseSchema: {
+        200: GameSchema,
+        400: z.object(
+          { message: z.string(), errors: z.array(z.object({ message: z.string() })) },
+          { message: 'Validation issue' },
+        ),
+        401: z.object({ message: z.string() }, { message: 'User is not found' }),
+      },
+      middleware: [auth({ required: true })],
+    }),
+  ],
+  enqueues: ['chess-game-created'],
+  virtualEnqueues: [],
+  virtualSubscribes: ['api:create-game'],
+} as const satisfies StepConfig
 
-export const handler: Handlers['CreateGame'] = async (req, { logger, emit, state, streams }) => {
+export const handler: Handlers<typeof config> = async (req, { logger, enqueue, state, streams }) => {
   logger.info('[CreateGame] Received createGame event')
 
   const userState = new UserState(state)
@@ -88,18 +90,15 @@ export const handler: Handlers['CreateGame'] = async (req, { logger, emit, state
   }
 
   if (!validationResult.success) {
-    logger.error('[CreateGame] Invalid request body', { errors: validationResult.error.errors })
-    return { status: 400, body: { message: 'Invalid request body', errors: validationResult.error.errors } }
+    logger.error('[CreateGame] Invalid request body', { errors: z.treeifyError(validationResult.error) })
+    return { status: 400, body: { message: 'Invalid request body', errors: z.treeifyError(validationResult.error) } }
   }
 
-  const game = await createGame(req.body.players, streams, logger, user)
+  const game = await createGame(req.body.players, streams, user)
 
   logger.info('[CreateGame] Game created', { gameId: game.id })
 
-  await emit({
-    topic: 'chess-game-created',
-    data: { gameId: game.id, fenBefore: game.fen },
-  })
+  await enqueue({ topic: 'chess-game-created', data: { gameId: game.id, fenBefore: game.fen } })
 
   return { status: 200, body: game }
 }

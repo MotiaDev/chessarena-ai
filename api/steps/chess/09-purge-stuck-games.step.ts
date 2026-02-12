@@ -1,14 +1,14 @@
-import { LiveAiGames } from '@chessarena/types/live-ai-games'
-import { CronConfig, Handlers } from 'motia'
+import type { LiveAiGames } from '@chessarena/types/live-ai-games'
+import { cron, type Handlers, type StepConfig } from 'motia'
 
-export const config: CronConfig = {
-  cron: '0 0 * * * *', // every hour
+export const config = {
   name: 'PurgeStuckGames',
   description: 'Removes all games that have been stuck for more than 10 minutes',
-  type: 'cron',
-  emits: [],
   flows: ['chess'],
-}
+  triggers: [cron('0 0 * * * *')], // every hour
+  enqueues: [],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
 const FIFTEEN_MINUTES = 1000 * 60 * 15
 
@@ -23,7 +23,7 @@ const shouldPurgeGame = (game: LiveAiGames) => {
   return diff > FIFTEEN_MINUTES
 }
 
-export const handler: Handlers['PurgeStuckGames'] = async ({ logger, streams }) => {
+export const handler: Handlers<typeof config> = async (_input, { logger, streams }) => {
   logger.info('[PurgeStuckGames] Purge stuck games')
 
   const games = await streams.chessLiveAiGames.getGroup('game')

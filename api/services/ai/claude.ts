@@ -1,8 +1,8 @@
-import { streamObject } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
+import { streamObject } from 'ai'
 import { models } from './models'
-import { Handler } from './types'
+import type { Handler } from './types'
 
 export const claude: Handler = async ({ prompt, logger, model, onThoughtUpdate }) => {
   const anthropic = createAnthropic({

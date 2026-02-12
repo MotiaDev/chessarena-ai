@@ -1,4 +1,4 @@
-import { AiModels, AiProviderDefaultModel } from '@chessarena/types/ai-models'
+import type { AiModels, AiProviderDefaultModel } from '@chessarena/types/ai-models'
 
 // NOTE: these are the models used for AI vs AI games, it is also used for backwards compatibility for existing games that don't have a model assigned to a player
 export const models: AiProviderDefaultModel = {

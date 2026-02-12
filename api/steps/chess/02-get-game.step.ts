@@ -1,34 +1,35 @@
 import { GameSchema } from '@chessarena/types/game'
-import { ApiRouteConfig, Handlers } from 'motia'
+import { api, type Handlers, type StepConfig } from 'motia'
 import { z } from 'zod'
 import { getGameRole } from '../../services/chess/get-game-role'
 import { randomUserName } from '../../services/chess/random-user-name'
 import { UserState } from '../states/user-state'
 import { auth } from '../middlewares/auth.middleware'
 
-export const config: ApiRouteConfig = {
-  type: 'api',
+export const config = {
   name: 'GetGame',
   description: 'Get a game',
-  path: '/chess/game/:id',
-  method: 'GET',
-  emits: [],
   flows: ['chess'],
-  middleware: [auth({ required: false })],
-  bodySchema: z.object({}),
-  queryParams: [{ name: 'password', description: 'The password to get the game' }],
-  responseSchema: {
-    200: z.object({
-      ...GameSchema.shape,
-      role: z.enum(['white', 'black', 'spectator', 'root']),
-      username: z.string(),
-      passwords: z.object({ root: z.string(), white: z.string(), black: z.string() }).optional(),
+  triggers: [
+    api('GET', '/chess/game/:id', {
+      bodySchema: z.object({}).strict(),
+      queryParams: [{ name: 'password', description: 'The password to get the game' }],
+      responseSchema: {
+        200: GameSchema.extend({
+          role: z.enum(['white', 'black', 'spectator', 'root']),
+          username: z.string(),
+          passwords: z.object({ root: z.string(), white: z.string(), black: z.string() }).optional(),
+        }),
+        404: z.object({ message: z.string() }).strict(),
+      },
+      middleware: [auth({ required: false })],
     }),
-    404: z.object({ message: z.string() }),
-  },
-}
+  ],
+  enqueues: [],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
-export const handler: Handlers['GetGame'] = async (req, { logger, state, streams }) => {
+export const handler: Handlers<typeof config> = async (req, { logger, state, streams }) => {
   logger.info('Received getGame event')
 
   const gameId = req.pathParams.id

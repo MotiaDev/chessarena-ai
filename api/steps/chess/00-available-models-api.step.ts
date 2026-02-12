@@ -1,31 +1,27 @@
 import { AiModelsSchema } from '@chessarena/types/ai-models'
-import { ApiRouteConfig, Handlers } from 'motia'
+import { api, type Handlers, type StepConfig } from 'motia'
 import { z } from 'zod'
 import { supportedModelsByProvider } from '../../services/ai/models'
 
-export const config: ApiRouteConfig = {
-  type: 'api',
+export const config = {
   name: 'AvailableModels',
   description: 'Expose all available ai models for the supported providers (OpenAI, Google Gemini, Anthropic Claude)',
-  path: '/chess/models',
-  method: 'GET',
-  emits: [],
-  virtualEmits: [
-    {
-      topic: 'api:create-game',
-      label: 'Used to create game',
-    },
-  ],
   flows: ['chess'],
-  bodySchema: z.object({}),
-  responseSchema: {
-    200: z.object({ models: AiModelsSchema() }),
-    404: z.object({ message: z.string() }),
-    400: z.object({ message: z.string() }),
-  },
-}
+  triggers: [
+    api('GET', '/chess/models', {
+      bodySchema: z.object({}).strict(),
+      responseSchema: {
+        200: z.object({ models: AiModelsSchema }),
+        404: z.object({ message: z.string() }).strict(),
+        400: z.object({ message: z.string() }).strict(),
+      },
+    }),
+  ],
+  enqueues: [],
+  virtualEnqueues: [{ topic: 'api:create-game', label: 'Used to create game' }],
+} as const satisfies StepConfig
 
-export const handler: Handlers['AvailableModels'] = async (_, { logger }) => {
+export const handler: Handlers<typeof config> = async (_, { logger }) => {
   logger.info('Received available models request')
 
   return {

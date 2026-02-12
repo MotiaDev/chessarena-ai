@@ -1,8 +1,8 @@
-import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { createOpenAI } from '@ai-sdk/openai'
+import { AiPlayerPromptSchema } from '@chessarena/types/ai-models'
 import { streamObject } from 'ai'
 import { models } from './models'
-import { Handler } from './types'
+import type { Handler } from './types'
 
 export const openai: Handler = async ({ model, logger, prompt, onThoughtUpdate }) => {
   const openai = createOpenAI({

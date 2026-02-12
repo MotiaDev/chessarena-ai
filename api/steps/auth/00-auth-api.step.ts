@@ -1,42 +1,39 @@
-import { User, userSchema } from '@chessarena/types/user'
+import { type User, userSchema } from '@chessarena/types/user'
 import { createClient } from '@supabase/supabase-js'
 import jwt from 'jsonwebtoken'
-import { ApiRouteConfig, Handlers } from 'motia'
+import { api, type Handlers, type StepConfig } from 'motia'
 import { z } from 'zod'
-import { TokenData } from '../../types-api'
+import type { TokenData } from '../../types-api'
 import { UserState } from '../states/user-state'
 
-export const config: ApiRouteConfig = {
-  type: 'api',
+export const config = {
   name: 'Auth',
   description: 'Auth',
-  path: '/auth',
-  method: 'POST',
-  virtualSubscribes: [],
-  emits: [],
   flows: ['Auth'],
-  bodySchema: z.object({
-    authToken: z.string(),
-  }),
-
-  responseSchema: {
-    200: z.object({
-      accessToken: z.string(),
-      user: userSchema,
+  triggers: [
+    api('POST', '/auth', {
+      bodySchema: z.object({ authToken: z.string() }).strict(),
+      responseSchema: {
+        200: z.object({ accessToken: z.string(), user: userSchema }).strict(),
+        401: z.object({ error: z.string() }).strict(),
+        500: z.object({ error: z.string() }).strict(),
+      },
     }),
-    401: z.object({ error: z.string() }),
-    500: z.object({ error: z.string() }),
-  },
-}
+  ],
+  enqueues: [],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
 export const createAccessToken = (userId: string): string => {
   const tokenData: TokenData = { sub: userId }
-  const accessToken = jwt.sign(tokenData, process.env.JWT_SECRET!, { expiresIn: process.env.JWT_EXPIRATION as never })
+  const accessToken = jwt.sign(tokenData, process.env.JWT_SECRET!, {
+    expiresIn: process.env.JWT_EXPIRATION as never,
+  })
 
   return accessToken
 }
 
-export const handler: Handlers['Auth'] = async (req, { logger, state }) => {
+export const handler: Handlers<typeof config> = async (req, { logger, state }) => {
   logger.info('Auth request received')
 
   try {

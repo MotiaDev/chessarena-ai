@@ -1,24 +1,25 @@
-import { PublicUser, publicUserSchema } from '@chessarena/types/user'
-import { ApiRouteConfig, Handlers } from 'motia'
+import { type PublicUser, publicUserSchema } from '@chessarena/types/user'
+import { api, type Handlers, type StepConfig } from 'motia'
 import { z } from 'zod'
 import { UserState } from '../states/user-state'
 
-export const config: ApiRouteConfig = {
-  type: 'api',
+export const config = {
   name: 'GetUser',
   description: 'Get user by ID',
-  path: '/user/:id',
-  method: 'GET',
-  emits: [],
   flows: ['auth'],
+  triggers: [
+    api('GET', '/user/:id', {
+      responseSchema: {
+        200: publicUserSchema,
+        404: z.object({ message: z.string() }).strict(),
+      },
+    }),
+  ],
+  enqueues: [],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
-  responseSchema: {
-    200: publicUserSchema,
-    404: z.object({ message: z.string() }),
-  },
-}
-
-export const handler: Handlers['GetUser'] = async (req, { logger, state }) => {
+export const handler: Handlers<typeof config> = async (req, { logger, state }) => {
   logger.info('Received getUser event', { id: req.pathParams.id })
 
   const userState = new UserState(state)

@@ -11,4 +11,5 @@ dist
 .env
 .env.production
 api/lib/*
+api/data/*
 deploy.sh

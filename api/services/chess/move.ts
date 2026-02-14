@@ -1,42 +1,29 @@
 import type { Game } from '@chessarena/types/game'
 import { Chess } from 'chess.js'
 import { randomUUID } from 'crypto'
-import { Emitter, FlowContextStateStreams, Logger } from 'motia'
+import type { Enqueuer, Logger } from 'motia'
 import { getCaptureScore } from './get-capture-score'
+
+type MoveEnqueueData =
+  | {
+      topic: 'chess-game-moved'
+      data: { gameId: string; player: string; move: { from: string; to: string }; fenBefore: string }
+    }
+  | { topic: 'chess-game-ended'; data: { gameId: string } }
+  | {
+      topic: 'evaluate-player-move'
+      data: { gameId: string; fenBefore: string; fenAfter: string; moveId: string; player: string }
+    }
 
 type Args = {
   logger: Logger
-  streams: FlowContextStateStreams
+  streams: import('motia').Streams
   gameId: string
   game: Game
   moveSan: string
   player: 'white' | 'black'
   illegalMoveAttempts?: number
-  emit: Emitter<
-    | {
-        topic: 'chess-game-moved'
-        data: {
-          gameId: string
-          player: string
-          move: {
-            from: string
-            to: string
-          }
-          fenBefore: string
-        }
-      }
-    | { topic: 'chess-game-ended'; data: { gameId: string } }
-    | {
-        topic: 'evaluate-player-move'
-        data: {
-          gameId: string
-          fenBefore: string
-          fenAfter: string
-          moveId: string
-          player: string
-        }
-      }
-  >
+  enqueue: Enqueuer<MoveEnqueueData>
 }
 
 export const move = async ({
@@ -45,7 +32,7 @@ export const move = async ({
   gameId,
   game,
   moveSan,
-  emit,
+  enqueue,
   player,
   illegalMoveAttempts = 0,
 }: Args): Promise<Game> => {
@@ -80,7 +67,7 @@ export const move = async ({
     : undefined
   const isPawnPromotion = gameMove?.promotion !== undefined
 
-  const newGame = await streams.chessGame.set('game', gameId, {
+  const { new_value: newGame } = await streams.chessGame.set('game', gameId, {
     id: gameId,
     fen: gameMove.after,
     status,
@@ -115,7 +102,7 @@ export const move = async ({
     check: chess.inCheck(),
   })
 
-  await emit({
+  await enqueue({
     topic: 'evaluate-player-move',
     data: {
       gameId,
@@ -127,7 +114,7 @@ export const move = async ({
   })
 
   if (status === 'pending') {
-    await emit({
+    await enqueue({
       topic: 'chess-game-moved',
       data: {
         gameId,
@@ -140,7 +127,7 @@ export const move = async ({
       },
     })
   } else {
-    await emit({
+    await enqueue({
       topic: 'chess-game-ended',
       data: { gameId },
     })

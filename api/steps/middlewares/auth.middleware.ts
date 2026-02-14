@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
-import { ApiMiddleware, ApiResponse } from 'motia'
-import { TokenData } from '../../types-api'
+import type { ApiMiddleware, ApiResponse } from 'motia'
+import type { TokenData } from '../../types-api'
 
 export const auth = ({ required }: { required: boolean }): ApiMiddleware => {
   const authMiddleware: ApiMiddleware = async (req, ctx, next): Promise<ApiResponse<number, unknown>> => {

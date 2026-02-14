@@ -1,38 +1,39 @@
 import { roleSchema } from '@chessarena/types/game'
-import { ApiRouteConfig, Handlers } from 'motia'
+import { api, type Handlers, type StepConfig } from 'motia'
 import { z } from 'zod'
 import { getGameRole } from '../../services/chess/get-game-role'
 import { auth } from '../middlewares/auth.middleware'
 import { UserState } from '../states/user-state'
 
-export const config: ApiRouteConfig = {
-  type: 'api',
+export const config = {
   name: 'SendMessage',
   description: 'Send a message to the game',
-  emits: [],
   flows: ['chess'],
-  method: 'POST',
-  path: '/chess/game/:id/send-message',
-
-  middleware: [auth({ required: false })],
-
-  bodySchema: z.object({
-    message: z.string({ description: 'The message to send' }),
-    name: z.string({ description: 'The name of the player sending the message' }),
-    role: roleSchema,
-  }),
-
-  responseSchema: {
-    200: z.object({
-      message: z.string({ description: 'The message' }),
-      sender: z.string({ description: 'The name of the sender' }),
-      timestamp: z.number({ description: 'The timestamp of the message' }),
+  triggers: [
+    api('POST', '/chess/game/:id/send-message', {
+      bodySchema: z
+        .object({
+          message: z.string().describe('The message to send'),
+          name: z.string().describe('The name of the player sending the message'),
+          role: roleSchema,
+        })
+        .strict(),
+      responseSchema: {
+        200: z.object({
+          message: z.string().describe('The message'),
+          sender: z.string().describe('The name of the sender'),
+          timestamp: z.number().describe('The timestamp of the message'),
+        }),
+        404: z.object({ message: z.string().describe('The message') }).strict(),
+      },
+      middleware: [auth({ required: false })],
     }),
-    404: z.object({ message: z.string({ description: 'The message' }) }),
-  },
-}
+  ],
+  enqueues: [],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
-export const handler: Handlers['SendMessage'] = async (req, { logger, streams, state }) => {
+export const handler: Handlers<typeof config> = async (req, { logger, streams, state }) => {
   logger.info('Received SendMessage event', { gameId: req.pathParams.id })
 
   const userState = new UserState(state)
@@ -57,7 +58,7 @@ export const handler: Handlers['SendMessage'] = async (req, { logger, streams, s
   }
 
   const isAiGame = !!game.players.black.ai && !!game.players.white.ai
-  const result =
+  const { new_value: result } =
     isAiGame || role === 'spectator'
       ? await streams.chessSidechatMessage.set(game.id, messageId, message)
       : await streams.chessGameMessage.set(game.id, messageId, message)

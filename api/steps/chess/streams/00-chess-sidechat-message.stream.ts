@@ -1,5 +1,5 @@
 import { SidechatMessageSchema } from '@chessarena/types/sidechat-message'
-import { StreamConfig } from 'motia'
+import type { StreamConfig } from 'motia'
 
 export const config: StreamConfig = {
   name: 'chessSidechatMessage',

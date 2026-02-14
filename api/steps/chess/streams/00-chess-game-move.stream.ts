@@ -1,5 +1,5 @@
 import { GameMoveSchema } from '@chessarena/types/game-move'
-import { StreamConfig } from 'motia'
+import type { StreamConfig } from 'motia'
 
 export const config: StreamConfig = {
   name: 'chessGameMove',

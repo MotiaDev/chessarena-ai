@@ -1,30 +1,34 @@
 import { GameSchema } from '@chessarena/types/game'
-import { ApiRouteConfig, Handlers, ZodInput } from 'motia'
-import { z } from 'zod'
+import { api, type Handlers, type StepConfig } from 'motia'
+import * as z from 'zod'
 import { getGameRole } from '../../services/chess/get-game-role'
 import { move } from '../../services/chess/move'
 import { auth } from '../middlewares/auth.middleware'
 
-export const config: ApiRouteConfig = {
-  type: 'api',
+export const config = {
   name: 'MovePiece',
   description: 'Move a piece',
-  path: '/chess/game/:id/move',
-  method: 'POST',
-  emits: ['chess-game-moved', 'chess-game-ended', 'evaluate-player-move'],
   flows: ['chess'],
-  middleware: [auth({ required: true })],
-  bodySchema: z.object({
-    moveSan: z.string({ description: 'The move in Standard Algebraic Notation (SAN)' }),
-  }),
-  responseSchema: {
-    200: GameSchema as unknown as ZodInput,
-    404: z.object({ message: z.string() }),
-    400: z.object({ message: z.string() }),
-  },
-}
+  triggers: [
+    api('POST', '/chess/game/:id/move', {
+      bodySchema: z
+        .object({
+          moveSan: z.string().describe('The move in Standard Algebraic Notation (SAN)'),
+        })
+        .strict(),
+      responseSchema: {
+        200: GameSchema,
+        404: z.object({ message: z.string() }).strict(),
+        400: z.object({ message: z.string() }).strict(),
+      },
+      middleware: [auth({ required: true })],
+    }),
+  ],
+  enqueues: ['chess-game-moved', 'chess-game-ended', 'evaluate-player-move'],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
-export const handler: Handlers['MovePiece'] = async (req, { logger, emit, streams }) => {
+export const handler: Handlers<typeof config> = async (req, { logger, enqueue, streams }) => {
   logger.info('Received move event', { body: req.body })
 
   const gameId = req.pathParams.id
@@ -54,13 +58,14 @@ export const handler: Handlers['MovePiece'] = async (req, { logger, emit, stream
       game,
       player: game.turn,
       moveSan: req.body.moveSan,
-      emit,
+      enqueue,
     })
 
     logger.info('Move made', req.body.moveSan)
 
     return { status: 200, body: newGame }
   } catch (error) {
+    logger.error('Invalid move', { error })
     return { status: 400, body: { message: 'Invalid move' } }
   }
 }

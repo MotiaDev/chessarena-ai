@@ -1,32 +1,33 @@
-import { AiModelsSchema } from '@chessarena/types/ai-models'
-import { ApiRouteConfig, Handlers } from 'motia'
+import { api, type Handlers, type StepConfig } from 'motia'
 import { z } from 'zod'
 import { auth } from '../../middlewares/auth.middleware'
 import { UserState } from '../../states/user-state'
 
-export const config: ApiRouteConfig = {
-  type: 'api',
+export const config = {
   name: 'RequestAccess',
   description: 'Request access to a game',
-  path: '/request-access/:gameId',
-  method: 'POST',
-  emits: [],
   flows: ['chess'],
-  middleware: [auth({ required: true })],
-  responseSchema: {
-    200: z.object({}),
-    404: z.object({ message: z.string() }),
-    400: z.object({ message: z.string() }),
-  },
-}
+  triggers: [
+    api('POST', '/request-access/:gameId', {
+      responseSchema: {
+        200: z.object({}).strict(),
+        404: z.object({ message: z.string() }).strict(),
+        400: z.object({ message: z.string() }).strict(),
+      },
+      middleware: [auth({ required: true })],
+    }),
+  ],
+  enqueues: [],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
-export const handler: Handlers['RequestAccess'] = async (req, { logger, streams, state }) => {
+export const handler: Handlers<typeof config> = async (req, { logger, streams, state }) => {
   const gameId = req.pathParams.gameId
 
   logger.info('Received request access', { gameId, request: req.body })
 
   const userState = new UserState(state)
-  const user = await userState.getUser(req.tokenInfo.sub)
+  const user = await userState.getUser(req.tokenInfo!.sub)
   const game = await streams.chessGame.get('game', gameId)
 
   if (!game) {

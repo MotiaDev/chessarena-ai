@@ -1,20 +1,21 @@
-import { EventConfig, Handlers } from 'motia'
-import { z } from 'zod'
+import { type Handlers, queue, type StepConfig } from 'motia'
+import * as z from 'zod'
 
-export const config: EventConfig = {
-  type: 'event',
+const inputSchema = z.object({
+  gameId: z.string().describe('The ID of the game'),
+  fenBefore: z.string().describe('The FEN of the game before the move'),
+})
+
+export const config = {
   name: 'ChessGameMoved',
   description: 'Chess Game Moved',
-  subscribes: ['chess-game-moved', 'chess-game-created'],
-  emits: ['ai-move'],
   flows: ['chess'],
-  input: z.object({
-    gameId: z.string({ description: 'The ID of the game' }),
-    fenBefore: z.string({ description: 'The FEN of the game before the move' }),
-  }),
-}
+  triggers: [queue('chess-game-moved', { input: inputSchema }), queue('chess-game-created', { input: inputSchema })],
+  enqueues: ['ai-move'],
+  virtualEnqueues: [],
+} as const satisfies StepConfig
 
-export const handler: Handlers['ChessGameMoved'] = async (input, { logger, emit, streams }) => {
+export const handler: Handlers<typeof config> = async (input, { logger, enqueue, streams }) => {
   logger.info('Received ChessGameMoved event', { input })
 
   const game = await streams.chessGame.get('game', input.gameId)
@@ -32,7 +33,7 @@ export const handler: Handlers['ChessGameMoved'] = async (input, { logger, emit,
   const turnPlayer = game.turn === 'white' ? game.players.white : game.players.black
 
   if (turnPlayer.ai) {
-    await emit({
+    await enqueue({
       topic: 'ai-move',
       data: {
         fen: game.fen,

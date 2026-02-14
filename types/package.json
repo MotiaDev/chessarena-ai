@@ -6,7 +6,7 @@
     "motia"
   ],
   "dependencies": {
-    "zod": "catalog:"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "typescript": "catalog:"

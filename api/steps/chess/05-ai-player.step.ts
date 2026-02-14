@@ -1,36 +1,34 @@
-import fs from 'fs'
-import { EventConfig, Handlers } from 'motia'
-import mustache from 'mustache'
-import path from 'path'
-import { z } from 'zod'
-import { Chess } from 'chess.js'
 import { AiPlayerPrompt } from '@chessarena/types/ai-models'
+import { Chess } from 'chess.js'
+import mustache from 'mustache'
+import { queue, type Handlers, type StepConfig } from 'motia'
+import { z } from 'zod'
 import { makePrompt } from '../../services/ai/make-prompt'
 import { move } from '../../services/chess/move'
+import { template } from './05-ai-player.template'
 
 const MAX_ATTEMPTS = 3
 
-export const config: EventConfig = {
-  type: 'event',
+const inputSchema = z.object({
+  player: z.enum(['white', 'black']).describe('The player that made the move'),
+  fenBefore: z.string().describe('The FEN of the game before the move'),
+  fen: z.string().describe('The FEN of the game'),
+  lastMove: z.array(z.string()).describe('The last move made, example ["c3", "c4"]').optional(),
+  check: z.boolean().describe('Whether the move is a check'),
+  gameId: z.string().describe('The ID of the game'),
+})
+
+export const config = {
   name: 'AI_Player',
   description: 'AI Player',
-  subscribes: ['ai-move'],
-  emits: ['chess-game-moved', 'chess-game-ended', 'evaluate-player-move'],
   flows: ['chess'],
-  input: z.object({
-    player: z.enum(['white', 'black'], { description: 'The player that made the move' }),
-    fenBefore: z.string({ description: 'The FEN of the game before the move' }),
-    fen: z.string({ description: 'The FEN of the game' }),
-    lastMove: z.array(z.string(), { description: 'The last move made, example ["c3", "c4"]' }).optional(),
-    check: z.boolean({ description: 'Whether the move is a check' }),
-    gameId: z.string({ description: 'The ID of the game' }),
-  }),
+  triggers: [queue('ai-move', { input: inputSchema })],
+  enqueues: ['chess-game-moved', 'chess-game-ended', 'evaluate-player-move'],
+  virtualEnqueues: [],
   includeFiles: ['05-ai-player.mustache'],
-}
+} as const satisfies StepConfig
 
-const template = fs.readFileSync(path.join(__dirname, '05-ai-player.mustache'), 'utf8')
-
-export const handler: Handlers['AI_Player'] = async (input, { logger, emit, streams }) => {
+export const handler: Handlers<typeof config> = async (input, { logger, enqueue, streams }) => {
   logger.info('Received ai-move event', { gameId: input.gameId })
 
   const game = await streams.chessGame.get('game', input.gameId)
@@ -55,7 +53,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
     const messageId = crypto.randomUUID()
 
     logger.info('Creating message', { messageId, gameId: input.gameId })
-    const message = await streams.chessGameMessage.set(input.gameId, messageId, {
+    const { new_value: message } = await streams.chessGameMessage.set(input.gameId, messageId, {
       id: messageId,
       message: 'Thinking...',
       sender: player.ai,
@@ -118,7 +116,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
           player: input.player,
           game,
           moveSan: action.moveSan,
-          emit,
+          enqueue,
           illegalMoveAttempts: attempts,
         })
 
@@ -168,7 +166,7 @@ export const handler: Handlers['AI_Player'] = async (input, { logger, emit, stre
           },
         })
 
-        await emit({
+        await enqueue({
           topic: 'chess-game-ended',
           data: { gameId: input.gameId },
         })

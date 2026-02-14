@@ -1,8 +1,8 @@
-import path from 'path'
+import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
-import { VitePluginRadar } from 'vite-plugin-radar'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { VitePluginRadar } from 'vite-plugin-radar'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -21,12 +21,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3111',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/ws': {
-        target: 'ws://localhost:3000',
+        target: 'ws://localhost:3112',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ws/, ''),
         ws: true,

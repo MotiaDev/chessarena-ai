@@ -19,7 +19,7 @@
     "ai": "^5.0.63",
     "chess.js": "^1.4.0",
     "jsonwebtoken": "^9.0.2",
-    "motia": "0.2.1",
+    "motia": "1.0.0-rc.14",
     "mustache": "^4.2.0",
     "no-profanity": "^1.5.1",
     "unique-names-generator": "^4.7.1",

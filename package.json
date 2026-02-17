@@ -16,11 +16,6 @@
     "motia"
   ],
   "packageManager": "pnpm@10.11.0",
-  "pnpm": {
-    "overrides": {
-      "motia>iii-sdk": "0.0.5"
-    }
-  },
   "dependencies": {},
   "devDependencies": {
     "@types/react": "^19.1.2",

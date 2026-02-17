@@ -25,9 +25,7 @@ modules:
       concurrency_request_limit: 1024
       cors:
         allowed_origins:
-          - http://localhost:3000
-          - http://localhost:3113
-          - http://localhost:5173
+          - '*'
         allowed_methods:
           - GET
           - POST
@@ -74,7 +72,6 @@ modules:
     config:
       watch:
         - steps/**/*.ts
-        - services/**/*.ts
       exec:
         - npx motia dev
         - bun run --enable-source-maps dist/index-dev.js

@@ -43,6 +43,7 @@ Click the image below to watch the demo:
 - [Node.js](https://nodejs.org/) (v18 or higher)
 - [PNPM](https://pnpm.io/)
 - [Python 3.x](https://www.python.org/)
+- [uv](https://docs.astral.sh/uv/) (required for Python dependencies and worker runtime)
 - [Stockfish Chess Engine](https://stockfishchess.org/)
 
 ### Step 1: Clone and Install Dependencies
@@ -75,3 +76,13 @@ Supported platforms:
 #### Option C: Manual Installation
 
 Download directly from [stockfishchess.org](https://stockfishchess.org/) and install according to your platform's instructions.
+
+## How to Run
+
+1. Start app + API:
+   `pnpm dev`
+2. In another terminal, run Motia Python:
+   `cd api && uv sync --all-extras && uv run motia dev --dir steps --watch`
+
+The Python step file is:
+- `api/steps/chess/evaluate_player_move.step.py`

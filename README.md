@@ -75,3 +75,13 @@ Supported platforms:
 #### Option C: Manual Installation
 
 Download directly from [stockfishchess.org](https://stockfishchess.org/) and install according to your platform's instructions.
+
+## Motia Python Worker (from playground)
+
+1. Start app + API as usual:
+   `pnpm dev`
+2. In another terminal, start the Python worker:
+   `cd api && uv sync --all-extras && uv run motia dev --dir steps --watch`
+
+The Python step file is:
+- `api/steps/chess/evaluate_player_move.step.py`

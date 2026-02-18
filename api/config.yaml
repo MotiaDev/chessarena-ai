@@ -72,6 +72,8 @@ modules:
     config:
       watch:
         - steps/**/*.ts
+        #- steps/**/*.py
       exec:
         - npx motia dev
         - bun run --enable-source-maps dist/index-dev.js
+        #- uv run motia dev --dir steps 

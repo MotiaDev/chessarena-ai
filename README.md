@@ -43,6 +43,7 @@ Click the image below to watch the demo:
 - [Node.js](https://nodejs.org/) (v18 or higher)
 - [PNPM](https://pnpm.io/)
 - [Python 3.x](https://www.python.org/)
+- [uv](https://docs.astral.sh/uv/) (required for Python dependencies and worker runtime)
 - [Stockfish Chess Engine](https://stockfishchess.org/)
 
 ### Step 1: Clone and Install Dependencies
@@ -76,11 +77,11 @@ Supported platforms:
 
 Download directly from [stockfishchess.org](https://stockfishchess.org/) and install according to your platform's instructions.
 
-## Motia Python Worker (from playground)
+## How to Run
 
-1. Start app + API as usual:
+1. Start app + API:
    `pnpm dev`
-2. In another terminal, start the Python worker:
+2. In another terminal, run Motia Python:
    `cd api && uv sync --all-extras && uv run motia dev --dir steps --watch`
 
 The Python step file is:

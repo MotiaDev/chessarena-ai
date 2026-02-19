@@ -79,10 +79,5 @@ Download directly from [stockfishchess.org](https://stockfishchess.org/) and ins
 
 ## How to Run
 
-1. Start app + API:
+Start app + API + python steps:
    `pnpm dev`
-2. In another terminal, run Motia Python:
-   `cd api && uv sync --all-extras && uv run motia dev --dir steps --watch`
-
-The Python step file is:
-- `api/steps/chess/evaluate_player_move.step.py`

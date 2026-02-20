@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Python steps for ChessArena Motia workflows"
 requires-python = ">=3.10"
 dependencies = [
-  "motia[otel]==1.0.0rc17",
+  "motia[otel]==1.0.0-rc.22",
   "iii-sdk==0.2.0",
   "chess",
   "pydantic>=2.0",
